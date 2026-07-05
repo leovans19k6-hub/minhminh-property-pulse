@@ -73,10 +73,89 @@ function buildSpecs(item: MobileInventoryItem): Spec[] {
   return specs.slice(0, 4);
 }
 
-export function MobileInventoryCard({ item }: { item: MobileInventoryItem }) {
+export function MobileInventoryCard({
+  item,
+  variant = "list",
+}: {
+  item: MobileInventoryItem;
+  variant?: "list" | "grid";
+}) {
   const status = statusMeta(item.status);
   const specs = buildSpecs(item);
   const subtitle = [item.zone_name, item.building_name].filter(Boolean).join(" · ");
+
+  if (variant === "grid") {
+    return (
+      <Link
+        to="/products/$productId"
+        params={{ productId: item.product_id }}
+        className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-[color:var(--surface)] shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
+      >
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[color:var(--brand-navy-soft)]">
+          {item.primary_image_url ? (
+            <img
+              src={item.primary_image_url}
+              alt={item.product_code}
+              loading="lazy"
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+              }}
+            />
+          ) : (
+            <div className="grid h-full w-full place-items-center">
+              <Building2 className="h-7 w-7 text-[color:var(--brand-navy)]/30" />
+            </div>
+          )}
+          <span
+            className={cn(
+              "absolute right-1.5 top-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+              toneClass[status.tone],
+            )}
+          >
+            {status.label}
+          </span>
+          {item.featured && (
+            <span className="absolute left-1.5 top-1.5 rounded-full bg-[color:var(--brand-gold)] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[color:var(--brand-navy)]">
+              Nổi bật
+            </span>
+          )}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col gap-1 p-2.5">
+          <p className="truncate text-[14px] font-bold leading-tight tracking-tight text-[color:var(--brand-navy)]">
+            {item.product_code}
+          </p>
+          {subtitle && (
+            <p className="truncate text-[11px] text-[color:var(--text-tertiary)]">{subtitle}</p>
+          )}
+          {specs.length > 0 && (
+            <div className="flex flex-wrap gap-x-2 gap-y-0.5">
+              {specs.slice(0, 3).map((s, i) => (
+                <span key={i} className="text-[11px] text-[color:var(--text-secondary)]">
+                  <span className="text-[color:var(--text-tertiary)]">{s.label}</span>{" "}
+                  <span className="font-medium text-[color:var(--text-primary)]">{s.value}</span>
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="mt-auto truncate pt-1 text-[14px] font-bold leading-none tracking-tight text-[color:var(--brand-navy)]">
+            {item.primary_price != null ? (
+              <>
+                {formatVND(item.primary_price)}
+                <span className="ml-1 text-[10.5px] font-medium text-[color:var(--text-tertiary)]">
+                  {item.currency ?? "₫"}
+                </span>
+              </>
+            ) : (
+              <span className="text-[12.5px] font-semibold text-[color:var(--text-secondary)]">
+                Liên hệ
+              </span>
+            )}
+          </p>
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <Link
