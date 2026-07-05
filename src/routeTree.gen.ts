@@ -15,6 +15,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -71,6 +72,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/projects': typeof ProjectsRouteWithChildren
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/projects': typeof ProjectsRouteWithChildren
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/projects': typeof ProjectsRouteWithChildren
@@ -329,6 +338,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/favorites'
     | '/forgot-password'
+    | '/inventory'
     | '/login'
     | '/notifications'
     | '/projects'
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/favorites'
     | '/forgot-password'
+    | '/inventory'
     | '/login'
     | '/notifications'
     | '/projects'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/favorites'
     | '/forgot-password'
+    | '/inventory'
     | '/login'
     | '/notifications'
     | '/projects'
@@ -434,6 +446,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   FavoritesRoute: typeof FavoritesRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  InventoryRoute: typeof InventoryRoute
   LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -813,6 +833,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   FavoritesRoute: FavoritesRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  InventoryRoute: InventoryRoute,
   LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
