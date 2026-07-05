@@ -44,3 +44,17 @@ Supabase linter rules `0028`/`0029` flag every SECURITY DEFINER function callabl
 - `_apply_policy_applicability`
 
 All Phase 6A functions use `SECURITY DEFINER` + `SET search_path = public`. User-facing RPCs self-authorize (`auth.uid()` + `is_active_user()` + `is_project_manager()`); direct writes to `sales_policies`, `policy_product_types`, `policy_products`, `sales_policy_versions` are denied by RLS.
+
+## Phase 6B — Vouchers additions
+
+### Authenticated + service_role (REVOKE anon)
+- `create_voucher`, `update_voucher`, `publish_voucher`, `pause_voucher`, `resume_voucher`, `clone_voucher`, `archive_voucher`, `restore_voucher`
+- `check_voucher_eligibility`, `register_for_voucher`, `cancel_my_voucher_registration`
+- `get_voucher_admin_detail`, `search_vouchers`, `get_active_project_vouchers`, `get_active_voucher_detail`, `get_my_voucher_registrations`
+
+### Internal only (REVOKE PUBLIC, anon, authenticated)
+- `validate_voucher_benefits`, `validate_voucher_conditions`, `validate_voucher_attachments`, `validate_voucher_dates`
+- `_apply_voucher_applicability`
+- `_voucher_registration_count`
+
+All Phase 6B functions use `SECURITY DEFINER` + `SET search_path = public`. User-facing RPCs self-authorize; direct writes to `vouchers`, `voucher_product_types`, `voucher_products`, `voucher_sales_policies` are denied by RLS. Voucher registrations are denied at the `registrations_insert` policy (`registration_type <> 'voucher'`) — the only path is `register_for_voucher`, which serializes concurrent callers via `pg_advisory_xact_lock` to prevent overbooking.
