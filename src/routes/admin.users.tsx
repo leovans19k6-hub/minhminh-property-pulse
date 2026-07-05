@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useQuery, useMutation, useQueryClient, useServerFn } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn as useSFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Plus, Search, UserCog, Loader2 } from "lucide-react";
