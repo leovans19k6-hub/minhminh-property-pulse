@@ -19,6 +19,7 @@ const PUBLIC_ROUTES = new Set<string>([
   "/login",
   "/forgot-password",
   "/reset-password",
+  "/unauthorized",
 ]);
 
 function NotFoundComponent() {
