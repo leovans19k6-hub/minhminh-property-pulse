@@ -1,25 +1,17 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { MapPin, Phone, MessageSquare, FileText, Ticket, MapPinned, LayoutGrid } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { MapPin, LayoutGrid, Building2 } from "lucide-react";
 import { PageHeader } from "@/components/mobile/PageHeader";
 import { MobileShell } from "@/components/mobile/MobileShell";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { ProductCard } from "@/components/shared/ProductCard";
+import { MobileInventoryCard } from "@/components/shared/MobileInventoryCard";
+import { useMobileProjectDetail } from "@/features/projects/queries";
 import {
-  getProject,
-  productsByProject,
-  policiesByProject,
-  vouchersByProject,
-  eventsByProject,
-} from "@/features/mock/data";
-import { formatDate, formatDateTime } from "@/utils/format";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+  MobileListSkeleton,
+  MobileQueryErrorState,
+  MobileEmptyState,
+} from "@/components/mobile/MobileStates";
+import { ServiceError } from "@/services/_helpers";
 
 export const Route = createFileRoute("/projects/$projectId")({
-  loader: ({ params }) => {
-    const project = getProject(params.projectId);
-    if (!project) throw notFound();
-    return { project };
-  },
   component: ProjectDetailPage,
   notFoundComponent: () => (
     <MobileShell title="Dự án">
@@ -34,164 +26,166 @@ export const Route = createFileRoute("/projects/$projectId")({
 });
 
 function ProjectDetailPage() {
-  const { project } = Route.useLoaderData();
-  const items = productsByProject(project.id);
-  const pol = policiesByProject(project.id);
-  const vs = vouchersByProject(project.id);
-  const evs = eventsByProject(project.id);
+  const { projectId } = Route.useParams();
+  const { data, isLoading, isError, error, refetch } = useMobileProjectDetail(projectId);
+
+  if (isLoading) {
+    return (
+      <MobileShell title="Dự án">
+        <MobileListSkeleton count={1} />
+      </MobileShell>
+    );
+  }
+  if (isError || !data) {
+    const isPerm = error instanceof ServiceError && error.message.includes("quyền");
+    return (
+      <MobileShell title="Dự án">
+        <MobileQueryErrorState
+          message={isPerm ? "Bạn không có quyền xem dự án này." : error instanceof Error ? error.message : undefined}
+          onRetry={() => refetch()}
+        />
+      </MobileShell>
+    );
+  }
+
+  const p = data.project;
+  const stats = data.inventory_stats;
+  const cover = p.cover_url ?? p.thumbnail_url;
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-[520px] bg-background pb-24 md:max-w-[640px]">
-      <PageHeader title={project.name} subtitle={project.developer} />
+      <PageHeader title={p.name} subtitle={data.developer?.name ?? undefined} />
 
       <div className="relative aspect-[16/10] w-full bg-muted">
-        <img src={project.cover} alt={project.name} className="h-full w-full object-cover" />
-        <div className="absolute left-3 top-3">
-          <StatusBadge status={project.status} />
-        </div>
+        {cover ? (
+          <img src={cover as string} alt={p.name} className="h-full w-full object-cover" />
+        ) : (
+          <div className="grid h-full w-full place-items-center bg-[var(--brand-navy)]/10">
+            <Building2 className="h-10 w-10 text-[var(--brand-navy)]/40" />
+          </div>
+        )}
       </div>
 
       <div className="space-y-3 p-4">
-        <h1 className="text-lg font-bold tracking-tight">{project.name}</h1>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="h-3.5 w-3.5" />
-          <span className="truncate">{project.location}</span>
-        </div>
-        <p className="text-sm text-foreground/80">{project.shortDescription}</p>
+        <h1 className="text-lg font-bold tracking-tight">{p.name}</h1>
+        {p.location_text && (
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="h-3.5 w-3.5" />
+            <span className="truncate">{p.location_text as string}</span>
+          </div>
+        )}
+        {p.short_description && (
+          <p className="text-sm text-foreground/80">{p.short_description as string}</p>
+        )}
 
-        <div className="grid grid-cols-3 gap-2 pt-1 text-center">
-          <div className="rounded-xl border border-border p-2">
-            <p className="text-[10px] uppercase text-muted-foreground">Tổng SP</p>
-            <p className="text-sm font-semibold">{project.totalUnits}</p>
+        {stats && (
+          <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+            <StatBox label="Tổng SP" value={stats.total_products ?? 0} />
+            <StatBox
+              label="Còn hàng"
+              value={stats.available_count ?? 0}
+              accent="text-emerald-700"
+            />
+            <StatBox label="Phân khu" value={data.zones.length} />
           </div>
-          <div className="rounded-xl border border-border p-2">
-            <p className="text-[10px] uppercase text-muted-foreground">Còn hàng</p>
-            <p className="text-sm font-semibold text-emerald-700">{project.availableUnits}</p>
-          </div>
-          <div className="rounded-xl border border-border p-2">
-            <p className="text-[10px] uppercase text-muted-foreground">Phân khu</p>
-            <p className="text-sm font-semibold">{project.subzones.length}</p>
-          </div>
-        </div>
+        )}
 
-        {/* Quick actions */}
-        <div className="grid grid-cols-4 gap-2 pt-2">
-          {[
-            { to: "/inventory", icon: LayoutGrid, label: "Bảng hàng", search: { projectId: project.id } },
-            { to: "/policies", icon: FileText, label: "Chính sách" },
-            { to: "/register", icon: Ticket, label: "Voucher", search: { type: "voucher" as const, projectId: project.id } },
-            { to: "/register", icon: MapPinned, label: "Site Tour", search: { type: "sitetour" as const, projectId: project.id } },
-          ].map((a) => (
-            <Link
-              key={a.label}
-              to={a.to}
-              {...(a.search ? { search: a.search as never } : {})}
-              className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-2 text-center text-[11px] font-medium"
-            >
-              <a.icon className="h-4 w-4 text-[var(--brand-navy)]" />
-              {a.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Manager */}
-        <div className="mt-2 flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
-          <div className="grid h-11 w-11 place-items-center rounded-full bg-[var(--brand-navy)] text-sm font-bold text-primary-foreground">
-            {project.saleManager.name.split(" ").pop()?.[0]}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] text-muted-foreground">Phụ trách dự án</p>
-            <p className="truncate text-sm font-semibold">{project.saleManager.name}</p>
-            <p className="truncate text-xs text-muted-foreground">{project.saleManager.phone}</p>
-          </div>
-          <a
-            href={`tel:${project.saleManager.phone.replace(/\s/g, "")}`}
-            className="grid h-10 w-10 place-items-center rounded-full bg-emerald-600 text-white"
-            aria-label="Gọi phụ trách"
+        <div className="grid grid-cols-2 gap-2 pt-2">
+          <Link
+            to="/inventory"
+            search={{ projectId: p.id }}
+            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-center text-[12px] font-medium"
           >
-            <Phone className="h-4 w-4" />
-          </a>
-          <a
-            href={`sms:${project.saleManager.phone.replace(/\s/g, "")}`}
-            className="grid h-10 w-10 place-items-center rounded-full bg-[var(--brand-navy)] text-white"
-            aria-label="Nhắn tin"
+            <LayoutGrid className="h-4 w-4 text-[var(--brand-navy)]" />
+            Xem bảng hàng
+          </Link>
+          <Link
+            to="/inventory"
+            search={{ projectId: p.id, focus: "code" }}
+            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-center text-[12px] font-medium"
           >
-            <MessageSquare className="h-4 w-4" />
-          </a>
+            <Building2 className="h-4 w-4 text-[var(--brand-navy)]" />
+            Tìm mã căn
+          </Link>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <Tabs defaultValue="overview" className="px-4">
-        <TabsList className="sticky top-14 z-30 grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-          <TabsTrigger value="units">Bảng hàng</TabsTrigger>
-          <TabsTrigger value="policies">Chính sách</TabsTrigger>
-          <TabsTrigger value="events">Sự kiện</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview" className="space-y-3 pt-3">
-          <h3 className="text-sm font-semibold">Phân khu / Toà</h3>
-          <div className="flex flex-wrap gap-2">
-            {project.subzones.map((s: string) => (
-              <span
-                key={s}
-                className="rounded-full border border-border bg-card px-3 py-1 text-xs"
-              >
-                {s}
-              </span>
-            ))}
-            {project.towers?.map((t: string) => (
-              <span
-                key={t}
-                className="rounded-full border border-border bg-card px-3 py-1 text-xs"
-              >
-                Toà {t}
-              </span>
-            ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="units" className="space-y-3 pt-3">
-          {items.length === 0 && (
-            <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-              Chưa có sản phẩm cập nhật.
-            </p>
+        {data.zones.length > 0 && (
+          <section className="pt-3">
+            <h3 className="mb-2 text-sm font-semibold">Phân khu / Toà</h3>
+            <div className="flex flex-wrap gap-2">
+              {data.zones.map((z) => (
+                <span
+                  key={z.id}
+                  className="rounded-full border border-border bg-card px-3 py-1 text-xs"
+                >
+                  {z.name}
+                </span>
+              ))}
+              {data.buildings.map((b) => (
+                <span
+                  key={b.id}
+                  className="rounded-full border border-border bg-card px-3 py-1 text-xs"
+                >
+                  {b.name}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="pt-3">
+          <h3 className="mb-2 text-sm font-semibold">Sản phẩm nổi bật</h3>
+          {data.featured_products.length === 0 ? (
+            <MobileEmptyState title="Chưa có sản phẩm nổi bật." />
+          ) : (
+            <div className="space-y-3">
+              {data.featured_products.map((f) => (
+                <MobileInventoryCard
+                  key={f.product_id}
+                  item={{
+                    product_id: f.product_id,
+                    project_id: p.id,
+                    project_name: p.name,
+                    product_code: f.product_code,
+                    product_name: f.product_name,
+                    category: f.category,
+                    status: f.status,
+                    product_type_name: f.product_type_name,
+                    zone_name: f.zone_name,
+                    building_name: f.building_name,
+                    floor_number: f.floor_number,
+                    direction: f.direction,
+                    door_direction: null,
+                    balcony_direction: f.balcony_direction,
+                    view_text: null,
+                    land_area: f.land_area,
+                    construction_area: null,
+                    built_up_area: f.built_up_area,
+                    carpet_area: null,
+                    bedrooms: null,
+                    bathrooms: null,
+                    primary_price: f.primary_price,
+                    primary_price_name: null,
+                    currency: null,
+                    primary_image_url: f.primary_image_url,
+                    featured: null,
+                    updated_at: "",
+                  }}
+                />
+              ))}
+            </div>
           )}
-          {items.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </TabsContent>
-        <TabsContent value="policies" className="space-y-2 pt-3">
-          {pol.map((x) => (
-            <div key={x.id} className="rounded-2xl border border-border bg-card p-3">
-              <p className="text-[11px] text-muted-foreground">{formatDate(x.publishedAt)}</p>
-              <p className="text-sm font-semibold">{x.title}</p>
-              <p className="text-xs text-muted-foreground">{x.summary}</p>
-            </div>
-          ))}
-          <h3 className="pt-4 text-sm font-semibold">Voucher đang mở</h3>
-          {vs.map((v) => (
-            <div
-              key={v.id}
-              className="rounded-2xl border border-dashed border-[var(--brand-gold)] bg-[var(--brand-gold)]/10 p-3"
-            >
-              <p className="text-sm font-semibold">{v.title}</p>
-              <p className="text-lg font-bold text-[var(--brand-navy)]">{v.value}</p>
-              <p className="text-[11px] text-muted-foreground">HSD {formatDate(v.expiresAt)}</p>
-            </div>
-          ))}
-        </TabsContent>
-        <TabsContent value="events" className="space-y-2 pt-3">
-          {evs.map((e) => (
-            <div key={e.id} className="rounded-2xl border border-border bg-card p-3">
-              <p className="text-[11px] uppercase text-muted-foreground">{e.type}</p>
-              <p className="text-sm font-semibold">{e.title}</p>
-              <p className="text-xs text-muted-foreground">
-                {formatDateTime(e.startAt)} · {e.location}
-              </p>
-            </div>
-          ))}
-        </TabsContent>
-      </Tabs>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function StatBox({ label, value, accent }: { label: string; value: number | string; accent?: string }) {
+  return (
+    <div className="rounded-xl border border-border p-2">
+      <p className="text-[10px] uppercase text-muted-foreground">{label}</p>
+      <p className={"text-sm font-semibold " + (accent ?? "")}>{value}</p>
     </div>
   );
 }
