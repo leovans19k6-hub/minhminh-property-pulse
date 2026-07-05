@@ -160,6 +160,27 @@ export const queryKeys = {
     ["registrations", "events", "mine", normalize(filters)] as const,
   eventEligibility: (eventId: string, ctx: Record<string, unknown> = {}) =>
     ["events", "eligibility", eventId, normalize(ctx)] as const,
+
+  // Phase 6D — Operations Engine
+  adminOperationsDashboard: (projectId?: string | null) =>
+    ["admin", "operations", "dashboard", projectId ?? "all"] as const,
+  adminLeads: (filters: Record<string, unknown> = {}) =>
+    ["admin", "leads", normalize(filters)] as const,
+  adminLeadDetail: (leadId: string) => ["admin", "leads", "detail", leadId] as const,
+  adminLeadTimeline: (leadId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "leads", leadId, "timeline", normalize(filters)] as const,
+  adminRegistrations: (filters: Record<string, unknown> = {}) =>
+    ["admin", "registrations", normalize(filters)] as const,
+  adminRegistrationDetail: (registrationId: string) =>
+    ["admin", "registrations", "detail", registrationId] as const,
+  adminRegistrationTimeline: (registrationId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "registrations", registrationId, "timeline", normalize(filters)] as const,
+  adminCrmTasks: (filters: Record<string, unknown> = {}) =>
+    ["admin", "crm-tasks", normalize(filters)] as const,
+  myCrmTasks: (filters: Record<string, unknown> = {}) =>
+    ["crm-tasks", "mine", normalize(filters)] as const,
+  myOperationsWork: (filters: Record<string, unknown> = {}) =>
+    ["operations", "my-work", normalize(filters)] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;

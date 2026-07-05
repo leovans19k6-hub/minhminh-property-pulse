@@ -8,3 +8,5 @@ export * as registrationsService from "./registrations.service";
 export * as favoritesService from "./favorites.service";
 export * as notificationsService from "./notifications.service";
 export * as realtimeService from "./realtime.service";
+export * as operationsService from "./operations.service";
+export * as adminOperationsService from "./admin/operations.service";

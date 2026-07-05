@@ -25,12 +25,18 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
+import { Route as AdminRegistrationsRouteImport } from './routes/admin.registrations'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
+import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminInventoryTemplatesRouteImport } from './routes/admin.inventory-templates'
 import { Route as AdminDevelopersRouteImport } from './routes/admin.developers'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
+import { Route as AdminRegistrationsRegistrationIdRouteImport } from './routes/admin.registrations.$registrationId'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
 import { Route as AdminProjectsProjectIdRouteImport } from './routes/admin.projects.$projectId'
+import { Route as AdminLeadsLeadIdRouteImport } from './routes/admin.leads.$leadId'
 import { Route as AdminInventoryTemplatesTemplateIdRouteImport } from './routes/admin.inventory-templates.$templateId'
 import { Route as AdminProjectsProjectIdEditRouteImport } from './routes/admin.projects.$projectId.edit'
 import { Route as AdminProjectsProjectIdVouchersVoucherIdRouteImport } from './routes/admin.projects.$projectId.vouchers.$voucherId'
@@ -118,9 +124,29 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTasksRoute = AdminTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRegistrationsRoute = AdminRegistrationsRouteImport.update({
+  id: '/registrations',
+  path: '/registrations',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOperationsRoute = AdminOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminInventoryTemplatesRoute = AdminInventoryTemplatesRouteImport.update({
@@ -138,6 +164,12 @@ const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
   path: '/$userId',
   getParentRoute: () => AdminUsersRoute,
 } as any)
+const AdminRegistrationsRegistrationIdRoute =
+  AdminRegistrationsRegistrationIdRouteImport.update({
+    id: '/$registrationId',
+    path: '/$registrationId',
+    getParentRoute: () => AdminRegistrationsRoute,
+  } as any)
 const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -147,6 +179,11 @@ const AdminProjectsProjectIdRoute = AdminProjectsProjectIdRouteImport.update({
   id: '/$projectId',
   path: '/$projectId',
   getParentRoute: () => AdminProjectsRoute,
+} as any)
+const AdminLeadsLeadIdRoute = AdminLeadsLeadIdRouteImport.update({
+  id: '/$leadId',
+  path: '/$leadId',
+  getParentRoute: () => AdminLeadsRoute,
 } as any)
 const AdminInventoryTemplatesTemplateIdRoute =
   AdminInventoryTemplatesTemplateIdRouteImport.update({
@@ -200,14 +237,20 @@ export interface FileRoutesByFullPath {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/leads': typeof AdminLeadsRouteWithChildren
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
+  '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
+  '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
   '/admin/projects/$projectId': typeof AdminProjectsProjectIdRouteWithChildren
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/registrations/$registrationId': typeof AdminRegistrationsRegistrationIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
   '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -229,14 +272,20 @@ export interface FileRoutesByTo {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/leads': typeof AdminLeadsRouteWithChildren
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
+  '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
+  '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
   '/admin/projects/$projectId': typeof AdminProjectsProjectIdRouteWithChildren
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/registrations/$registrationId': typeof AdminRegistrationsRegistrationIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
   '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -260,14 +309,20 @@ export interface FileRoutesById {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/leads': typeof AdminLeadsRouteWithChildren
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
+  '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
+  '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
   '/admin/projects/$projectId': typeof AdminProjectsProjectIdRouteWithChildren
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/registrations/$registrationId': typeof AdminRegistrationsRegistrationIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
   '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -292,14 +347,20 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/leads'
+    | '/admin/operations'
     | '/admin/projects'
+    | '/admin/registrations'
+    | '/admin/tasks'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
+    | '/admin/leads/$leadId'
     | '/admin/projects/$projectId'
     | '/admin/projects/new'
+    | '/admin/registrations/$registrationId'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
     | '/admin/projects/$projectId/events/$eventId'
@@ -321,14 +382,20 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/leads'
+    | '/admin/operations'
     | '/admin/projects'
+    | '/admin/registrations'
+    | '/admin/tasks'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
     | '/admin'
     | '/admin/inventory-templates/$templateId'
+    | '/admin/leads/$leadId'
     | '/admin/projects/$projectId'
     | '/admin/projects/new'
+    | '/admin/registrations/$registrationId'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
     | '/admin/projects/$projectId/events/$eventId'
@@ -351,14 +418,20 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/leads'
+    | '/admin/operations'
     | '/admin/projects'
+    | '/admin/registrations'
+    | '/admin/tasks'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
+    | '/admin/leads/$leadId'
     | '/admin/projects/$projectId'
     | '/admin/projects/new'
+    | '/admin/registrations/$registrationId'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
     | '/admin/projects/$projectId/events/$eventId'
@@ -497,11 +570,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/tasks': {
+      id: '/admin/tasks'
+      path: '/tasks'
+      fullPath: '/admin/tasks'
+      preLoaderRoute: typeof AdminTasksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/registrations': {
+      id: '/admin/registrations'
+      path: '/registrations'
+      fullPath: '/admin/registrations'
+      preLoaderRoute: typeof AdminRegistrationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/projects': {
       id: '/admin/projects'
       path: '/projects'
       fullPath: '/admin/projects'
       preLoaderRoute: typeof AdminProjectsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/operations': {
+      id: '/admin/operations'
+      path: '/operations'
+      fullPath: '/admin/operations'
+      preLoaderRoute: typeof AdminOperationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/inventory-templates': {
@@ -525,6 +626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersUserIdRouteImport
       parentRoute: typeof AdminUsersRoute
     }
+    '/admin/registrations/$registrationId': {
+      id: '/admin/registrations/$registrationId'
+      path: '/$registrationId'
+      fullPath: '/admin/registrations/$registrationId'
+      preLoaderRoute: typeof AdminRegistrationsRegistrationIdRouteImport
+      parentRoute: typeof AdminRegistrationsRoute
+    }
     '/admin/projects/new': {
       id: '/admin/projects/new'
       path: '/new'
@@ -538,6 +646,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/projects/$projectId'
       preLoaderRoute: typeof AdminProjectsProjectIdRouteImport
       parentRoute: typeof AdminProjectsRoute
+    }
+    '/admin/leads/$leadId': {
+      id: '/admin/leads/$leadId'
+      path: '/$leadId'
+      fullPath: '/admin/leads/$leadId'
+      preLoaderRoute: typeof AdminLeadsLeadIdRouteImport
+      parentRoute: typeof AdminLeadsRoute
     }
     '/admin/inventory-templates/$templateId': {
       id: '/admin/inventory-templates/$templateId'
@@ -599,6 +714,18 @@ const AdminInventoryTemplatesRouteWithChildren =
     AdminInventoryTemplatesRouteChildren,
   )
 
+interface AdminLeadsRouteChildren {
+  AdminLeadsLeadIdRoute: typeof AdminLeadsLeadIdRoute
+}
+
+const AdminLeadsRouteChildren: AdminLeadsRouteChildren = {
+  AdminLeadsLeadIdRoute: AdminLeadsLeadIdRoute,
+}
+
+const AdminLeadsRouteWithChildren = AdminLeadsRoute._addFileChildren(
+  AdminLeadsRouteChildren,
+)
+
 interface AdminProjectsProjectIdRouteChildren {
   AdminProjectsProjectIdEditRoute: typeof AdminProjectsProjectIdEditRoute
   AdminProjectsProjectIdEventsEventIdRoute: typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -639,6 +766,17 @@ const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
   AdminProjectsRouteChildren,
 )
 
+interface AdminRegistrationsRouteChildren {
+  AdminRegistrationsRegistrationIdRoute: typeof AdminRegistrationsRegistrationIdRoute
+}
+
+const AdminRegistrationsRouteChildren: AdminRegistrationsRouteChildren = {
+  AdminRegistrationsRegistrationIdRoute: AdminRegistrationsRegistrationIdRoute,
+}
+
+const AdminRegistrationsRouteWithChildren =
+  AdminRegistrationsRoute._addFileChildren(AdminRegistrationsRouteChildren)
+
 interface AdminUsersRouteChildren {
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
 }
@@ -654,7 +792,11 @@ const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminDevelopersRoute: typeof AdminDevelopersRoute
   AdminInventoryTemplatesRoute: typeof AdminInventoryTemplatesRouteWithChildren
+  AdminLeadsRoute: typeof AdminLeadsRouteWithChildren
+  AdminOperationsRoute: typeof AdminOperationsRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
+  AdminRegistrationsRoute: typeof AdminRegistrationsRouteWithChildren
+  AdminTasksRoute: typeof AdminTasksRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -662,7 +804,11 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDevelopersRoute: AdminDevelopersRoute,
   AdminInventoryTemplatesRoute: AdminInventoryTemplatesRouteWithChildren,
+  AdminLeadsRoute: AdminLeadsRouteWithChildren,
+  AdminOperationsRoute: AdminOperationsRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
+  AdminRegistrationsRoute: AdminRegistrationsRouteWithChildren,
+  AdminTasksRoute: AdminTasksRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }

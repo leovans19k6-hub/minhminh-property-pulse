@@ -53,3 +53,18 @@ Gate rows:
 | Voucher regression after shared lead helper refactor | NOT EXECUTED |
 
 Phase 6C.1 does **not** promote any module to production-verified. The additive migration is safe (no schema change, no data migration, RPC signatures unchanged), but all gates above must run green before flipping the release status.
+
+## Phase 6D addition (Operations Engine)
+
+Phase 6D adds Leads CRM + Registration Operations + CRM Tasks + Activity Timeline + Review + Bulk Assignment + Operations Dashboard + My Work foundation. Additive migration only; existing modules remain in their prior verification state.
+
+| Gate | Status |
+| --- | --- |
+| Phase 6C.1 gates (functional / RLS / concurrency / UI / voucher regression) | NOT EXECUTED |
+| Phase 6D functional SQL tests (`supabase/tests/phase_6d_operations.sql`) | NOT EXECUTED |
+| Phase 6D RLS regression (`supabase/tests/phase_6d_operations_rls.sql`) | NOT EXECUTED |
+| Phase 6D bulk / atomicity tests (`supabase/tests/phase_6d_operations_bulk.sql`) | NOT EXECUTED |
+| Phase 6D UI regression (Operations / Leads / Registrations / Tasks) | NOT EXECUTED |
+| Voucher & Event registration regression after Operations layer | NOT EXECUTED |
+
+Phase 6D implementation does **not** make any prior module production-verified. The additive migration is safe (new tables, expanded CHECK sets, additive columns, no destructive change to existing RPCs). All gates above must run green before flipping the release status.

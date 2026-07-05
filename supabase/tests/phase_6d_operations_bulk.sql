@@ -1,0 +1,24 @@
+-- Phase 6D — Bulk assignment atomicity.
+-- Documented scenarios (require multi-user authenticated fixtures; NOT EXECUTED):
+--
+-- Scenario A — Bulk assign leads happy path
+--   Given 5 leads all in project P and assignee U eligible for P.
+--   When bulk_assign_leads(ARRAY[5 ids], U) is called by a project manager on P
+--   Then affected = 5 and every lead.assigned_to = U.
+--
+-- Scenario B — Bulk assign leads across projects with assignee NOT eligible for one
+--   Given 3 leads: 2 in P, 1 in Q; assignee eligible only for P.
+--   When bulk_assign_leads(ARRAY[3 ids], U)
+--   Then RPC raises 'invalid_assignee' and NO lead is updated (transactional rollback).
+--
+-- Scenario C — Bulk assign leads exceeding cap
+--   Given 101 lead ids.
+--   Then RPC raises 'too_many_bulk_rows'.
+--
+-- Scenario D — Bulk assign registrations happy path
+--   Same as A but for registrations.
+--
+-- Scenario E — Bulk assign registrations cross-project with permission_denied on one row
+--   Manager only manages P; array contains one Q row → RPC raises 'permission_denied', nothing updated.
+--
+-- These require multiple project fixtures and authenticated JWTs. Status: NOT EXECUTED.

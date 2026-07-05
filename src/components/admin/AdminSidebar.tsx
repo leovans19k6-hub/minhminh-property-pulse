@@ -12,6 +12,9 @@ import {
   FileClock,
   Factory,
   LayoutTemplate,
+  ListChecks,
+  ClipboardList,
+  Activity,
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,6 +39,12 @@ export function AdminSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const overview: Item[] = [{ to: "/admin", label: "Bảng điều khiển", icon: LayoutDashboard }];
+  const operations: Item[] = [
+    { to: "/admin/operations", label: "Vận hành", icon: Activity },
+    { to: "/admin/leads", label: "Khách hàng tiềm năng", icon: UserSquare2 },
+    { to: "/admin/registrations", label: "Đăng ký", icon: ClipboardList },
+    { to: "/admin/tasks", label: "Công việc", icon: ListChecks },
+  ];
   const system: Item[] = [];
   if (canReadUsers(currentUser)) {
     system.push({ to: "/admin/users", label: "Người dùng", icon: Users });
@@ -54,7 +63,6 @@ export function AdminSidebar() {
     { to: "/admin", label: "Chính sách", icon: ScrollText, disabled: true },
     { to: "/admin", label: "Voucher", icon: Ticket, disabled: true },
     { to: "/admin", label: "Sự kiện", icon: CalendarDays, disabled: true },
-    { to: "/admin", label: "Khách hàng", icon: UserSquare2, disabled: true },
     { to: "/admin", label: "Báo cáo", icon: BarChart3, disabled: true },
     { to: "/admin", label: "Nhật ký hệ thống", icon: FileClock, disabled: true },
   ];
@@ -103,6 +111,7 @@ export function AdminSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         {renderGroup("Tổng quan", overview)}
+        {renderGroup("Vận hành", operations)}
         {system.length > 0 && renderGroup("Quản trị hệ thống", system)}
         {renderGroup("Dự án", projectMgmt)}
         {renderGroup("Sắp phát triển", comingSoon)}

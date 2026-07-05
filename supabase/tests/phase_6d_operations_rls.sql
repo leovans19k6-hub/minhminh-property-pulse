@@ -1,0 +1,24 @@
+-- Phase 6D — RLS regression. Requires an authenticated session (SET role authenticated + JWT claims);
+-- documented scenarios executed only inside a test harness that can mint a Supabase JWT.
+--
+-- Direct client writes MUST be denied:
+--   INSERT INTO public.crm_activities (...)  → RLS violation
+--   UPDATE public.crm_activities SET title=$1 → RLS violation
+--   INSERT INTO public.crm_tasks (...)        → RLS violation
+--   UPDATE public.crm_tasks SET status=$1     → RLS violation
+--   INSERT INTO public.registration_reviews   → RLS violation
+--
+-- All mutations must go through SECURITY DEFINER RPCs:
+--   create_crm_activity, create_crm_task, assign_crm_task, start/complete/cancel_crm_task,
+--   assign_lead, transition_lead_status, convert_lead, mark_lead_lost, reopen_lead,
+--   assign_registration, transition_registration_status, review_registration,
+--   bulk_assign_leads, bulk_assign_registrations.
+--
+-- Additional scenarios (must run with two distinct authenticated JWTs):
+--   - Salesperson A cannot read lead assigned to Salesperson B (unless same project manager scope).
+--   - Project manager can read all leads/registrations in their project.
+--   - System director/admin/super_admin cross-project.
+--   - Anon calls to any RPC → SQL error "permission denied for function ...".
+--   - Inactive user (profiles.status<>'active') → RPC raises 'inactive_user' or 'permission_denied'.
+--
+-- Status: NOT EXECUTED. Requires JWT harness.
