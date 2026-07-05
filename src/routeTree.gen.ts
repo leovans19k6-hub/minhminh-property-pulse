@@ -34,6 +34,7 @@ import { Route as AdminProjectsProjectIdRouteImport } from './routes/admin.proje
 import { Route as AdminInventoryTemplatesTemplateIdRouteImport } from './routes/admin.inventory-templates.$templateId'
 import { Route as AdminProjectsProjectIdEditRouteImport } from './routes/admin.projects.$projectId.edit'
 import { Route as AdminProjectsProjectIdProductsProductIdRouteImport } from './routes/admin.projects.$projectId.products.$productId'
+import { Route as AdminProjectsProjectIdPoliciesPolicyIdRouteImport } from './routes/admin.projects.$projectId.policies.$policyId'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -163,6 +164,12 @@ const AdminProjectsProjectIdProductsProductIdRoute =
     path: '/products/$productId',
     getParentRoute: () => AdminProjectsProjectIdRoute,
   } as any)
+const AdminProjectsProjectIdPoliciesPolicyIdRoute =
+  AdminProjectsProjectIdPoliciesPolicyIdRouteImport.update({
+    id: '/policies/$policyId',
+    path: '/policies/$policyId',
+    getParentRoute: () => AdminProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/policies/$policyId': typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 export interface FileRoutesByTo {
@@ -215,6 +223,7 @@ export interface FileRoutesByTo {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/policies/$policyId': typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 export interface FileRoutesById {
@@ -243,6 +252,7 @@ export interface FileRoutesById {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/policies/$policyId': typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 export interface FileRouteTypes {
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/policies/$policyId'
     | '/admin/projects/$projectId/products/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/policies/$policyId'
     | '/admin/projects/$projectId/products/$productId'
   id:
     | '__root__'
@@ -325,6 +337,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/policies/$policyId'
     | '/admin/projects/$projectId/products/$productId'
   fileRoutesById: FileRoutesById
 }
@@ -521,6 +534,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsProjectIdProductsProductIdRouteImport
       parentRoute: typeof AdminProjectsProjectIdRoute
     }
+    '/admin/projects/$projectId/policies/$policyId': {
+      id: '/admin/projects/$projectId/policies/$policyId'
+      path: '/policies/$policyId'
+      fullPath: '/admin/projects/$projectId/policies/$policyId'
+      preLoaderRoute: typeof AdminProjectsProjectIdPoliciesPolicyIdRouteImport
+      parentRoute: typeof AdminProjectsProjectIdRoute
+    }
   }
 }
 
@@ -541,12 +561,15 @@ const AdminInventoryTemplatesRouteWithChildren =
 
 interface AdminProjectsProjectIdRouteChildren {
   AdminProjectsProjectIdEditRoute: typeof AdminProjectsProjectIdEditRoute
+  AdminProjectsProjectIdPoliciesPolicyIdRoute: typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   AdminProjectsProjectIdProductsProductIdRoute: typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 
 const AdminProjectsProjectIdRouteChildren: AdminProjectsProjectIdRouteChildren =
   {
     AdminProjectsProjectIdEditRoute: AdminProjectsProjectIdEditRoute,
+    AdminProjectsProjectIdPoliciesPolicyIdRoute:
+      AdminProjectsProjectIdPoliciesPolicyIdRoute,
     AdminProjectsProjectIdProductsProductIdRoute:
       AdminProjectsProjectIdProductsProductIdRoute,
   }
