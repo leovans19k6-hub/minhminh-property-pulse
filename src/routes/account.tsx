@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   Heart,
   ClipboardList,
@@ -7,9 +7,11 @@ import {
   Settings,
   LogOut,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { MobileShell } from "@/components/mobile/MobileShell";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/account")({
   component: AccountPage,
@@ -30,24 +32,75 @@ const items = [
 ];
 
 function AccountPage() {
+  const navigate = useNavigate();
+  const { currentUser, signOut } = useAuth();
+  const profile = currentUser?.profile;
+  const initials =
+    (profile?.full_name ?? currentUser?.email ?? "MM")
+      .split(" ")
+      .map((s) => s[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "MM";
+  const primaryRole = currentUser?.systemRoles[0] ?? "Nhân viên";
+
+  async function handleLogout() {
+    await signOut();
+    void navigate({ to: "/login", replace: true });
+  }
+
   return (
     <MobileShell title="Tài khoản">
       <div className="space-y-4 p-4">
         <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
           <Avatar className="h-14 w-14 border border-border">
+            {profile?.avatar_url && <AvatarImage src={profile.avatar_url} />}
             <AvatarFallback className="bg-[var(--brand-navy)] text-primary-foreground">
-              MM
+              {initials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">Chuyên viên Kinh doanh</p>
+            <p className="truncate text-sm font-semibold">
+              {profile?.full_name ?? currentUser?.email ?? "Người dùng"}
+            </p>
             <p className="truncate text-xs text-muted-foreground">
-              Minh Minh Group · Hải Phòng
+              {currentUser?.email ?? "—"}
             </p>
           </div>
           <span className="rounded-full bg-[var(--brand-gold)]/20 px-2 py-1 text-[10px] font-semibold text-[var(--brand-navy)]">
-            Sale
+            {primaryRole}
           </span>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-4 text-xs">
+          <p className="mb-2 flex items-center gap-1.5 font-semibold text-[var(--brand-navy)]">
+            <ShieldCheck className="h-3.5 w-3.5" /> Thông tin tài khoản
+          </p>
+          <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-muted-foreground">
+            <dt>Số điện thoại</dt>
+            <dd className="text-right text-foreground">{profile?.phone ?? "—"}</dd>
+            <dt>Mã nhân viên</dt>
+            <dd className="text-right text-foreground">{profile?.employee_code ?? "—"}</dd>
+            <dt>Chi nhánh</dt>
+            <dd className="text-right text-foreground">{profile?.branch ?? "—"}</dd>
+            <dt>Phòng ban</dt>
+            <dd className="text-right text-foreground">{profile?.department ?? "—"}</dd>
+            <dt>Chức vụ</dt>
+            <dd className="text-right text-foreground">{profile?.position ?? "—"}</dd>
+            <dt>Trạng thái</dt>
+            <dd className="text-right text-foreground">
+              {currentUser?.isActive ? "Hoạt động" : "Ngưng hoạt động"}
+            </dd>
+            <dt>Vai trò hệ thống</dt>
+            <dd className="text-right text-foreground">
+              {currentUser?.systemRoles.length ? currentUser.systemRoles.join(", ") : "—"}
+            </dd>
+            <dt>Dự án tham gia</dt>
+            <dd className="text-right text-foreground">
+              {currentUser?.projectMemberships.length ?? 0}
+            </dd>
+          </dl>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -69,6 +122,7 @@ function AccountPage() {
 
         <button
           type="button"
+          onClick={() => void handleLogout()}
           className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-destructive"
         >
           <LogOut className="h-4 w-4" /> Đăng xuất

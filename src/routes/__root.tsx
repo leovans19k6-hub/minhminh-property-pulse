@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -11,6 +12,14 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "@/features/auth/AuthProvider";
+import { AuthGuard } from "@/features/auth/guards";
+
+const PUBLIC_ROUTES = new Set<string>([
+  "/login",
+  "/forgot-password",
+  "/reset-password",
+]);
 
 function NotFoundComponent() {
   return (
@@ -131,8 +140,20 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider>
+        <RouteGate />
+      </AuthProvider>
     </QueryClientProvider>
+  );
+}
+
+function RouteGate() {
+  const location = useLocation();
+  const isPublic = PUBLIC_ROUTES.has(location.pathname);
+  if (isPublic) return <Outlet />;
+  return (
+    <AuthGuard>
+      <Outlet />
+    </AuthGuard>
   );
 }
