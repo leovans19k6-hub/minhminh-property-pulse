@@ -103,3 +103,14 @@ Existing warnings in the security linter (0011 / 0028 / 0029) remain acknowledge
 - `_task_access(uuid)` — internal permission accessor.
 
 All Phase 6D user-facing RPCs are `SECURITY DEFINER SET search_path = public`; direct writes to `crm_activities`, `crm_tasks`, `registration_reviews` are denied at RLS (no write policies). `bulk_assign_leads` / `bulk_assign_registrations` cap at 100 rows and validate the assignee per project before any UPDATE.
+
+## Phase 6D.1 additions
+
+### Authenticated + service_role (REVOKE anon)
+- `search_assignable_users(uuid, text, text, int)`
+- `search_bulk_assignable_users(uuid[], text, text, int)`
+
+### Internal only (REVOKE PUBLIC, anon, authenticated; GRANT service_role)
+- `validate_operations_registration_transition(uuid, text, text)` — canonical domain gate reused by `transition_registration_status` and `review_registration`.
+
+`bulk_assign_leads(uuid[], uuid)` and `bulk_assign_registrations(uuid[], uuid)` keep the same grant set (`authenticated + service_role`, `PUBLIC/anon` revoked) but now return a stable JSONB contract `{requested_count, changed_count, unchanged_count, affected_ids}` and never partially apply on failure.

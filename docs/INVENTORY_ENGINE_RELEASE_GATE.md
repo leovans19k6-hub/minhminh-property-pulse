@@ -68,3 +68,23 @@ Phase 6D adds Leads CRM + Registration Operations + CRM Tasks + Activity Timelin
 | Voucher & Event registration regression after Operations layer | NOT EXECUTED |
 
 Phase 6D implementation does **not** make any prior module production-verified. The additive migration is safe (new tables, expanded CHECK sets, additive columns, no destructive change to existing RPCs). All gates above must run green before flipping the release status.
+
+## Phase 6D.1 addition (Operations verification + hardening)
+
+Phase 6D.1 is an additive hardening pass: `search_assignable_users` / `search_bulk_assignable_users` RPCs, canonical `validate_operations_registration_transition` gate on `transition_registration_status` + `review_registration`, and the standardised `{requested_count, changed_count, unchanged_count, affected_ids}` contract for bulk assignment RPCs. No schema breakage.
+
+| Gate | Status |
+| --- | --- |
+| Assignment Authorization Tests (`supabase/tests/phase_6d_operations.sql`, extended templates) | NOT EXECUTED |
+| Registration Domain Transition Tests (voucher/event cancel + complete rejected; accept re-validated) | NOT EXECUTED |
+| Bulk Lead Assignment Tests (`supabase/tests/phase_6d_operations_bulk.sql`) | NOT EXECUTED |
+| Bulk Registration Assignment Tests (`supabase/tests/phase_6d_operations_bulk.sql`) | NOT EXECUTED |
+| Operations Multi-JWT RLS Tests (`supabase/tests/phase_6d_operations_rls.sql`) | NOT EXECUTED |
+| Legacy Voucher Registration Regression | NOT EXECUTED |
+| Legacy Voucher Cancellation Regression | NOT EXECUTED |
+| Legacy Event Registration Regression | NOT EXECUTED |
+| Legacy Event Cancellation Regression | NOT EXECUTED |
+| Operations UI Regression (dashboard / leads / registrations / tasks / detail dialogs) | NOT EXECUTED |
+| Assignable User Picker UI (single + bulk multi-project, debounce/loading/empty/error) | NOT EXECUTED |
+
+Phase 6D.1 does **not** promote any module to production-verified. All gates above must run green before flipping any module's release status.

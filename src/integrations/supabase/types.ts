@@ -3899,6 +3899,24 @@ export type Database = {
         Args: { p_fields: Json; p_view_id: string }
         Returns: number
       }
+      search_assignable_users: {
+        Args: {
+          p_limit?: number
+          p_project_id: string
+          p_query?: string
+          p_target_type: string
+        }
+        Returns: Json
+      }
+      search_bulk_assignable_users: {
+        Args: {
+          p_limit?: number
+          p_project_ids: string[]
+          p_query?: string
+          p_target_type: string
+        }
+        Returns: Json
+      }
       search_crm_tasks: {
         Args: {
           p_assigned_to?: string
@@ -4187,6 +4205,14 @@ export type Database = {
         Returns: undefined
       }
       validate_inventory_view: { Args: { p_view_id: string }; Returns: Json }
+      validate_operations_registration_transition: {
+        Args: {
+          p_new_status: string
+          p_operation: string
+          p_registration_id: string
+        }
+        Returns: undefined
+      }
       validate_policy_applicability: {
         Args: {
           p_product_ids: string[]

@@ -181,6 +181,18 @@ export const queryKeys = {
     ["crm-tasks", "mine", normalize(filters)] as const,
   myOperationsWork: (filters: Record<string, unknown> = {}) =>
     ["operations", "my-work", normalize(filters)] as const,
+
+  // Phase 6D.1 — assignable-user pickers
+  assignableUsers: (projectId: string, targetType: string, query?: string | null) =>
+    ["ops", "assignable-users", projectId, targetType, (query ?? "").toLowerCase()] as const,
+  bulkAssignableUsers: (projectIds: string[], targetType: string, query?: string | null) =>
+    [
+      "ops",
+      "bulk-assignable-users",
+      Array.from(new Set(projectIds)).sort(),
+      targetType,
+      (query ?? "").toLowerCase(),
+    ] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;

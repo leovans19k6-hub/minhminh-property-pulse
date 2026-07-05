@@ -39,7 +39,11 @@ function LeadsPage() {
 
   const bulkMut = useMutation({
     mutationFn: (assignedTo: string | null) => bulkAssignLeads(Array.from(selected), assignedTo),
-    onSuccess: (r) => { toast.success(`Đã phân công ${r.affected} lead`); setSelected(new Set()); qc.invalidateQueries({ queryKey: ["admin", "leads"] }); },
+    onSuccess: (r) => {
+      toast.success(`Đã phân công ${r.changed_count}/${r.requested_count} lead` + (r.unchanged_count ? ` (${r.unchanged_count} không đổi)` : ""));
+      setSelected(new Set());
+      qc.invalidateQueries({ queryKey: ["admin", "leads"] });
+    },
     onError: (e) => toast.error(mapOpsError(e)),
   });
 
@@ -96,7 +100,15 @@ function LeadsPage() {
             </tbody>
           </table>}
       </CardContent></Card>
-      <AssignmentDialog open={bulkOpen} onOpenChange={setBulkOpen} onAssign={async (u) => { await bulkMut.mutateAsync(u); }} title={`Phân công ${selected.size} lead`} />
+      <AssignmentDialog
+        open={bulkOpen}
+        onOpenChange={setBulkOpen}
+        targetType="lead"
+        projectIds={Array.from(new Set((q.data ?? []).filter((l) => selected.has(l.id)).map((l) => l.interested_project_id).filter((p): p is string => !!p)))}
+        onAssign={async (u) => { await bulkMut.mutateAsync(u); }}
+        title={`Phân công ${selected.size} lead`}
+        selectionCount={selected.size}
+      />
     </div>
   );
 }

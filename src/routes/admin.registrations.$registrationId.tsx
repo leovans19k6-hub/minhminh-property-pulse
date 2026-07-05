@@ -45,7 +45,13 @@ function RegistrationDetailPage() {
   });
 
   const r = detail.data?.registration;
-  const allowed = detail.data?.allowed_transitions ?? [];
+  const domain = detail.data?.domain;
+  // Phase 6D.1 — hide generic Cancel/Complete for domain-owned registrations.
+  const allowed = (detail.data?.allowed_transitions ?? []).filter((s) => {
+    if ((domain === "VOUCHER" || domain === "EVENT") && (s === "cancelled" || s === "completed")) return false;
+    return true;
+  });
+  const reviewable = r ? ["new", "in_progress"].includes(String(r.status)) : false;
 
   return (
     <div className="space-y-6">
@@ -71,9 +77,16 @@ function RegistrationDetailPage() {
               <Button size="sm" disabled={!tsel} onClick={() => transMut.mutate(tsel)}>Chuyển</Button>
             </CardContent></Card>
             <Card><CardHeader><CardTitle className="text-sm">Duyệt</CardTitle></CardHeader><CardContent className="flex flex-wrap gap-2">
-              <Button size="sm" onClick={() => reviewMut.mutate({ decision: "accept" })}>Duyệt</Button>
-              <Button size="sm" variant="destructive" onClick={() => { const n = window.prompt("Lý do từ chối?") ?? undefined; reviewMut.mutate({ decision: "reject", note: n }); }}>Từ chối</Button>
-              <Button size="sm" variant="outline" onClick={() => { const n = window.prompt("Yêu cầu bổ sung?") ?? undefined; reviewMut.mutate({ decision: "request_more_info", note: n }); }}>Yêu cầu bổ sung</Button>
+              {reviewable ? (<>
+                <Button size="sm" onClick={() => reviewMut.mutate({ decision: "accept" })}>Duyệt</Button>
+                <Button size="sm" variant="destructive" onClick={() => { const n = window.prompt("Lý do từ chối?") ?? undefined; reviewMut.mutate({ decision: "reject", note: n }); }}>Từ chối</Button>
+                <Button size="sm" variant="outline" onClick={() => { const n = window.prompt("Yêu cầu bổ sung?") ?? undefined; reviewMut.mutate({ decision: "request_more_info", note: n }); }}>Yêu cầu bổ sung</Button>
+              </>) : <span className="text-xs text-muted-foreground">Đăng ký không ở trạng thái duyệt.</span>}
+              {(domain === "VOUCHER" || domain === "EVENT") && (
+                <p className="mt-2 w-full text-[11px] text-muted-foreground">
+                  Hủy/hoàn tất phải dùng luồng {domain === "VOUCHER" ? "voucher" : "sự kiện"} chuyên dụng.
+                </p>
+              )}
             </CardContent></Card>
             <Card><CardHeader><CardTitle className="text-sm">Khách hàng</CardTitle></CardHeader><CardContent className="text-sm">
               {detail.data?.lead ? (<><div className="font-medium">{detail.data.lead.full_name}</div><div className="text-xs text-muted-foreground">{detail.data.lead.phone}</div></>) : "—"}
@@ -120,7 +133,14 @@ function RegistrationDetailPage() {
           </Tabs>
         </>
       )}
-      <AssignmentDialog open={assignOpen} onOpenChange={setAssignOpen} currentAssignee={r?.assigned_to as string | null} onAssign={async (u) => { await assignMut.mutateAsync(u); }} />
+      <AssignmentDialog
+        open={assignOpen}
+        onOpenChange={setAssignOpen}
+        targetType="registration"
+        projectId={(r?.project_id as string | null) ?? null}
+        currentAssignee={r?.assigned_to as string | null}
+        onAssign={async (u) => { await assignMut.mutateAsync(u); }}
+      />
       <ActivityDialog open={actOpen} onOpenChange={setActOpen} onSubmit={async (v) => {
         try { await createCrmActivity({ registrationId, activityType: v.activityType, title: v.title, content: v.content }); toast.success("Đã thêm hoạt động"); invalidate(); }
         catch (e) { toast.error(mapOpsError(e)); }
