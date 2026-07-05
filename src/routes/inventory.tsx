@@ -18,6 +18,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { InventoryFilterSheet } from "@/components/mobile/inventory/InventoryFilterSheet";
 import { InventoryActiveFilters } from "@/components/mobile/inventory/InventoryActiveFilters";
 import { InventoryListSkeleton } from "@/components/mobile/inventory/InventoryListSkeleton";
+import { ViewToggle, useViewMode } from "@/components/mobile/ViewToggle";
 import {
   countAdvancedFilters,
   emptyAdvancedDraft,
@@ -59,6 +60,7 @@ function InventoryPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/inventory" });
   const queryClient = useQueryClient();
+  const [view, setView] = useViewMode("mm.inventory.view", "list");
 
   // Debounced query
   const [qDraft, setQDraft] = useState(search.q ?? "");
@@ -254,6 +256,11 @@ function InventoryPage() {
                 {isFetchingNextPage && " · đang tải thêm..."}
               </p>
             )}
+            <ViewToggle
+              value={view}
+              onChange={setView}
+              className={showResultSummary ? "" : "ml-auto"}
+            />
           </div>
         </div>
         {activeAdvancedCount > 0 && (
@@ -309,10 +316,20 @@ function InventoryPage() {
       )}
 
       {hasProject && !isLoading && !isError && items.length > 0 && (
-        <div className="space-y-2.5 px-4 pb-4 pt-3">
-          {items.map((it) => (
-            <MobileInventoryCard key={it.product_id} item={it} />
-          ))}
+        <div className="px-4 pb-4 pt-3">
+          {view === "grid" ? (
+            <div className="grid grid-cols-2 gap-2.5">
+              {items.map((it) => (
+                <MobileInventoryCard key={it.product_id} item={it} variant="grid" />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {items.map((it) => (
+                <MobileInventoryCard key={it.product_id} item={it} />
+              ))}
+            </div>
+          )}
           {isFetchingNextPage && <MobileInlineLoader />}
           {hasNextPage && !isFetchingNextPage && (
             <Button
