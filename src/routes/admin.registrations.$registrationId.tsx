@@ -52,9 +52,6 @@ function RegistrationDetailPage() {
     return true;
   });
   const reviewable = r ? ["new", "in_progress"].includes(String(r.status)) : false;
-  const canReviewDomain = !(
-    (domain === "EVENT" || domain === "VOUCHER") && !reviewable
-  );
 
   return (
     <div className="space-y-6">
@@ -80,9 +77,16 @@ function RegistrationDetailPage() {
               <Button size="sm" disabled={!tsel} onClick={() => transMut.mutate(tsel)}>Chuyển</Button>
             </CardContent></Card>
             <Card><CardHeader><CardTitle className="text-sm">Duyệt</CardTitle></CardHeader><CardContent className="flex flex-wrap gap-2">
-              <Button size="sm" onClick={() => reviewMut.mutate({ decision: "accept" })}>Duyệt</Button>
-              <Button size="sm" variant="destructive" onClick={() => { const n = window.prompt("Lý do từ chối?") ?? undefined; reviewMut.mutate({ decision: "reject", note: n }); }}>Từ chối</Button>
-              <Button size="sm" variant="outline" onClick={() => { const n = window.prompt("Yêu cầu bổ sung?") ?? undefined; reviewMut.mutate({ decision: "request_more_info", note: n }); }}>Yêu cầu bổ sung</Button>
+              {reviewable ? (<>
+                <Button size="sm" onClick={() => reviewMut.mutate({ decision: "accept" })}>Duyệt</Button>
+                <Button size="sm" variant="destructive" onClick={() => { const n = window.prompt("Lý do từ chối?") ?? undefined; reviewMut.mutate({ decision: "reject", note: n }); }}>Từ chối</Button>
+                <Button size="sm" variant="outline" onClick={() => { const n = window.prompt("Yêu cầu bổ sung?") ?? undefined; reviewMut.mutate({ decision: "request_more_info", note: n }); }}>Yêu cầu bổ sung</Button>
+              </>) : <span className="text-xs text-muted-foreground">Đăng ký không ở trạng thái duyệt.</span>}
+              {(domain === "VOUCHER" || domain === "EVENT") && (
+                <p className="mt-2 w-full text-[11px] text-muted-foreground">
+                  Hủy/hoàn tất phải dùng luồng {domain === "VOUCHER" ? "voucher" : "sự kiện"} chuyên dụng.
+                </p>
+              )}
             </CardContent></Card>
             <Card><CardHeader><CardTitle className="text-sm">Khách hàng</CardTitle></CardHeader><CardContent className="text-sm">
               {detail.data?.lead ? (<><div className="font-medium">{detail.data.lead.full_name}</div><div className="text-xs text-muted-foreground">{detail.data.lead.phone}</div></>) : "—"}
