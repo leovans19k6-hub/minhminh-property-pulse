@@ -1,4 +1,5 @@
-import { Calendar, MapPin, Sparkles, Ticket } from "lucide-react";
+import { Calendar, ChevronRight, MapPin, Sparkles, Ticket } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type {
   MobileEventPreview,
   MobilePolicyPreview,
@@ -7,14 +8,27 @@ import type {
 import { SectionCard } from "@/components/mobile/SectionCard";
 import { formatVND, formatDate, formatDateTime } from "@/utils/format";
 
-export function PoliciesPreview({ items }: { items: MobilePolicyPreview[] }) {
+export function PoliciesPreview({
+  items,
+  productId,
+}: {
+  items: MobilePolicyPreview[];
+  productId?: string | null;
+}) {
   if (items.length === 0) return null;
   return (
     <SectionCard title="Chính sách áp dụng" padded={false}>
       <ul className="divide-y divide-border">
         {items.map((x) => (
-          <li key={x.id} className="space-y-1 px-4 py-3">
-            <div className="flex items-start gap-2">
+          <li key={x.id}>
+            <Link
+              to="/policies/$policyId"
+              params={{ policyId: x.id }}
+              search={productId ? { productId } : undefined}
+              className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 px-4 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
+            >
+              <div className="min-w-0 space-y-1">
+                <div className="flex items-start gap-2">
               {x.is_featured && (
                 <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-full bg-[color:var(--brand-gold-soft)] px-2 py-0.5 text-[10px] font-semibold text-[color:var(--brand-navy)]">
                   <Sparkles className="h-3 w-3" />
@@ -35,6 +49,12 @@ export function PoliciesPreview({ items }: { items: MobilePolicyPreview[] }) {
                 {x.effective_to ? `đến ${formatDate(x.effective_to)}` : ""}
               </p>
             )}
+              </div>
+              <ChevronRight
+                className="mt-1 h-4 w-4 shrink-0 text-[color:var(--text-tertiary)]"
+                aria-hidden
+              />
+            </Link>
           </li>
         ))}
       </ul>
