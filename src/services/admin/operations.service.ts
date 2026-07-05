@@ -31,6 +31,21 @@ const ERROR_MAP: Record<string, string> = {
   task_already_terminal: "Công việc đã ở trạng thái kết thúc.",
   too_many_bulk_rows: "Không quá 100 dòng cho thao tác hàng loạt.",
 };
+// Phase 6D.1 additions.
+Object.assign(ERROR_MAP, {
+  empty_bulk_input: "Danh sách chọn trống.",
+  invalid_target_type: "Loại đối tượng phân công không hợp lệ.",
+  invalid_project_set: "Danh sách dự án không hợp lệ.",
+  voucher_registration_use_domain_cancel: "Hủy đăng ký voucher phải dùng luồng voucher.",
+  voucher_registration_completion_not_supported: "Chưa hỗ trợ hoàn tất đăng ký voucher ở lớp vận hành.",
+  voucher_not_found: "Không tìm thấy voucher.",
+  voucher_archived: "Voucher đã lưu trữ.",
+  event_registration_use_domain_cancel: "Hủy đăng ký sự kiện phải dùng luồng sự kiện.",
+  event_registration_completion_not_supported: "Chưa hỗ trợ hoàn tất đăng ký sự kiện ở lớp vận hành.",
+  event_not_found: "Không tìm thấy sự kiện.",
+  event_archived: "Sự kiện đã lưu trữ.",
+  event_not_confirmable: "Sự kiện đã hủy hoặc kết thúc, không thể xác nhận.",
+});
 
 export function mapOpsError(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err ?? "");
@@ -125,7 +140,7 @@ export const reopenLead = (leadId: string, reason?: string | null) =>
   rpc<Record<string, unknown>>("reopen_lead", { p_lead_id: leadId, p_reason: reason ?? null });
 
 export const bulkAssignLeads = (leadIds: string[], assignedTo: string | null) =>
-  rpc<{ affected: number }>("bulk_assign_leads", { p_lead_ids: leadIds, p_assigned_to: assignedTo });
+  rpc<BulkAssignResult>("bulk_assign_leads", { p_lead_ids: leadIds, p_assigned_to: assignedTo });
 
 // ---------- Registrations ----------
 export interface RegistrationListRow {
@@ -171,7 +186,7 @@ export const reviewRegistration = (registrationId: string, decision: "accept" | 
   rpc<{ review_id: string; status: string }>("review_registration", { p_registration_id: registrationId, p_decision: decision, p_note: note ?? null });
 
 export const bulkAssignRegistrations = (ids: string[], assignedTo: string | null) =>
-  rpc<{ affected: number }>("bulk_assign_registrations", { p_registration_ids: ids, p_assigned_to: assignedTo });
+  rpc<BulkAssignResult>("bulk_assign_registrations", { p_registration_ids: ids, p_assigned_to: assignedTo });
 
 // ---------- Activities ----------
 export interface CrmActivity {
@@ -233,15 +248,51 @@ export const completeCrmTask = (id: string) => rpc<CrmTaskRow>("complete_crm_tas
 export const cancelCrmTask = (id: string, reason?: string | null) =>
   rpc<CrmTaskRow>("cancel_crm_task", { p_task_id: id, p_reason: reason ?? null });
 
-// ---------- Project members (for assignee pickers) ----------
-export async function listAssignableUsers(projectId: string | null): Promise<Array<{ id: string; full_name: string | null; email: string | null }>> {
-  // Global roles can be assigned regardless of project; project members are project-scoped.
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, full_name, status")
-    .eq("status", "active")
-    .limit(200);
-  if (error) throw new ServiceError(error.message, error);
-  void projectId; // server enforces project eligibility on assign
-  return (data ?? []).map((r) => ({ id: r.id as string, full_name: (r.full_name as string) ?? null, email: null }));
+// ---------- Phase 6D.1: assignable-user picker (server-authoritative) ----------
+export type AssignmentTargetType = "lead" | "registration" | "task";
+
+export interface AssignableUser {
+  user_id: string;
+  full_name: string | null;
+  email: string | null;
+  employee_code: string | null;
+  position: string | null;
+  branch: string | null;
+  department: string | null;
+  project_roles?: string[];
+  system_roles?: string[];
+}
+
+export const searchAssignableUsers = (
+  projectId: string,
+  targetType: AssignmentTargetType,
+  query?: string | null,
+  limit = 20,
+) =>
+  rpc<AssignableUser[]>("search_assignable_users", {
+    p_project_id: projectId,
+    p_target_type: targetType,
+    p_query: query ?? null,
+    p_limit: limit,
+  });
+
+export const searchBulkAssignableUsers = (
+  projectIds: string[],
+  targetType: AssignmentTargetType,
+  query?: string | null,
+  limit = 20,
+) =>
+  rpc<AssignableUser[]>("search_bulk_assignable_users", {
+    p_project_ids: Array.from(new Set(projectIds)).sort(),
+    p_target_type: targetType,
+    p_query: query ?? null,
+    p_limit: limit,
+  });
+
+// Stable bulk-assignment return contract (Phase 6D.1).
+export interface BulkAssignResult {
+  requested_count: number;
+  changed_count: number;
+  unchanged_count: number;
+  affected_ids: string[];
 }
