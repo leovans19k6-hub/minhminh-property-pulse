@@ -8,6 +8,7 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
+  LayoutDashboard,
 } from "lucide-react";
 import { MobileShell } from "@/components/mobile/MobileShell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -44,6 +45,9 @@ function AccountPage() {
       .join("")
       .toUpperCase() || "MM";
   const primaryRole = currentUser?.systemRoles[0] ?? "Nhân viên";
+  const canAccessAdmin = Boolean(
+    currentUser?.isSuperAdmin || currentUser?.isAdmin || currentUser?.isDirector,
+  );
 
   async function handleLogout() {
     await signOut();
@@ -102,6 +106,20 @@ function AccountPage() {
             </dd>
           </dl>
         </div>
+
+        {canAccessAdmin && (
+          <Link
+            to="/admin"
+            className="flex h-14 items-center gap-3 rounded-2xl border border-[var(--brand-gold)]/40 bg-[var(--brand-navy)] px-4 text-primary-foreground shadow-sm"
+          >
+            <LayoutDashboard className="h-5 w-5 text-[var(--brand-gold)]" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold">Trang quản trị</p>
+              <p className="text-[11px] opacity-80">Quản lý hệ thống & dữ liệu</p>
+            </div>
+            <ChevronRight className="h-4 w-4 opacity-80" />
+          </Link>
+        )}
 
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
           {items.map((it, i) => (
