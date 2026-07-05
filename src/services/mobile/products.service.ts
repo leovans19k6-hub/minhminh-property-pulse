@@ -196,10 +196,41 @@ function mapErr(msg: string): string {
   return "Không thể tải sản phẩm. Vui lòng thử lại.";
 }
 
+function assertProductDetailShape(v: unknown): asserts v is MobileProductDetail {
+  if (!v || typeof v !== "object") throw new ServiceError("Không thể tải sản phẩm. Vui lòng thử lại.");
+  const o = v as Record<string, unknown>;
+  const required = [
+    "product",
+    "project",
+    "media",
+    "price_options",
+    "custom_fields",
+    "price_history_summary",
+    "status_history_summary",
+    "applicable_policies",
+    "project_vouchers",
+    "upcoming_events",
+    "permissions",
+  ] as const;
+  for (const k of required) {
+    if (!(k in o)) throw new ServiceError("Dữ liệu sản phẩm không hợp lệ.");
+  }
+  const arrays = ["media", "price_options", "custom_fields", "applicable_policies", "project_vouchers", "upcoming_events"] as const;
+  for (const k of arrays) {
+    if (!Array.isArray(o[k])) throw new ServiceError("Dữ liệu sản phẩm không hợp lệ.");
+  }
+  const p = o.product as Record<string, unknown> | null;
+  if (!p || typeof p !== "object" || typeof p.id !== "string" || typeof p.project_id !== "string") {
+    throw new ServiceError("Dữ liệu sản phẩm không hợp lệ.");
+  }
+}
+
 export async function getMobileProductDetail(productId: string): Promise<MobileProductDetail> {
-  const res = await supabase.rpc("get_mobile_product_detail" as never, {
+  const res = await supabase.rpc("get_mobile_product_detail", {
     p_product_id: productId,
-  } as never);
+  });
   if (res.error) throw new ServiceError(mapErr(res.error.message), res.error);
-  return res.data as unknown as MobileProductDetail;
+  const data = res.data as unknown;
+  assertProductDetailShape(data);
+  return data;
 }
