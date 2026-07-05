@@ -43,7 +43,6 @@ export function MobileHeader({ title, greeting, left, right }: MobileHeaderProps
                 className="relative grid h-10 w-10 place-items-center rounded-full text-foreground hover:bg-muted"
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--brand-gold)]" />
               </Link>
               <Link to="/account" aria-label="Tài khoản">
                 <Avatar className="h-9 w-9 border border-border">
