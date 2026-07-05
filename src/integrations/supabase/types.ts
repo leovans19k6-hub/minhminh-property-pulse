@@ -1597,7 +1597,7 @@ export type Database = {
           note?: string | null
           product_id?: string | null
           project_id?: string | null
-          registration_code: string
+          registration_code?: string
           registration_type: string
           status?: string
           updated_at?: string
@@ -2008,9 +2008,16 @@ export type Database = {
       }
     }
     Functions: {
+      bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
+      generate_registration_code_value: { Args: never; Returns: string }
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
+      has_project_role: {
+        Args: { p_project_id: string; p_roles: string[] }
+        Returns: boolean
+      }
       has_role: { Args: { role_code: string }; Returns: boolean }
+      is_active_user: { Args: never; Returns: boolean }
       is_project_manager: { Args: { p_project_id: string }; Returns: boolean }
       is_project_member: { Args: { p_project_id: string }; Returns: boolean }
       normalize_phone: { Args: { phone: string }; Returns: string }
