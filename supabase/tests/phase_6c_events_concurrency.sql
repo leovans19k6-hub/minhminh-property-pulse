@@ -1,0 +1,59 @@
+-- Phase 6C.1 — Event concurrency scenarios.
+--
+-- Concurrency cannot be fully exercised inside a single psql transaction because
+-- `pg_advisory_xact_lock` is released only at commit/rollback of the OTHER session.
+-- Run these scenarios via TWO parallel psql sessions against a scratch database.
+--
+-- =========================================================
+-- SCENARIO 1 — LAST SLOT RACE (capacity = 1)
+-- =========================================================
+-- Session A and Session B are two authenticated users.
+-- 1. Both open a transaction.
+-- 2. Both call `register_for_event(<event_id>)`.
+-- 3. The advisory lock on hashtextextended(event_id, 43) serializes them.
+-- Expected: exactly one commits, the other raises `event_full` (SQLSTATE P0001).
+--
+-- Verification query (after both sessions complete):
+--   SELECT count(*) FROM public.registrations
+--    WHERE event_id = :event_id
+--      AND public.is_event_registration_type(registration_type)
+--      AND status IN ('new','in_progress','confirmed','completed');
+-- MUST return 1 (never 2).
+--
+-- =========================================================
+-- SCENARIO 2 — SAME USER CONCURRENT REGISTRATION (per_user_limit = 1)
+-- =========================================================
+-- Session A and Session B authenticated as the SAME user, capacity > 1.
+-- Both call `register_for_event(<event_id>)`.
+-- Expected: one succeeds, the other raises `event_user_limit_reached`
+-- or `duplicate_event_registration`.
+-- Verification: user counted registrations MUST equal 1.
+--
+-- =========================================================
+-- SCENARIO 3 — LEAD DEDUP CONCURRENCY (same normalized phone)
+-- =========================================================
+-- Two DIFFERENT users, same normalized phone (edge case allowed by business),
+-- concurrently call `register_for_event` (or `register_for_voucher`).
+-- Phase 6C.1 hardening: `get_or_create_registration_lead` acquires
+-- `pg_advisory_xact_lock(hashtextextended(normalized_phone, 91))` before the
+-- SELECT-then-INSERT, so only one INSERT happens per normalized phone.
+-- Verification:
+--   SELECT count(*) FROM public.leads
+--    WHERE normalized_phone = public.normalize_phone(<phone>);
+-- MUST NOT increase by more than 1 per parallel batch.
+--
+-- =========================================================
+-- SCENARIO 4 — ROLLBACK SAFETY
+-- =========================================================
+-- Simulate a registration insert failure AFTER lead creation:
+--   BEGIN;
+--   SAVEPOINT s1;
+--   -- force a failure inside register_for_event by breaking a downstream trigger,
+--   -- or by calling register_for_event on an event that becomes invalid mid-call.
+-- Expected: whole transaction rolls back; no orphan lead persists;
+-- registered_count unchanged; audit row absent.
+--
+-- =========================================================
+-- STATUS: NOT EXECUTED against production. Instructions only.
+-- =========================================================
+SELECT '[phase_6c_events_concurrency] documentation only — run manually with 2 sessions' AS status;
