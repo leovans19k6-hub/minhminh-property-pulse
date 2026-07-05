@@ -127,7 +127,7 @@ function ProjectsPage() {
             ) : view === "grid" ? (
               <div className="grid grid-cols-2 gap-3">
                 {filtered.map((p) => (
-                  <MobileProjectCard key={p.id} project={p} variant="compact" />
+                  <MobileProjectCard key={p.id} project={p} variant="grid" />
                 ))}
               </div>
             ) : (
