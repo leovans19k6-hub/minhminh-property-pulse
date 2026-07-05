@@ -26,6 +26,7 @@ import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projec
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
+import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
 import { Route as AdminInventoryTemplatesRouteImport } from './routes/admin.inventory-templates'
 import { Route as AdminDevelopersRouteImport } from './routes/admin.developers'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
@@ -123,6 +124,11 @@ const AdminProjectsRoute = AdminProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOperationsRoute = AdminOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInventoryTemplatesRoute = AdminInventoryTemplatesRouteImport.update({
   id: '/inventory-templates',
   path: '/inventory-templates',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
@@ -260,6 +268,7 @@ export interface FileRoutesById {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
@@ -292,6 +301,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/operations'
     | '/admin/projects'
     | '/admin/users'
     | '/products/$productId'
@@ -321,6 +331,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/operations'
     | '/admin/projects'
     | '/admin/users'
     | '/products/$productId'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/operations'
     | '/admin/projects'
     | '/admin/users'
     | '/products/$productId'
@@ -504,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/operations': {
+      id: '/admin/operations'
+      path: '/operations'
+      fullPath: '/admin/operations'
+      preLoaderRoute: typeof AdminOperationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/inventory-templates': {
       id: '/admin/inventory-templates'
       path: '/inventory-templates'
@@ -654,6 +673,7 @@ const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminDevelopersRoute: typeof AdminDevelopersRoute
   AdminInventoryTemplatesRoute: typeof AdminInventoryTemplatesRouteWithChildren
+  AdminOperationsRoute: typeof AdminOperationsRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
@@ -662,6 +682,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDevelopersRoute: AdminDevelopersRoute,
   AdminInventoryTemplatesRoute: AdminInventoryTemplatesRouteWithChildren,
+  AdminOperationsRoute: AdminOperationsRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
