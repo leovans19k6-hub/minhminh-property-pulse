@@ -32,6 +32,7 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminInventoryTemplatesRouteImport } from './routes/admin.inventory-templates'
 import { Route as AdminDevelopersRouteImport } from './routes/admin.developers'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
+import { Route as AdminRegistrationsRegistrationIdRouteImport } from './routes/admin.registrations.$registrationId'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
 import { Route as AdminProjectsProjectIdRouteImport } from './routes/admin.projects.$projectId'
 import { Route as AdminLeadsLeadIdRouteImport } from './routes/admin.leads.$leadId'
@@ -157,6 +158,12 @@ const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
   path: '/$userId',
   getParentRoute: () => AdminUsersRoute,
 } as any)
+const AdminRegistrationsRegistrationIdRoute =
+  AdminRegistrationsRegistrationIdRouteImport.update({
+    id: '/$registrationId',
+    path: '/$registrationId',
+    getParentRoute: () => AdminRegistrationsRoute,
+  } as any)
 const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -227,7 +234,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRouteWithChildren
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
-  '/admin/registrations': typeof AdminRegistrationsRoute
+  '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -236,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
   '/admin/projects/$projectId': typeof AdminProjectsProjectIdRouteWithChildren
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/registrations/$registrationId': typeof AdminRegistrationsRegistrationIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
   '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -260,7 +268,7 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRouteWithChildren
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
-  '/admin/registrations': typeof AdminRegistrationsRoute
+  '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -269,6 +277,7 @@ export interface FileRoutesByTo {
   '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
   '/admin/projects/$projectId': typeof AdminProjectsProjectIdRouteWithChildren
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/registrations/$registrationId': typeof AdminRegistrationsRegistrationIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
   '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -295,7 +304,7 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRouteWithChildren
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
-  '/admin/registrations': typeof AdminRegistrationsRoute
+  '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -304,6 +313,7 @@ export interface FileRoutesById {
   '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
   '/admin/projects/$projectId': typeof AdminProjectsProjectIdRouteWithChildren
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/registrations/$registrationId': typeof AdminRegistrationsRegistrationIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
   '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$leadId'
     | '/admin/projects/$projectId'
     | '/admin/projects/new'
+    | '/admin/registrations/$registrationId'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
     | '/admin/projects/$projectId/events/$eventId'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$leadId'
     | '/admin/projects/$projectId'
     | '/admin/projects/new'
+    | '/admin/registrations/$registrationId'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
     | '/admin/projects/$projectId/events/$eventId'
@@ -407,6 +419,7 @@ export interface FileRouteTypes {
     | '/admin/leads/$leadId'
     | '/admin/projects/$projectId'
     | '/admin/projects/new'
+    | '/admin/registrations/$registrationId'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
     | '/admin/projects/$projectId/events/$eventId'
@@ -594,6 +607,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersUserIdRouteImport
       parentRoute: typeof AdminUsersRoute
     }
+    '/admin/registrations/$registrationId': {
+      id: '/admin/registrations/$registrationId'
+      path: '/$registrationId'
+      fullPath: '/admin/registrations/$registrationId'
+      preLoaderRoute: typeof AdminRegistrationsRegistrationIdRouteImport
+      parentRoute: typeof AdminRegistrationsRoute
+    }
     '/admin/projects/new': {
       id: '/admin/projects/new'
       path: '/new'
@@ -727,6 +747,17 @@ const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
   AdminProjectsRouteChildren,
 )
 
+interface AdminRegistrationsRouteChildren {
+  AdminRegistrationsRegistrationIdRoute: typeof AdminRegistrationsRegistrationIdRoute
+}
+
+const AdminRegistrationsRouteChildren: AdminRegistrationsRouteChildren = {
+  AdminRegistrationsRegistrationIdRoute: AdminRegistrationsRegistrationIdRoute,
+}
+
+const AdminRegistrationsRouteWithChildren =
+  AdminRegistrationsRoute._addFileChildren(AdminRegistrationsRouteChildren)
+
 interface AdminUsersRouteChildren {
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
 }
@@ -745,7 +776,7 @@ interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRouteWithChildren
   AdminOperationsRoute: typeof AdminOperationsRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
-  AdminRegistrationsRoute: typeof AdminRegistrationsRoute
+  AdminRegistrationsRoute: typeof AdminRegistrationsRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -756,7 +787,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRouteWithChildren,
   AdminOperationsRoute: AdminOperationsRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
-  AdminRegistrationsRoute: AdminRegistrationsRoute,
+  AdminRegistrationsRoute: AdminRegistrationsRouteWithChildren,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
