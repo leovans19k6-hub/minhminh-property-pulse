@@ -30,9 +30,11 @@ async function assertCallerRole(
     .select("roles(code)")
     .eq("user_id", userId);
   if (roleErr) throw new Error("forbidden");
-  const codes = (userRoles ?? [])
-    .map((r: { roles: { code: string } | null }) => r.roles?.code)
-    .filter((c): c is string => Boolean(c));
+  const codes = (userRoles ?? []).flatMap((r) => {
+    const rel = (r as { roles: { code: string } | { code: string }[] | null }).roles;
+    if (!rel) return [];
+    return Array.isArray(rel) ? rel.map((x) => x.code) : [rel.code];
+  });
   const ok = codes.some((c) => (roles as readonly string[]).includes(c));
   if (!ok) throw new Error("forbidden");
   return codes;
