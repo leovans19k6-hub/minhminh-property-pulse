@@ -39,7 +39,11 @@ function LeadsPage() {
 
   const bulkMut = useMutation({
     mutationFn: (assignedTo: string | null) => bulkAssignLeads(Array.from(selected), assignedTo),
-    onSuccess: (r) => { toast.success(`Đã phân công ${r.affected} lead`); setSelected(new Set()); qc.invalidateQueries({ queryKey: ["admin", "leads"] }); },
+    onSuccess: (r) => {
+      toast.success(`Đã phân công ${r.changed_count}/${r.requested_count} lead` + (r.unchanged_count ? ` (${r.unchanged_count} không đổi)` : ""));
+      setSelected(new Set());
+      qc.invalidateQueries({ queryKey: ["admin", "leads"] });
+    },
     onError: (e) => toast.error(mapOpsError(e)),
   });
 
