@@ -2516,75 +2516,214 @@ export type Database = {
           },
         ]
       }
+      voucher_product_types: {
+        Row: {
+          created_at: string
+          product_type_id: string
+          voucher_id: string
+        }
+        Insert: {
+          created_at?: string
+          product_type_id: string
+          voucher_id: string
+        }
+        Update: {
+          created_at?: string
+          product_type_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_product_types_product_type_id_fkey"
+            columns: ["product_type_id"]
+            isOneToOne: false
+            referencedRelation: "product_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_product_types_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voucher_products: {
+        Row: {
+          created_at: string
+          product_id: string
+          voucher_id: string
+        }
+        Insert: {
+          created_at?: string
+          product_id: string
+          voucher_id: string
+        }
+        Update: {
+          created_at?: string
+          product_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "voucher_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_products_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voucher_sales_policies: {
+        Row: {
+          created_at: string
+          policy_id: string
+          voucher_id: string
+        }
+        Insert: {
+          created_at?: string
+          policy_id: string
+          voucher_id: string
+        }
+        Update: {
+          created_at?: string
+          policy_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_sales_policies_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "sales_policies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_sales_policies_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vouchers: {
         Row: {
+          applicability_scope: string
           archived_at: string | null
           attachment_url: string | null
+          attachments: Json
+          benefits_json: Json
+          code: string | null
+          conditions_json: Json
           content: string | null
           created_at: string
+          created_by: string | null
           effective_from: string | null
           effective_to: string | null
           id: string
           is_featured: boolean
           metadata: Json
+          per_user_limit: number
+          priority: number
           project_id: string
+          published_at: string | null
           quantity: number | null
           registered_count: number
           registration_deadline: string | null
+          registration_start: string | null
           slug: string
           status: string
           summary: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string
+          updated_by: string | null
           value_amount: number | null
           value_percent: number | null
           voucher_type: string
         }
         Insert: {
+          applicability_scope?: string
           archived_at?: string | null
           attachment_url?: string | null
+          attachments?: Json
+          benefits_json?: Json
+          code?: string | null
+          conditions_json?: Json
           content?: string | null
           created_at?: string
+          created_by?: string | null
           effective_from?: string | null
           effective_to?: string | null
           id?: string
           is_featured?: boolean
           metadata?: Json
+          per_user_limit?: number
+          priority?: number
           project_id: string
+          published_at?: string | null
           quantity?: number | null
           registered_count?: number
           registration_deadline?: string | null
+          registration_start?: string | null
           slug: string
           status?: string
           summary?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string
+          updated_by?: string | null
           value_amount?: number | null
           value_percent?: number | null
           voucher_type?: string
         }
         Update: {
+          applicability_scope?: string
           archived_at?: string | null
           attachment_url?: string | null
+          attachments?: Json
+          benefits_json?: Json
+          code?: string | null
+          conditions_json?: Json
           content?: string | null
           created_at?: string
+          created_by?: string | null
           effective_from?: string | null
           effective_to?: string | null
           id?: string
           is_featured?: boolean
           metadata?: Json
+          per_user_limit?: number
+          priority?: number
           project_id?: string
+          published_at?: string | null
           quantity?: number | null
           registered_count?: number
           registration_deadline?: string | null
+          registration_start?: string | null
           slug?: string
           status?: string
           summary?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          updated_by?: string | null
           value_amount?: number | null
           value_percent?: number | null
           voucher_type?: string
@@ -2725,6 +2864,20 @@ export type Database = {
         Args: { p_prices: Json; p_product_id: string }
         Returns: undefined
       }
+      _apply_voucher_applicability: {
+        Args: {
+          p_policy_ids: string[]
+          p_product_ids: string[]
+          p_product_type_ids: string[]
+          p_project_id: string
+          p_voucher_id: string
+        }
+        Returns: undefined
+      }
+      _voucher_registration_count: {
+        Args: { p_voucher_id: string }
+        Returns: number
+      }
       apply_inventory_template: {
         Args: {
           p_include_fields?: boolean
@@ -2741,6 +2894,10 @@ export type Database = {
       }
       archive_sales_policy: {
         Args: { p_policy_id: string; p_reason?: string }
+        Returns: Json
+      }
+      archive_voucher: {
+        Args: { p_reason?: string; p_voucher_id: string }
         Returns: Json
       }
       bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
@@ -2772,12 +2929,34 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      cancel_my_voucher_registration: {
+        Args: { p_registration_id: string }
+        Returns: Json
+      }
+      check_voucher_eligibility: {
+        Args: {
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id: string
+        }
+        Returns: Json
+      }
       clone_product: {
         Args: { p_new_code: string; p_source_id: string }
         Returns: string
       }
       clone_sales_policy: {
         Args: { p_new_slug: string; p_new_title?: string; p_policy_id: string }
+        Returns: Json
+      }
+      clone_voucher: {
+        Args: {
+          p_new_code?: string
+          p_new_slug: string
+          p_new_title?: string
+          p_voucher_id: string
+        }
         Returns: Json
       }
       commit_inventory_import: { Args: { p_job_id: string }; Returns: Json }
@@ -2804,6 +2983,17 @@ export type Database = {
         Args: { p_change_summary: string; p_policy_id: string }
         Returns: number
       }
+      create_voucher: {
+        Args: {
+          p_policy_ids?: string[]
+          p_product_ids?: string[]
+          p_product_type_ids?: string[]
+          p_project_id: string
+          p_publish?: boolean
+          p_voucher: Json
+        }
+        Returns: Json
+      }
       duplicate_inventory_view: {
         Args: { p_code: string; p_name: string; p_source_id: string }
         Returns: string
@@ -2817,6 +3007,35 @@ export type Database = {
         }
         Returns: Json
       }
+      get_active_project_vouchers: {
+        Args: {
+          p_limit?: number
+          p_offset?: number
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_project_id: string
+        }
+        Returns: Json
+      }
+      get_active_voucher_detail: {
+        Args: {
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id: string
+        }
+        Returns: Json
+      }
+      get_my_voucher_registrations: {
+        Args: {
+          p_limit?: number
+          p_offset?: number
+          p_project_id?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
       get_product_admin_detail: {
         Args: { p_product_id: string }
         Returns: Json
@@ -2824,6 +3043,10 @@ export type Database = {
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
       get_sales_policy_admin_detail: {
         Args: { p_policy_id: string }
+        Returns: Json
+      }
+      get_voucher_admin_detail: {
+        Args: { p_voucher_id: string }
         Returns: Json
       }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
@@ -2844,12 +3067,26 @@ export type Database = {
         Returns: boolean
       }
       normalize_phone: { Args: { phone: string }; Returns: string }
+      pause_voucher: { Args: { p_voucher_id: string }; Returns: Json }
       publish_sales_policy: {
         Args: { p_change_summary?: string; p_policy_id: string }
         Returns: Json
       }
+      publish_voucher: { Args: { p_voucher_id: string }; Returns: Json }
+      register_for_voucher: {
+        Args: {
+          p_note?: string
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id: string
+        }
+        Returns: Json
+      }
       restore_product: { Args: { p_product_id: string }; Returns: undefined }
       restore_sales_policy: { Args: { p_policy_id: string }; Returns: Json }
+      restore_voucher: { Args: { p_voucher_id: string }; Returns: Json }
+      resume_voucher: { Args: { p_voucher_id: string }; Returns: Json }
       save_inventory_view_fields: {
         Args: { p_fields: Json; p_view_id: string }
         Returns: number
@@ -2925,6 +3162,19 @@ export type Database = {
         }
         Returns: Json
       }
+      search_vouchers: {
+        Args: {
+          p_derived_state?: string
+          p_featured?: boolean
+          p_include_archived?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_project_id: string
+          p_query?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
       set_default_inventory_view: {
         Args: { p_view_id: string }
         Returns: undefined
@@ -2970,6 +3220,16 @@ export type Database = {
         }
         Returns: Json
       }
+      update_voucher: {
+        Args: {
+          p_policy_ids?: string[]
+          p_product_ids?: string[]
+          p_product_type_ids?: string[]
+          p_voucher_id: string
+          p_voucher_patch: Json
+        }
+        Returns: Json
+      }
       validate_inventory_view: { Args: { p_view_id: string }; Returns: Json }
       validate_policy_applicability: {
         Args: {
@@ -3005,6 +3265,36 @@ export type Database = {
         Args: { p_slug: string }
         Returns: undefined
       }
+      validate_voucher_attachments: {
+        Args: { p_attachments: Json }
+        Returns: undefined
+      }
+      validate_voucher_benefits: {
+        Args: { p_benefits: Json }
+        Returns: undefined
+      }
+      validate_voucher_conditions: {
+        Args: { p_conditions: Json }
+        Returns: undefined
+      }
+      validate_voucher_dates: {
+        Args: {
+          p_registration_deadline: string
+          p_registration_start: string
+          p_valid_from: string
+          p_valid_to: string
+        }
+        Returns: undefined
+      }
+      voucher_derived_state:
+        | { Args: { p_voucher_id: string }; Returns: string }
+        | {
+            Args: {
+              p_reg_count: number
+              v: Database["public"]["Tables"]["vouchers"]["Row"]
+            }
+            Returns: string
+          }
       write_audit_log: {
         Args: {
           p_action: string

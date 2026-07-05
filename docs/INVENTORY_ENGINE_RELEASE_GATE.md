@@ -15,3 +15,12 @@
 **Do not mark Inventory Engine "production-ready" until the SQL and UI gates above are executed and green.**
 
 Phase 6A does not block on this gate but does not close it either. Sales Policies module is additive.
+
+## Phase 6B addition (Voucher Management)
+
+- Phase 6A SQL tests (`supabase/tests/phase_6a_sales_policies.sql`) — **NOT EXECUTED**.
+- Phase 6A UI regression — **NOT EXECUTED**.
+- Phase 6B SQL tests (`supabase/tests/phase_6b_vouchers.sql`) — **NOT EXECUTED**.
+- Phase 6B UI regression — **NOT EXECUTED**.
+
+Phase 6B is additive; it does **not** make Inventory Engine or Sales Policies production-verified. Voucher Management ships behind the same gate: all listed SQL/UI tests must be executed and green before marking any of Inventory Engine, Sales Policies, or Voucher Management "production-ready".
