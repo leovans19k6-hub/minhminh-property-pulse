@@ -108,11 +108,15 @@ export function PolicyFormDialog({ projectId, policy, initialPtIds = [], initial
   });
   const productsById = useMemo(() => {
     const map = new Map<string, { id: string; product_code: string; product_name: string | null }>();
-    (productSearchQ.data ?? []).forEach((p) => map.set(p.id, {
-      id: p.id,
-      product_code: (p as { product_code: string }).product_code,
-      product_name: (p as { product_name: string | null }).product_name ?? null,
-    }));
+    (productSearchQ.data ?? []).forEach((p) => {
+      const id = p.product_id;
+      if (!id) return;
+      map.set(id, {
+        id,
+        product_code: p.product_code ?? "",
+        product_name: p.product_name ?? null,
+      });
+    });
     return map;
   }, [productSearchQ.data]);
 
@@ -289,12 +293,14 @@ export function PolicyFormDialog({ projectId, policy, initialPtIds = [], initial
                 </div>
                 <div className="max-h-48 overflow-y-auto rounded border">
                   {(productSearchQ.data ?? []).map((p) => {
-                    const on = productIds.includes(p.id);
+                    const id = p.product_id;
+                    if (!id) return null;
+                    const on = productIds.includes(id);
                     return (
-                      <button type="button" key={p.id}
+                      <button type="button" key={id}
                         className={`flex w-full items-center justify-between px-2 py-1 text-left text-sm hover:bg-muted ${on ? "bg-primary/10" : ""}`}
-                        onClick={() => setProductIds((prev) => on ? prev.filter((x) => x !== p.id) : [...prev, p.id])}>
-                        <span>{(p as { product_code: string }).product_code} — {(p as { product_name: string | null }).product_name ?? "—"}</span>
+                        onClick={() => setProductIds((prev) => on ? prev.filter((x) => x !== id) : [...prev, id])}>
+                        <span>{p.product_code ?? "—"} — {p.product_name ?? "—"}</span>
                         {on && <Badge variant="secondary">Đã chọn</Badge>}
                       </button>
                     );
