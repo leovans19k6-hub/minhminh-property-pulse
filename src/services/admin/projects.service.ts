@@ -51,7 +51,7 @@ export async function adminUpdateProject(id: string, patch: ProjectUpdate): Prom
 export async function adminArchiveProject(id: string) {
   const res = await supabase
     .from("projects")
-    .update({ archived_at: new Date().toISOString(), status: "archived" })
+    .update({ archived_at: new Date().toISOString(), status: "closed" })
     .eq("id", id);
   if (res.error) throw new Error(res.error.message);
 }

@@ -16,7 +16,7 @@ const schema = z.object({
   name: z.string().trim().min(1, "Tên bắt buộc").max(200),
   slug: z.string().trim().min(1).max(200).regex(/^[a-z0-9-]+$/, "Slug chỉ chữ thường, số, dấu -"),
   code: z.string().trim().min(1).max(50),
-  location: z.string().trim().max(300).optional().nullable(),
+  location_text: z.string().trim().max(300).optional().nullable(),
   province: z.string().trim().max(100).optional().nullable(),
   district: z.string().trim().max(100).optional().nullable(),
   short_description: z.string().trim().max(500).optional().nullable(),
@@ -25,9 +25,9 @@ const schema = z.object({
   cover_url: z.string().trim().url().optional().nullable().or(z.literal("").transform(() => null)),
   logo_url: z.string().trim().url().optional().nullable().or(z.literal("").transform(() => null)),
   project_category: z.string().optional().nullable(),
-  status: z.enum(["active", "coming_soon", "sold_out", "archived"]).default("active"),
+  status: z.enum(["active", "coming_soon", "handover", "closed", "draft"]).default("active"),
   display_order: z.coerce.number().int().default(0),
-  featured: z.boolean().default(false),
+  is_featured: z.boolean().default(false),
 });
 
 export function ProjectForm({
@@ -43,7 +43,7 @@ export function ProjectForm({
     name: initial?.name ?? "",
     slug: initial?.slug ?? "",
     code: initial?.code ?? "",
-    location: initial?.location ?? "",
+    location_text: initial?.location_text ?? "",
     province: initial?.province ?? "",
     district: initial?.district ?? "",
     short_description: initial?.short_description ?? "",
@@ -52,9 +52,9 @@ export function ProjectForm({
     cover_url: initial?.cover_url ?? "",
     logo_url: initial?.logo_url ?? "",
     project_category: initial?.project_category ?? "low_rise",
-    status: (initial?.status ?? "active") as "active" | "coming_soon" | "sold_out" | "archived",
+    status: (initial?.status ?? "active") as "active" | "coming_soon" | "handover" | "closed" | "draft",
     display_order: initial?.display_order ?? 0,
-    featured: initial?.featured ?? false,
+    is_featured: initial?.is_featured ?? false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -102,6 +102,8 @@ export function ProjectForm({
             <SelectItem value="low_rise">Thấp tầng</SelectItem>
             <SelectItem value="apartment">Chung cư</SelectItem>
             <SelectItem value="mixed">Tổng hợp</SelectItem>
+            <SelectItem value="commercial">Thương mại</SelectItem>
+            <SelectItem value="other">Khác</SelectItem>
           </SelectContent>
         </Select>
       </Field>
@@ -123,17 +125,18 @@ export function ProjectForm({
           <SelectContent>
             <SelectItem value="active">active</SelectItem>
             <SelectItem value="coming_soon">coming_soon</SelectItem>
-            <SelectItem value="sold_out">sold_out</SelectItem>
-            <SelectItem value="archived">archived</SelectItem>
+            <SelectItem value="handover">handover</SelectItem>
+            <SelectItem value="closed">closed</SelectItem>
+            <SelectItem value="draft">draft</SelectItem>
           </SelectContent>
         </Select>
       </Field>
-      <Field label="Địa chỉ"><Input value={form.location ?? ""} onChange={(e) => setForm({ ...form, location: e.target.value })} /></Field>
+      <Field label="Địa chỉ"><Input value={form.location_text ?? ""} onChange={(e) => setForm({ ...form, location_text: e.target.value })} /></Field>
       <Field label="Tỉnh/Thành"><Input value={form.province ?? ""} onChange={(e) => setForm({ ...form, province: e.target.value })} /></Field>
       <Field label="Quận/Huyện"><Input value={form.district ?? ""} onChange={(e) => setForm({ ...form, district: e.target.value })} /></Field>
       <Field label="Thứ tự hiển thị"><Input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })} /></Field>
       <div className="flex items-center gap-2 md:col-span-2">
-        <Switch checked={form.featured} onCheckedChange={(v) => setForm({ ...form, featured: v })} />
+        <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
         <Label>Đưa lên nổi bật</Label>
       </div>
       <Field label="Mô tả ngắn" full><Textarea rows={2} value={form.short_description ?? ""} onChange={(e) => setForm({ ...form, short_description: e.target.value })} /></Field>

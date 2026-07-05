@@ -64,8 +64,8 @@ function ProjectDetail() {
                 <Info label="Nhà phát triển" value={dev?.name} />
                 <Info label="Danh mục" value={p.project_category} />
                 <Info label="Trạng thái" value={<Badge variant="outline">{p.status}</Badge>} />
-                <Info label="Featured" value={p.featured ? "Có" : "Không"} />
-                <Info label="Địa chỉ" value={p.location} />
+                <Info label="Featured" value={p.is_featured ? "Có" : "Không"} />
+                <Info label="Địa chỉ" value={p.location_text} />
                 <Info label="Tỉnh/Thành" value={p.province} />
                 <Info label="Quận/Huyện" value={p.district} />
                 <Info label="Thứ tự hiển thị" value={p.display_order} />

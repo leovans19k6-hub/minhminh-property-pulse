@@ -72,7 +72,7 @@ function ProjectsIndex() {
                 </div>
                 <p className="line-clamp-2 text-xs text-muted-foreground">{p.short_description ?? p.description ?? "Chưa có mô tả."}</p>
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{p.province ?? p.location ?? "—"}</span>
+                  <span>{p.province ?? p.location_text ?? "—"}</span>
                   <span>#{p.display_order}</span>
                 </div>
               </CardContent>
