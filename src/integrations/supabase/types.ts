@@ -2345,61 +2345,85 @@ export type Database = {
       }
       sales_policies: {
         Row: {
+          applicability_scope: string
           archived_at: string | null
           attachment_url: string | null
+          attachments: Json
           content: string | null
+          content_json: Json
           created_at: string
+          created_by: string | null
           effective_from: string | null
           effective_to: string | null
           id: string
           is_featured: boolean
           metadata: Json
+          priority: number
           project_id: string
+          published_at: string | null
           registration_deadline: string | null
           slug: string
           status: string
           summary: string | null
           title: string
           updated_at: string
+          updated_by: string | null
           version: string | null
+          version_number: number
         }
         Insert: {
+          applicability_scope?: string
           archived_at?: string | null
           attachment_url?: string | null
+          attachments?: Json
           content?: string | null
+          content_json?: Json
           created_at?: string
+          created_by?: string | null
           effective_from?: string | null
           effective_to?: string | null
           id?: string
           is_featured?: boolean
           metadata?: Json
+          priority?: number
           project_id: string
+          published_at?: string | null
           registration_deadline?: string | null
           slug: string
           status?: string
           summary?: string | null
           title: string
           updated_at?: string
+          updated_by?: string | null
           version?: string | null
+          version_number?: number
         }
         Update: {
+          applicability_scope?: string
           archived_at?: string | null
           attachment_url?: string | null
+          attachments?: Json
           content?: string | null
+          content_json?: Json
           created_at?: string
+          created_by?: string | null
           effective_from?: string | null
           effective_to?: string | null
           id?: string
           is_featured?: boolean
           metadata?: Json
+          priority?: number
           project_id?: string
+          published_at?: string | null
           registration_deadline?: string | null
           slug?: string
           status?: string
           summary?: string | null
           title?: string
           updated_at?: string
+          updated_by?: string | null
           version?: string | null
+          version_number?: number
         }
         Relationships: [
           {
@@ -2414,6 +2438,44 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_policy_versions: {
+        Row: {
+          change_summary: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          policy_id: string
+          snapshot: Json
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          policy_id: string
+          snapshot: Json
+          version_number: number
+        }
+        Update: {
+          change_summary?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          policy_id?: string
+          snapshot?: Json
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_policy_versions_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "sales_policies"
             referencedColumns: ["id"]
           },
         ]
@@ -2641,6 +2703,15 @@ export type Database = {
       }
     }
     Functions: {
+      _apply_policy_applicability: {
+        Args: {
+          p_policy_id: string
+          p_product_ids: string[]
+          p_product_type_ids: string[]
+          p_project_id: string
+        }
+        Returns: string
+      }
       _apply_product_custom_values: {
         Args: {
           p_product_id: string
@@ -2667,6 +2738,10 @@ export type Database = {
       archive_product: {
         Args: { p_product_id: string; p_reason?: string }
         Returns: undefined
+      }
+      archive_sales_policy: {
+        Args: { p_policy_id: string; p_reason?: string }
+        Returns: Json
       }
       bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
       bulk_create_floors: {
@@ -2701,6 +2776,10 @@ export type Database = {
         Args: { p_new_code: string; p_source_id: string }
         Returns: string
       }
+      clone_sales_policy: {
+        Args: { p_new_slug: string; p_new_title?: string; p_policy_id: string }
+        Returns: Json
+      }
       commit_inventory_import: { Args: { p_job_id: string }; Returns: Json }
       create_product_with_values: {
         Args: {
@@ -2711,16 +2790,42 @@ export type Database = {
         }
         Returns: string
       }
+      create_sales_policy: {
+        Args: {
+          p_policy: Json
+          p_product_ids?: string[]
+          p_product_type_ids?: string[]
+          p_project_id: string
+          p_publish?: boolean
+        }
+        Returns: Json
+      }
+      create_sales_policy_version: {
+        Args: { p_change_summary: string; p_policy_id: string }
+        Returns: number
+      }
       duplicate_inventory_view: {
         Args: { p_code: string; p_name: string; p_source_id: string }
         Returns: string
       }
       generate_registration_code_value: { Args: never; Returns: string }
+      get_active_project_policies: {
+        Args: {
+          p_product_id?: string
+          p_product_type_id?: string
+          p_project_id: string
+        }
+        Returns: Json
+      }
       get_product_admin_detail: {
         Args: { p_product_id: string }
         Returns: Json
       }
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
+      get_sales_policy_admin_detail: {
+        Args: { p_policy_id: string }
+        Returns: Json
+      }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
       has_project_role: {
         Args: { p_project_id: string; p_roles: string[] }
@@ -2739,7 +2844,12 @@ export type Database = {
         Returns: boolean
       }
       normalize_phone: { Args: { phone: string }; Returns: string }
+      publish_sales_policy: {
+        Args: { p_change_summary?: string; p_policy_id: string }
+        Returns: Json
+      }
       restore_product: { Args: { p_product_id: string }; Returns: undefined }
+      restore_sales_policy: { Args: { p_policy_id: string }; Returns: Json }
       save_inventory_view_fields: {
         Args: { p_fields: Json; p_view_id: string }
         Returns: number
@@ -2803,6 +2913,18 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      search_sales_policies: {
+        Args: {
+          p_effective_state?: string
+          p_featured?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_project_id: string
+          p_query?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
       set_default_inventory_view: {
         Args: { p_view_id: string }
         Returns: undefined
@@ -2825,6 +2947,10 @@ export type Database = {
         }
         Returns: string
       }
+      unpublish_sales_policy: {
+        Args: { p_change_summary?: string; p_policy_id: string }
+        Returns: Json
+      }
       update_product_with_values: {
         Args: {
           p_core?: Json
@@ -2834,7 +2960,25 @@ export type Database = {
         }
         Returns: undefined
       }
+      update_sales_policy: {
+        Args: {
+          p_change_summary?: string
+          p_policy_id: string
+          p_policy_patch: Json
+          p_product_ids?: string[]
+          p_product_type_ids?: string[]
+        }
+        Returns: Json
+      }
       validate_inventory_view: { Args: { p_view_id: string }; Returns: Json }
+      validate_policy_applicability: {
+        Args: {
+          p_product_ids: string[]
+          p_product_type_ids: string[]
+          p_project_id: string
+        }
+        Returns: undefined
+      }
       validate_product_relationships: {
         Args: {
           p_building_id: string
@@ -2843,6 +2987,22 @@ export type Database = {
           p_project_id: string
           p_zone_id: string
         }
+        Returns: undefined
+      }
+      validate_sales_policy_attachments: {
+        Args: { p_attachments: Json }
+        Returns: undefined
+      }
+      validate_sales_policy_content: {
+        Args: { p_content: Json }
+        Returns: undefined
+      }
+      validate_sales_policy_dates: {
+        Args: { p_from: string; p_to: string }
+        Returns: undefined
+      }
+      validate_sales_policy_slug: {
+        Args: { p_slug: string }
         Returns: undefined
       }
       write_audit_log: {
