@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Smartphone } from "lucide-react";
+import { Home, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -41,10 +41,10 @@ export function AdminHeader() {
         <span className="hidden text-sm text-foreground sm:inline">Admin Portal</span>
       </Link>
       <div className="ml-auto flex items-center gap-2">
-        <Button asChild variant="ghost" size="sm">
+        <Button asChild variant="outline" size="sm">
           <Link to="/">
-            <Smartphone className="mr-1 h-4 w-4" />
-            <span className="hidden sm:inline">Mobile App</span>
+            <Home className="mr-1 h-4 w-4" />
+            <span>Trang chủ</span>
           </Link>
         </Button>
         <DropdownMenu>
