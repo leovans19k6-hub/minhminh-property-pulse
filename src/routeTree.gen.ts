@@ -25,6 +25,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminRegistrationsRouteImport } from './routes/admin.registrations'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
@@ -119,6 +120,11 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRegistrationsRoute = AdminRegistrationsRouteImport.update({
+  id: '/registrations',
+  path: '/registrations',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRouteWithChildren
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/registrations': typeof AdminRegistrationsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -253,6 +260,7 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRouteWithChildren
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/registrations': typeof AdminRegistrationsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRouteWithChildren
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/registrations': typeof AdminRegistrationsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -322,6 +331,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/operations'
     | '/admin/projects'
+    | '/admin/registrations'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/operations'
     | '/admin/projects'
+    | '/admin/registrations'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/operations'
     | '/admin/projects'
+    | '/admin/registrations'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -531,6 +543,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/registrations': {
+      id: '/admin/registrations'
+      path: '/registrations'
+      fullPath: '/admin/registrations'
+      preLoaderRoute: typeof AdminRegistrationsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/projects': {
@@ -726,6 +745,7 @@ interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRouteWithChildren
   AdminOperationsRoute: typeof AdminOperationsRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
+  AdminRegistrationsRoute: typeof AdminRegistrationsRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -736,6 +756,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRouteWithChildren,
   AdminOperationsRoute: AdminOperationsRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
+  AdminRegistrationsRoute: AdminRegistrationsRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
