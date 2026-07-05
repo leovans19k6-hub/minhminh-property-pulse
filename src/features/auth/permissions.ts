@@ -41,6 +41,21 @@ export const P = {
 
   audit_read: "audit.read",
   notifications_read: "notifications.read",
+
+  users_create: "users.create",
+  users_update: "users.update",
+  users_disable: "users.disable",
+
+  developers_read: "developers.read",
+  developers_manage: "developers.manage",
+
+  project_members_read: "project_members.read",
+  project_members_manage: "project_members.manage",
+
+  project_structure_read: "project_structure.read",
+  project_structure_manage: "project_structure.manage",
+
+  admin_portal_access: "admin_portal.access",
 } as const;
 
 export type Permission = (typeof P)[keyof typeof P];
