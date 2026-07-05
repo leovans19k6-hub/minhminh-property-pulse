@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Archive, Pencil, Plus, RotateCcw, Search, Star } from "lucide-react";
+import { Archive, History, Pencil, Plus, RotateCcw, Search, Star, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,8 @@ import { listInventoryViews } from "@/services/admin/inventoryViews.service";
 import { listViewFields, CORE_FIELD_KEY_OPTIONS } from "@/services/admin/inventoryViewFields.service";
 import { listFieldDefinitions } from "@/services/admin/fieldDefinitions.service";
 import { ProductFormDialog } from "@/components/admin/dialogs/ProductFormDialog";
+import { InventoryImportDialog } from "@/components/admin/dialogs/InventoryImportDialog";
+import { ProductHistoryDialog } from "@/components/admin/dialogs/ProductHistoryDialog";
 
 const CORE_LABEL_BY_KEY: Record<string, string> = Object.fromEntries(
   CORE_FIELD_KEY_OPTIONS.map((o) => [o.key, o.label]),
@@ -43,6 +45,8 @@ export function ProductsTab({ projectId, canManage }: { projectId: string; canMa
   const [statusFilter, setStatusFilter] = useState<string>("__all__");
   const [showArchived, setShowArchived] = useState(false);
   const [editing, setEditing] = useState<ProductRow | "new" | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [historyFor, setHistoryFor] = useState<{ id: string; label: string } | null>(null);
 
   // Views to determine columns
   const viewsQ = useQuery({
@@ -175,9 +179,14 @@ export function ProductsTab({ projectId, canManage }: { projectId: string; canMa
           </div>
         </div>
         {canManage ? (
-          <Button size="sm" onClick={() => setEditing("new")}>
-            <Plus className="mr-1 h-4 w-4" /> Thêm sản phẩm
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" variant="outline" onClick={() => setImporting(true)}>
+              <Upload className="mr-1 h-4 w-4" /> Import CSV
+            </Button>
+            <Button size="sm" onClick={() => setEditing("new")}>
+              <Plus className="mr-1 h-4 w-4" /> Thêm sản phẩm
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -216,6 +225,16 @@ export function ProductsTab({ projectId, canManage }: { projectId: string; canMa
                     <Button size="icon" variant="ghost" onClick={() => row.product_id && editMut.mutate(row.product_id)} title="Sửa">
                       <Pencil className="h-4 w-4" />
                     </Button>
+                    {row.product_id ? (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        title="Lịch sử"
+                        onClick={() => setHistoryFor({ id: row.product_id!, label: row.product_code ?? "" })}
+                      >
+                        <History className="h-4 w-4" />
+                      </Button>
+                    ) : null}
                     {canManage && row.product_id ? (
                       <Button size="icon" variant="ghost" title="Lưu trữ"
                         onClick={() => { if (confirm("Lưu trữ sản phẩm này?")) archiveMut.mutate(row.product_id!); }}>
@@ -236,6 +255,16 @@ export function ProductsTab({ projectId, canManage }: { projectId: string; canMa
           product={editing === "new" ? null : editing}
           onClose={() => setEditing(null)}
           onSaved={() => setEditing(null)}
+        />
+      ) : null}
+      {importing ? (
+        <InventoryImportDialog projectId={projectId} onClose={() => setImporting(false)} />
+      ) : null}
+      {historyFor ? (
+        <ProductHistoryDialog
+          productId={historyFor.id}
+          productLabel={historyFor.label}
+          onClose={() => setHistoryFor(null)}
         />
       ) : null}
     </div>

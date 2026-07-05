@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, ArrowUp, ArrowDown, ListOrdered, Archive, RotateCcw } from "lucide-react";
+import { Plus, Pencil, ArrowUp, ArrowDown, ListOrdered, Archive, RotateCcw, Download, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,13 +22,20 @@ import {
 import { listProjectProductTypes } from "@/services/admin/productTypes.service";
 import { FieldDefinitionDialog } from "@/components/admin/dialogs/FieldDefinitionDialog";
 import { FieldOptionsDialog } from "@/components/admin/dialogs/FieldOptionsDialog";
+import { ApplyTemplateDialog } from "@/components/admin/dialogs/ApplyTemplateDialog";
+import { SnapshotTemplateDialog } from "@/components/admin/dialogs/SnapshotTemplateDialog";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export function FieldsTab({ projectId, canManage }: { projectId: string; canManage: boolean }) {
   const qc = useQueryClient();
+  const { currentUser } = useAuth();
+  const canSnapshot = !!currentUser?.isActive && (currentUser.isSuperAdmin || currentUser.isAdmin);
   const [productTypeId, setProductTypeId] = useState<string>("__all__");
   const [includeArchived, setIncludeArchived] = useState(false);
   const [editing, setEditing] = useState<FieldDefRow | "new" | null>(null);
   const [optionsFor, setOptionsFor] = useState<FieldDefRow | null>(null);
+  const [applying, setApplying] = useState(false);
+  const [snapping, setSnapping] = useState(false);
 
   const filters = useMemo(
     () => ({
@@ -97,9 +104,19 @@ export function FieldsTab({ projectId, canManage }: { projectId: string; canMana
           </label>
         </div>
         {canManage ? (
-          <Button size="sm" onClick={() => setEditing("new")}>
-            <Plus className="mr-1 h-4 w-4" /> Thêm trường
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" variant="outline" onClick={() => setApplying(true)}>
+              <Download className="mr-1 h-4 w-4" /> Áp dụng template
+            </Button>
+            {canSnapshot ? (
+              <Button size="sm" variant="outline" onClick={() => setSnapping(true)}>
+                <Camera className="mr-1 h-4 w-4" /> Chụp template
+              </Button>
+            ) : null}
+            <Button size="sm" onClick={() => setEditing("new")}>
+              <Plus className="mr-1 h-4 w-4" /> Thêm trường
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -216,6 +233,12 @@ export function FieldsTab({ projectId, canManage }: { projectId: string; canMana
           fieldLabel={optionsFor.field_label}
           onClose={() => setOptionsFor(null)}
         />
+      ) : null}
+      {applying ? (
+        <ApplyTemplateDialog projectId={projectId} onClose={() => setApplying(false)} />
+      ) : null}
+      {snapping ? (
+        <SnapshotTemplateDialog projectId={projectId} onClose={() => setSnapping(false)} />
       ) : null}
     </div>
   );
