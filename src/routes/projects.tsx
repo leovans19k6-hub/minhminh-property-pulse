@@ -10,6 +10,7 @@ import {
   MobileQueryErrorState,
   MobileEmptyState,
 } from "@/components/mobile/MobileStates";
+import { ViewToggle, useViewMode } from "@/components/mobile/ViewToggle";
 
 export const Route = createFileRoute("/projects")({
   component: ProjectsPage,
@@ -35,6 +36,7 @@ function normalize(s: string): string {
 function ProjectsPage() {
   const [q, setQ] = useState("");
   const { data, isLoading, isError, error, refetch } = useMobileProjects();
+  const [view, setView] = useViewMode("mm.projects.view", "list");
 
   const filtered = useMemo(() => {
     const t = normalize(q.trim());
@@ -67,8 +69,9 @@ function ProjectsPage() {
           </p>
         </div>
 
-        {/* Search */}
-        <div className="relative">
+        {/* Search + view toggle */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--text-tertiary)]" />
           <Input
             value={q}
@@ -87,6 +90,8 @@ function ProjectsPage() {
               <X className="h-4 w-4" />
             </button>
           )}
+          </div>
+          <ViewToggle value={view} onChange={setView} />
         </div>
 
         {isLoading && <MobileListSkeleton count={4} />}
@@ -119,6 +124,12 @@ function ProjectsPage() {
                   hint="Liên hệ quản trị viên để được cấp quyền."
                 />
               )
+            ) : view === "grid" ? (
+              <div className="grid grid-cols-2 gap-3">
+                {filtered.map((p) => (
+                  <MobileProjectCard key={p.id} project={p} variant="grid" />
+                ))}
+              </div>
             ) : (
               <div className="space-y-3">
                 {filtered.map((p) => (

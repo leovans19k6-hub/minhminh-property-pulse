@@ -40,20 +40,24 @@ export function MobileProjectCard({
   project: MobileProjectSummary;
   /** @deprecated use variant="compact" */
   compact?: boolean;
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "grid";
 }) {
   const status = statusMeta(project.status);
   const total = project.total_products ?? 0;
   const available = project.available_count ?? 0;
   const image = project.cover_url ?? project.thumbnail_url;
 
-  if (variant === "compact") {
+  if (variant === "compact" || variant === "grid") {
+    const wrapCls =
+      variant === "grid"
+        ? "group block w-full overflow-hidden rounded-2xl border border-border bg-[color:var(--surface)] shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
+        : "group block w-[260px] shrink-0 overflow-hidden rounded-2xl border border-border bg-[color:var(--surface)] shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]";
     return (
       <Link
         to="/inventory"
         search={{ projectId: project.id }}
         aria-label={project.name}
-        className="group block w-[260px] shrink-0 overflow-hidden rounded-2xl border border-border bg-[color:var(--surface)] shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
+        className={wrapCls}
       >
         <CoverImage src={image} alt={project.name} />
         <div className="space-y-1 p-3">
