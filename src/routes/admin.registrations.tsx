@@ -39,7 +39,11 @@ function RegistrationsPage() {
 
   const bulkMut = useMutation({
     mutationFn: (u: string | null) => bulkAssignRegistrations(Array.from(selected), u),
-    onSuccess: (r) => { toast.success(`Đã phân công ${r.affected} đăng ký`); setSelected(new Set()); qc.invalidateQueries({ queryKey: ["admin", "registrations"] }); },
+    onSuccess: (r) => {
+      toast.success(`Đã phân công ${r.changed_count}/${r.requested_count} đăng ký` + (r.unchanged_count ? ` (${r.unchanged_count} không đổi)` : ""));
+      setSelected(new Set());
+      qc.invalidateQueries({ queryKey: ["admin", "registrations"] });
+    },
     onError: (e) => toast.error(mapOpsError(e)),
   });
 
