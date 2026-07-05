@@ -132,7 +132,7 @@ function ProjectDetailPage() {
         <TabsContent value="overview" className="space-y-3 pt-3">
           <h3 className="text-sm font-semibold">Phân khu / Toà</h3>
           <div className="flex flex-wrap gap-2">
-            {project.subzones.map((s) => (
+            {project.subzones.map((s: string) => (
               <span
                 key={s}
                 className="rounded-full border border-border bg-card px-3 py-1 text-xs"
@@ -140,7 +140,7 @@ function ProjectDetailPage() {
                 {s}
               </span>
             ))}
-            {project.towers?.map((t) => (
+            {project.towers?.map((t: string) => (
               <span
                 key={t}
                 className="rounded-full border border-border bg-card px-3 py-1 text-xs"

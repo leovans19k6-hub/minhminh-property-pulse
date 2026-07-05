@@ -71,7 +71,7 @@ function ProductDetailPage() {
         className="flex snap-x snap-mandatory gap-1 overflow-x-auto bg-muted"
         aria-label="Ảnh sản phẩm"
       >
-        {product.images.map((src, i) => (
+        {product.images.map((src: string, i: number) => (
           <img
             key={i}
             src={src}
