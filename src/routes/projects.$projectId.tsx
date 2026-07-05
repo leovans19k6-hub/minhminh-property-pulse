@@ -11,6 +11,7 @@ import { MobileQueryErrorState } from "@/components/mobile/MobileStates";
 import { ServiceError } from "@/services/_helpers";
 import { ProjectIdentityCard } from "@/components/mobile/project-detail/ProjectIdentityCard";
 import { ProjectDetailSkeleton } from "@/components/mobile/project-detail/ProjectDetailSkeleton";
+import { MobilePolicyCard } from "@/components/mobile/policies/MobilePolicyCard";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectDetailPage,
