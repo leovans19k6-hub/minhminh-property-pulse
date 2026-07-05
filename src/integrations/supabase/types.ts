@@ -115,6 +115,13 @@ export type Database = {
             foreignKeyName: "buildings_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "buildings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -244,6 +251,13 @@ export type Database = {
             foreignKeyName: "events_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -266,6 +280,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "favorites_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
           {
             foreignKeyName: "favorites_product_id_fkey"
             columns: ["product_id"]
@@ -396,6 +417,13 @@ export type Database = {
             foreignKeyName: "inventory_import_jobs_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "inventory_import_jobs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -445,6 +473,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "inventory_import_jobs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_import_rows_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
           },
           {
             foreignKeyName: "inventory_import_rows_product_id_fkey"
@@ -559,8 +594,22 @@ export type Database = {
             foreignKeyName: "leads_interested_product_id_fkey"
             columns: ["interested_product_id"]
             isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "leads_interested_product_id_fkey"
+            columns: ["interested_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_interested_project_id_fkey"
+            columns: ["interested_project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
           },
           {
             foreignKeyName: "leads_interested_project_id_fkey"
@@ -683,6 +732,13 @@ export type Database = {
             foreignKeyName: "policy_products_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "policy_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -732,6 +788,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "product_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
           {
             foreignKeyName: "product_media_product_id_fkey"
             columns: ["product_id"]
@@ -798,6 +861,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "product_price_options"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_price_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
           },
           {
             foreignKeyName: "product_price_history_product_id_fkey"
@@ -877,6 +947,13 @@ export type Database = {
             foreignKeyName: "product_price_options_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_price_options_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -928,6 +1005,13 @@ export type Database = {
             foreignKeyName: "product_status_history_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_status_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -974,6 +1058,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "product_types_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
           {
             foreignKeyName: "product_types_project_id_fkey"
             columns: ["project_id"]
@@ -1133,6 +1224,13 @@ export type Database = {
             foreignKeyName: "products_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "products_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -1247,6 +1345,13 @@ export type Database = {
             foreignKeyName: "project_documents_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "project_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -1290,6 +1395,13 @@ export type Database = {
           zalo_url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "project_members_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
           {
             foreignKeyName: "project_members_project_id_fkey"
             columns: ["project_id"]
@@ -1359,6 +1471,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "project_zones"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_zones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
           },
           {
             foreignKeyName: "project_zones_project_id_fkey"
@@ -1534,8 +1653,22 @@ export type Database = {
             foreignKeyName: "registrations_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "registrations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
           },
           {
             foreignKeyName: "registrations_project_id_fkey"
@@ -1636,6 +1769,13 @@ export type Database = {
           version?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "sales_policies_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
           {
             foreignKeyName: "sales_policies_project_id_fkey"
             columns: ["project_id"]
@@ -1759,6 +1899,13 @@ export type Database = {
             foreignKeyName: "vouchers_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "vouchers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -1766,14 +1913,166 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      inventory_product_summary: {
+        Row: {
+          balcony_direction: string | null
+          bathrooms: number | null
+          bedrooms: number | null
+          building_id: string | null
+          building_name: string | null
+          built_up_area: number | null
+          carpet_area: number | null
+          category: string | null
+          construction_area: number | null
+          currency: string | null
+          direction: string | null
+          door_direction: string | null
+          featured: boolean | null
+          floor_id: string | null
+          floor_number: number | null
+          land_area: number | null
+          primary_image_url: string | null
+          primary_price: number | null
+          primary_price_name: string | null
+          product_code: string | null
+          product_id: string | null
+          product_name: string | null
+          product_type_id: string | null
+          product_type_name: string | null
+          project_id: string | null
+          project_name: string | null
+          status: string | null
+          updated_at: string | null
+          view_text: string | null
+          zone_id: string | null
+          zone_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_product_type_id_fkey"
+            columns: ["product_type_id"]
+            isOneToOne: false
+            referencedRelation: "product_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "products_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "project_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_inventory_stats: {
+        Row: {
+          available_count: number | null
+          booked_count: number | null
+          holding_count: number | null
+          last_inventory_update: string | null
+          locked_count: number | null
+          project_id: string | null
+          sold_count: number | null
+          total_products: number | null
+          unavailable_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      get_product_detail: { Args: { p_product_id: string }; Returns: Json }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
       has_role: { Args: { role_code: string }; Returns: boolean }
       is_project_manager: { Args: { p_project_id: string }; Returns: boolean }
       is_project_member: { Args: { p_project_id: string }; Returns: boolean }
       normalize_phone: { Args: { phone: string }; Returns: string }
+      search_inventory: {
+        Args: {
+          p_area_max?: number
+          p_area_min?: number
+          p_building_id?: string
+          p_category?: string
+          p_direction?: string
+          p_floor_max?: number
+          p_floor_min?: number
+          p_limit?: number
+          p_offset?: number
+          p_price_max?: number
+          p_price_min?: number
+          p_product_type_id?: string
+          p_project_id?: string
+          p_query?: string
+          p_status?: string
+          p_zone_id?: string
+        }
+        Returns: {
+          balcony_direction: string | null
+          bathrooms: number | null
+          bedrooms: number | null
+          building_id: string | null
+          building_name: string | null
+          built_up_area: number | null
+          carpet_area: number | null
+          category: string | null
+          construction_area: number | null
+          currency: string | null
+          direction: string | null
+          door_direction: string | null
+          featured: boolean | null
+          floor_id: string | null
+          floor_number: number | null
+          land_area: number | null
+          primary_image_url: string | null
+          primary_price: number | null
+          primary_price_name: string | null
+          product_code: string | null
+          product_id: string | null
+          product_name: string | null
+          product_type_id: string | null
+          product_type_name: string | null
+          project_id: string | null
+          project_name: string | null
+          status: string | null
+          updated_at: string | null
+          view_text: string | null
+          zone_id: string | null
+          zone_name: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "inventory_product_summary"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       write_audit_log: {
         Args: {
           p_action: string
