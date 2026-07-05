@@ -13,6 +13,7 @@ import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PoliciesRouteImport } from './routes/policies'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InventoryRouteImport } from './routes/inventory'
@@ -24,6 +25,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
+import { Route as PoliciesPolicyIdRouteImport } from './routes/policies.$policyId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
 import { Route as AdminRegistrationsRouteImport } from './routes/admin.registrations'
@@ -62,6 +64,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliciesRoute = PoliciesRouteImport.update({
+  id: '/policies',
+  path: '/policies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -118,6 +125,11 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PoliciesPolicyIdRoute = PoliciesPolicyIdRouteImport.update({
+  id: '/$policyId',
+  path: '/$policyId',
+  getParentRoute: () => PoliciesRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
@@ -231,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
+  '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -243,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -266,6 +280,7 @@ export interface FileRoutesByTo {
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
+  '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -278,6 +293,7 @@ export interface FileRoutesByTo {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin': typeof AdminIndexRoute
@@ -303,6 +319,7 @@ export interface FileRoutesById {
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
+  '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -315,6 +332,7 @@ export interface FileRoutesById {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -341,6 +359,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/notifications'
+    | '/policies'
     | '/projects'
     | '/register'
     | '/reset-password'
@@ -353,6 +372,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
     | '/admin/'
@@ -376,6 +396,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/notifications'
+    | '/policies'
     | '/projects'
     | '/register'
     | '/reset-password'
@@ -388,6 +409,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
     | '/admin'
@@ -412,6 +434,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/notifications'
+    | '/policies'
     | '/projects'
     | '/register'
     | '/reset-password'
@@ -424,6 +447,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
     | '/admin/'
@@ -449,6 +473,7 @@ export interface RootRouteChildren {
   InventoryRoute: typeof InventoryRoute
   LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
+  PoliciesRoute: typeof PoliciesRouteWithChildren
   ProjectsRoute: typeof ProjectsRouteWithChildren
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -484,6 +509,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policies': {
+      id: '/policies'
+      path: '/policies'
+      fullPath: '/policies'
+      preLoaderRoute: typeof PoliciesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -562,6 +594,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/$productId'
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/policies/$policyId': {
+      id: '/policies/$policyId'
+      path: '/$policyId'
+      fullPath: '/policies/$policyId'
+      preLoaderRoute: typeof PoliciesPolicyIdRouteImport
+      parentRoute: typeof PoliciesRoute
     }
     '/admin/users': {
       id: '/admin/users'
@@ -815,6 +854,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface PoliciesRouteChildren {
+  PoliciesPolicyIdRoute: typeof PoliciesPolicyIdRoute
+}
+
+const PoliciesRouteChildren: PoliciesRouteChildren = {
+  PoliciesPolicyIdRoute: PoliciesPolicyIdRoute,
+}
+
+const PoliciesRouteWithChildren = PoliciesRoute._addFileChildren(
+  PoliciesRouteChildren,
+)
+
 interface ProjectsRouteChildren {
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
 }
@@ -836,6 +887,7 @@ const rootRouteChildren: RootRouteChildren = {
   InventoryRoute: InventoryRoute,
   LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
+  PoliciesRoute: PoliciesRouteWithChildren,
   ProjectsRoute: ProjectsRouteWithChildren,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,

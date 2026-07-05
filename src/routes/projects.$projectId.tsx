@@ -11,6 +11,7 @@ import { MobileQueryErrorState } from "@/components/mobile/MobileStates";
 import { ServiceError } from "@/services/_helpers";
 import { ProjectIdentityCard } from "@/components/mobile/project-detail/ProjectIdentityCard";
 import { ProjectDetailSkeleton } from "@/components/mobile/project-detail/ProjectDetailSkeleton";
+import { MobilePolicyCard } from "@/components/mobile/policies/MobilePolicyCard";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectDetailPage,
@@ -92,6 +93,7 @@ function ProjectDetailPage() {
   const contact = data.primary_contact;
   const phoneDigits = contact?.phone?.replace(/\s/g, "") ?? "";
   const hasFeatured = data.featured_products.length > 0;
+  const policies = data.policies_preview ?? [];
 
   return (
     <MobileShell showHeader={false}>
@@ -204,6 +206,47 @@ function ProjectDetailPage() {
 
         {/* Primary contact */}
         {contact && <PrimaryContactCard contact={contact} />}
+
+        {/* Policies preview */}
+        {policies.length > 0 && (
+          <section>
+            <div className="mb-2 flex items-end justify-between px-1">
+              <h2 className="text-[14px] font-semibold tracking-tight text-[color:var(--text-primary)]">
+                Chính sách đang áp dụng
+              </h2>
+              <Link
+                to="/policies"
+                search={{ projectId: p.id }}
+                className="text-[12px] font-semibold text-[color:var(--brand-navy)]"
+              >
+                Xem tất cả
+              </Link>
+            </div>
+            <ul className="space-y-2.5">
+              {policies.map((pol) => (
+                <li key={pol.id}>
+                  <MobilePolicyCard
+                    item={{
+                      id: pol.id,
+                      project_id: p.id,
+                      project_name: p.name,
+                      project_code: (p.code as string | null) ?? null,
+                      title: pol.title,
+                      slug: "",
+                      summary: pol.summary,
+                      is_featured: pol.is_featured,
+                      priority: pol.priority,
+                      effective_from: pol.effective_from,
+                      effective_to: pol.effective_to,
+                      registration_deadline: pol.registration_deadline,
+                      published_at: null,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </MobileShell>
   );

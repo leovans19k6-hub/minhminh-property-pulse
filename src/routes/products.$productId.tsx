@@ -268,7 +268,7 @@ function ProductBody({
         <ProductPriceHistoryCard s={data.price_history_summary} />
         <ProductStatusHistoryCard s={data.status_history_summary} />
 
-        <PoliciesPreview items={data.applicable_policies} />
+        <PoliciesPreview items={data.applicable_policies} productId={data.product.id} />
         <VouchersPreview items={data.project_vouchers} />
         <EventsPreview items={data.upcoming_events} />
 
