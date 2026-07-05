@@ -2641,6 +2641,16 @@ export type Database = {
       }
     }
     Functions: {
+      apply_inventory_template: {
+        Args: {
+          p_include_fields?: boolean
+          p_include_views?: boolean
+          p_overwrite?: boolean
+          p_project_id: string
+          p_template_id: string
+        }
+        Returns: Json
+      }
       bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
       bulk_create_floors: {
         Args: {
@@ -2670,6 +2680,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      commit_inventory_import: { Args: { p_job_id: string }; Returns: Json }
       generate_registration_code_value: { Args: never; Returns: string }
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
@@ -2678,6 +2689,10 @@ export type Database = {
         Returns: boolean
       }
       has_role: { Args: { role_code: string }; Returns: boolean }
+      inventory_import_add_rows: {
+        Args: { p_job_id: string; p_rows: Json }
+        Returns: number
+      }
       is_active_user: { Args: never; Returns: boolean }
       is_project_manager: { Args: { p_project_id: string }; Returns: boolean }
       is_project_member: { Args: { p_project_id: string }; Returns: boolean }
@@ -2752,6 +2767,16 @@ export type Database = {
       set_project_primary_contact: {
         Args: { p_project_id: string; p_project_member_id: string }
         Returns: undefined
+      }
+      snapshot_template_from_project: {
+        Args: {
+          p_code: string
+          p_description?: string
+          p_name: string
+          p_project_category?: string
+          p_project_id: string
+        }
+        Returns: string
       }
       write_audit_log: {
         Args: {

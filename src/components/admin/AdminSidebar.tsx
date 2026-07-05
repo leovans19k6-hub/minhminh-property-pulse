@@ -4,8 +4,6 @@ import {
   Users,
   ShieldCheck,
   Building2,
-  Boxes,
-  FileSpreadsheet,
   ScrollText,
   Ticket,
   CalendarDays,
@@ -13,6 +11,7 @@ import {
   BarChart3,
   FileClock,
   Factory,
+  LayoutTemplate,
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,9 +49,8 @@ export function AdminSidebar() {
   if (canManageDevelopers(currentUser)) {
     projectMgmt.push({ to: "/admin/developers", label: "Nhà phát triển", icon: Factory });
   }
+  projectMgmt.push({ to: "/admin/inventory-templates", label: "Template bảng hàng", icon: LayoutTemplate });
   const comingSoon: Item[] = [
-    { to: "/admin", label: "Bảng hàng", icon: Boxes, disabled: true },
-    { to: "/admin", label: "Import Excel", icon: FileSpreadsheet, disabled: true },
     { to: "/admin", label: "Chính sách", icon: ScrollText, disabled: true },
     { to: "/admin", label: "Voucher", icon: Ticket, disabled: true },
     { to: "/admin", label: "Sự kiện", icon: CalendarDays, disabled: true },

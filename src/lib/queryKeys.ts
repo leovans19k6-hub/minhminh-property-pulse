@@ -102,6 +102,20 @@ export const queryKeys = {
     ["admin", "inventory-products", "detail", productId] as const,
   adminProductHistory: (productId: string) =>
     ["admin", "inventory-products", productId, "history"] as const,
+  adminInventoryTemplateFields: (templateId: string) =>
+    ["admin", "inventory-templates", templateId, "fields"] as const,
+  adminInventoryTemplateViews: (templateId: string) =>
+    ["admin", "inventory-templates", templateId, "views"] as const,
+  adminInventoryImportJobs: (projectId: string) =>
+    ["admin", "projects", projectId, "import-jobs"] as const,
+  adminInventoryImportJobDetail: (jobId: string) =>
+    ["admin", "import-jobs", "detail", jobId] as const,
+  adminInventoryImportJobRows: (jobId: string) =>
+    ["admin", "import-jobs", jobId, "rows"] as const,
+  adminProductStatusHistory: (productId: string) =>
+    ["admin", "inventory-products", productId, "status-history"] as const,
+  adminProductPriceHistory: (productId: string) =>
+    ["admin", "inventory-products", productId, "price-history"] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;
