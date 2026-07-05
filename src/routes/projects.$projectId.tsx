@@ -1,175 +1,169 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin, LayoutGrid, Building2, Phone, MessageCircle } from "lucide-react";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { LayoutGrid, Phone } from "lucide-react";
 import { PageHeader } from "@/components/mobile/PageHeader";
 import { MobileShell } from "@/components/mobile/MobileShell";
 import { MobileInventoryCard } from "@/components/shared/MobileInventoryCard";
+import { SectionCard } from "@/components/mobile/SectionCard";
+import { InfoRow } from "@/components/mobile/InfoRow";
+import { PrimaryContactCard } from "@/components/mobile/PrimaryContactCard";
 import { useMobileProjectDetail } from "@/features/projects/queries";
-import {
-  MobileListSkeleton,
-  MobileQueryErrorState,
-  MobileEmptyState,
-} from "@/components/mobile/MobileStates";
+import { MobileQueryErrorState } from "@/components/mobile/MobileStates";
 import { ServiceError } from "@/services/_helpers";
+import { ProjectIdentityCard } from "@/components/mobile/project-detail/ProjectIdentityCard";
+import { ProjectDetailSkeleton } from "@/components/mobile/project-detail/ProjectDetailSkeleton";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectDetailPage,
   notFoundComponent: () => (
     <MobileShell title="Dự án">
-      <div className="p-6 text-sm text-muted-foreground">Không tìm thấy dự án.</div>
+      <NotFoundBlock />
     </MobileShell>
   ),
   errorComponent: () => (
     <MobileShell title="Dự án">
-      <div className="p-6 text-sm text-muted-foreground">Có lỗi khi tải dự án.</div>
+      <MobileQueryErrorState message="Có lỗi khi tải dự án." />
     </MobileShell>
   ),
 });
 
+function NotFoundBlock() {
+  return (
+    <div className="p-6 text-center">
+      <p className="text-sm font-medium">Không tìm thấy dự án.</p>
+      <Link
+        to="/projects"
+        className="mt-3 inline-flex rounded-full bg-[color:var(--brand-navy)] px-4 py-1.5 text-xs font-semibold text-primary-foreground"
+      >
+        Về danh sách dự án
+      </Link>
+    </div>
+  );
+}
+
 function ProjectDetailPage() {
   const { projectId } = Route.useParams();
+  const router = useRouter();
   const { data, isLoading, isError, error, refetch } = useMobileProjectDetail(projectId);
 
   if (isLoading) {
     return (
-      <MobileShell title="Dự án">
-        <MobileListSkeleton count={1} />
+      <MobileShell showHeader={false}>
+        <PageHeader title="Chi tiết dự án" />
+        <ProjectDetailSkeleton />
       </MobileShell>
     );
   }
+
   if (isError || !data) {
-    const isPerm = error instanceof ServiceError && error.message.includes("quyền");
+    const isPerm =
+      error instanceof ServiceError &&
+      (error.message.includes("quyền") || error.message.includes("permission"));
+    const isNotFound =
+      error instanceof ServiceError && error.message.includes("Không tìm thấy");
     return (
-      <MobileShell title="Dự án">
-        <MobileQueryErrorState
-          message={isPerm ? "Bạn không có quyền xem dự án này." : error instanceof Error ? error.message : undefined}
-          onRetry={() => refetch()}
-        />
+      <MobileShell showHeader={false}>
+        <PageHeader title="Chi tiết dự án" />
+        <div className="space-y-3 p-4">
+          <MobileQueryErrorState
+            message={
+              isPerm
+                ? "Bạn không có quyền xem dự án này."
+                : isNotFound
+                  ? "Không tìm thấy dự án."
+                  : error instanceof Error
+                    ? error.message
+                    : undefined
+            }
+            onRetry={() => refetch()}
+          />
+          <button
+            type="button"
+            onClick={() => router.navigate({ to: "/projects" })}
+            className="mx-auto block text-xs font-semibold text-[color:var(--brand-navy)]"
+          >
+            Quay lại danh sách dự án
+          </button>
+        </div>
       </MobileShell>
     );
   }
 
   const p = data.project;
-  const stats = data.inventory_stats;
-  const cover = p.cover_url ?? p.thumbnail_url;
+  const contact = data.primary_contact;
+  const phoneDigits = contact?.phone?.replace(/\s/g, "") ?? "";
+  const hasFeatured = data.featured_products.length > 0;
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-[520px] bg-background pb-24 md:max-w-[640px]">
-      <PageHeader title={p.name} subtitle={data.developer?.name ?? undefined} />
+    <MobileShell showHeader={false}>
+      <PageHeader title="Chi tiết dự án" subtitle={p.name} />
 
-      <div className="relative aspect-[16/10] w-full bg-muted">
-        {cover ? (
-          <img src={cover as string} alt={p.name} className="h-full w-full object-cover" />
-        ) : (
-          <div className="grid h-full w-full place-items-center bg-[var(--brand-navy)]/10">
-            <Building2 className="h-10 w-10 text-[var(--brand-navy)]/40" />
-          </div>
-        )}
-      </div>
+      <div className="space-y-4 p-4">
+        {/* Identity + cover */}
+        <ProjectIdentityCard project={p} developerName={data.developer?.name ?? null} />
 
-      <div className="space-y-3 p-4">
-        <h1 className="text-lg font-bold tracking-tight">{p.name}</h1>
-        {p.location_text && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="h-3.5 w-3.5" />
-            <span className="truncate">{p.location_text as string}</span>
-          </div>
-        )}
-        {p.short_description && (
-          <p className="text-sm text-foreground/80">{p.short_description as string}</p>
-        )}
-
-        {stats && (
-          <div className="grid grid-cols-3 gap-2 pt-1 text-center">
-            <StatBox label="Tổng SP" value={stats.total_products ?? 0} />
-            <StatBox
-              label="Còn hàng"
-              value={stats.available_count ?? 0}
-              accent="text-emerald-700"
-            />
-            <StatBox label="Phân khu" value={data.zones.length} />
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-2 pt-2">
+        {/* Primary action */}
+        <div className="grid grid-cols-1 gap-2">
           <Link
             to="/inventory"
             search={{ projectId: p.id }}
-            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-center text-[12px] font-medium"
+            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[color:var(--brand-navy)] text-sm font-semibold text-primary-foreground shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
           >
-            <LayoutGrid className="h-4 w-4 text-[var(--brand-navy)]" />
+            <LayoutGrid className="h-4 w-4" />
             Xem bảng hàng
           </Link>
-          <Link
-            to="/inventory"
-            search={{ projectId: p.id, focus: "code" }}
-            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-center text-[12px] font-medium"
-          >
-            <Building2 className="h-4 w-4 text-[var(--brand-navy)]" />
-            Tìm mã căn
-          </Link>
+          {contact?.phone && (
+            <a
+              href={`tel:${phoneDigits}`}
+              className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-[color:var(--surface)] text-sm font-semibold text-[color:var(--brand-navy)]"
+            >
+              <Phone className="h-4 w-4" />
+              Liên hệ sale phụ trách
+            </a>
+          )}
         </div>
 
-        {data.zones.length > 0 && (
-          <section className="pt-3">
-            <h3 className="mb-2 text-sm font-semibold">Phân khu / Toà</h3>
-            <div className="flex flex-wrap gap-2">
-              {data.zones.map((z) => (
-                <span
-                  key={z.id}
-                  className="rounded-full border border-border bg-card px-3 py-1 text-xs"
-                >
-                  {z.name}
-                </span>
-              ))}
-              {data.buildings.map((b) => (
-                <span
-                  key={b.id}
-                  className="rounded-full border border-border bg-card px-3 py-1 text-xs"
-                >
-                  {b.name}
-                </span>
-              ))}
+        {/* Overview */}
+        {(data.developer?.name ||
+          p.location_text ||
+          p.project_category ||
+          p.short_description) && (
+          <SectionCard title="Tổng quan">
+            <div className="divide-y divide-border">
+              {data.developer?.name && (
+                <InfoRow label="Chủ đầu tư" value={data.developer.name} />
+              )}
+              {p.location_text && (
+                <InfoRow label="Vị trí" value={p.location_text as string} />
+              )}
+              {p.project_category && (
+                <InfoRow label="Loại hình" value={p.project_category as string} />
+              )}
+              {p.code && <InfoRow label="Mã dự án" value={p.code as string} />}
             </div>
-          </section>
+            {p.short_description && (
+              <p className="mt-3 whitespace-pre-line text-[13px] leading-relaxed text-[color:var(--text-secondary)]">
+                {p.short_description as string}
+              </p>
+            )}
+          </SectionCard>
         )}
 
-        {data.primary_contact && (
-          <section className="pt-1">
-            <h3 className="mb-2 text-sm font-semibold">Phụ trách kinh doanh</h3>
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-              {data.primary_contact.avatar_url ? (
-                <img src={data.primary_contact.avatar_url} alt={data.primary_contact.full_name ?? ""} className="h-11 w-11 rounded-full object-cover" />
-              ) : (
-                <div className="grid h-11 w-11 place-items-center rounded-full bg-muted text-sm font-semibold">
-                  {(data.primary_contact.full_name ?? "?").slice(0, 1).toUpperCase()}
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{data.primary_contact.full_name ?? "—"}</p>
-                <p className="truncate text-[11px] text-muted-foreground">
-                  {[data.primary_contact.position, data.primary_contact.branch].filter(Boolean).join(" · ") || "Sale"}
-                </p>
-              </div>
-              {data.primary_contact.phone && (
-                <a href={`tel:${data.primary_contact.phone.replace(/\s/g, "")}`} aria-label="Gọi" className="grid h-9 w-9 place-items-center rounded-lg bg-emerald-600 text-white">
-                  <Phone className="h-4 w-4" />
-                </a>
-              )}
-              {data.primary_contact.zalo_url && (
-                <a href={data.primary_contact.zalo_url} target="_blank" rel="noreferrer noopener" aria-label="Zalo" className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--brand-navy)] text-white">
-                  <MessageCircle className="h-4 w-4" />
-                </a>
-              )}
+        {/* Featured products */}
+        {hasFeatured && (
+          <section>
+            <div className="mb-2 flex items-end justify-between px-1">
+              <h2 className="text-[14px] font-semibold tracking-tight text-[color:var(--text-primary)]">
+                Sản phẩm nổi bật
+              </h2>
+              <Link
+                to="/inventory"
+                search={{ projectId: p.id }}
+                className="text-[12px] font-semibold text-[color:var(--brand-navy)]"
+              >
+                Xem bảng hàng
+              </Link>
             </div>
-          </section>
-        )}
-
-        <section className="pt-3">
-          <h3 className="mb-2 text-sm font-semibold">Sản phẩm nổi bật</h3>
-          {data.featured_products.length === 0 ? (
-            <MobileEmptyState title="Chưa có sản phẩm nổi bật." />
-          ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {data.featured_products.map((f) => (
                 <MobileInventoryCard
                   key={f.product_id}
@@ -205,18 +199,12 @@ function ProjectDetailPage() {
                 />
               ))}
             </div>
-          )}
-        </section>
-      </div>
-    </div>
-  );
-}
+          </section>
+        )}
 
-function StatBox({ label, value, accent }: { label: string; value: number | string; accent?: string }) {
-  return (
-    <div className="rounded-xl border border-border p-2">
-      <p className="text-[10px] uppercase text-muted-foreground">{label}</p>
-      <p className={"text-sm font-semibold " + (accent ?? "")}>{value}</p>
-    </div>
+        {/* Primary contact */}
+        {contact && <PrimaryContactCard contact={contact} />}
+      </div>
+    </MobileShell>
   );
 }
