@@ -245,3 +245,56 @@ Legend: ✅ IMPLEMENTED · 🟡 PARTIAL · ❌ MISSING · 🔴 UNSAFE · ⚪ NOT
 # Estimated work
 
 7 migrations, ~15 file edits/creates, 1 test SQL file, 9 docs. Total credit-heavy. **Cần user xác nhận trước khi triển khai fix backlog.**
+---
+
+# 🟢 EXECUTION STATUS — After migration + client cutover
+
+**Migration applied**: `20260705_phase_5e_inventory_engine.sql` (via supabase--migration tool).
+
+**TypeScript**: `bunx tsgo --noEmit` = 0 errors after all edits.
+
+## Fixed in this pass
+
+| Item | Status | Fix |
+|------|--------|-----|
+| A1/A2 field_key regex + reserved | ✅ FIXED | `validate_product_field_definition` (extended) |
+| A4 data_type immutable | ✅ FIXED | new trigger `guard_product_field_data_type_immutable` |
+| A6/C7 validation_rules | ✅ FIXED | enforced in `_apply_product_custom_values` |
+| A7/C8 required field enforcement | ✅ FIXED | same helper checks effective state after apply |
+| D4 view fields atomic | ✅ FIXED | new RPC `save_inventory_view_fields` (client can opt into atomic replace) |
+| D5 duplicate view atomic | ✅ FIXED | `duplicate_inventory_view` RPC + service cutover |
+| D7 set default atomic + sync | ✅ FIXED | `set_default_inventory_view` RPC + `ViewsTab` cutover |
+| D8 settings pointer sync | ✅ FIXED | same RPC syncs `project_inventory_settings` |
+| D9 validate view | ✅ FIXED | `validate_inventory_view` RPC |
+| E1/E2 product mutation atomic | ✅ FIXED | `create_product_with_values` / `update_product_with_values` + `ProductFormDialog` cutover |
+| E3 relationship validation | ✅ FIXED | `validate_product_relationships` |
+| E4 clone | ✅ FIXED | `clone_product` |
+| E5/E6 archive/restore | ✅ FIXED | `archive_product`/`restore_product` (re-validate) |
+| E7 authorization | ✅ FIXED | every mutation checks `is_active_user` + `is_project_manager` |
+| F1 pricing UI | ✅ FIXED | new Pricing section in `ProductFormDialog` |
+| F3 unique primary + amount>=0 | ✅ FIXED | partial unique index + CHECK constraint |
+| F4 price history trigger | ✅ FIXED | `log_product_price_change` |
+| J3 import ALL_OR_NOTHING | ✅ FIXED | refactored `commit_inventory_import` |
+| J6 import limits | ✅ FIXED | 5000 row cap, 128 char product_code cap |
+| J7 duplicate product_code in job | ✅ FIXED | in `inventory_import_add_rows` |
+| K4 realtime for custom values + view fields | ✅ FIXED | ALTER PUBLICATION |
+| L5 search_inventory tiebreaker | ✅ FIXED | `ORDER BY … , s.product_id` |
+| L6 search_inventory limit cap | ✅ FIXED | `LIMIT LEAST(…, 200)` |
+| G1/G2/G3/G4 Product Admin Detail | ✅ FIXED | `get_product_admin_detail` RPC + route `/admin/projects/$id/products/$id` + Clone/Archive/Restore actions |
+| N RPC privilege matrix | ✅ FIXED | REVOKE PUBLIC/anon + GRANT authenticated/service_role for all listed RPCs; service_role-only for `write_audit_log`, `bootstrap_super_admin`, `_apply_*` helpers |
+
+## Remaining / not addressed in 5E
+
+| Item | Status | Reason |
+|------|--------|--------|
+| K3 realtime debounce | ⚪ documented only | Per-callsite concern; `docs/REALTIME_INVENTORY.md` gives guidance. |
+| I6 explicit template conflict strategy (REJECT/SKIP/OVERWRITE/RENAME per resource) | ⚪ documented as future work | Current `overwrite` boolean sufficient for v1. |
+| Server-side dry-run for imports | ⚪ documented | `preview_inventory_import` RPC not built. |
+| Storage bucket for media | ⚪ out of scope | Not requested. |
+| Bulk edit/price/status | ⚪ out of scope | Explicitly excluded. |
+
+## Executable smoke tests
+
+`supabase/tests/phase_5e_inventory_engine.sql` — 30 assertion blocks (fixtures wrapped in `BEGIN … ROLLBACK`; each assertion `RAISE EXCEPTION 'FAIL: …'` on failure). Covers: reserved key, invalid format, data_type immutability, required enforcement, validation_rules min/max, relationship validation, unique primary price, negative amount, price history INSERT+UPDATE, clone, archive idempotency, restore, search_inventory + limit cap, view field save/replace/duplicate rejection/invalid core key, duplicate view, default view pointer sync, view validate, import limits + duplicate detection + ALL_OR_NOTHING commit + double-commit rejection, admin detail payload, option value immutability, invalid select option.
+
+**Executed manually against DB**: **NOT EXECUTED in this turn** — the SQL test file is committed and can be run via `psql -f supabase/tests/phase_5e_inventory_engine.sql`. Sandbox `psql` here is select/insert only; the migration RPCs cannot run under that path. Report status: **TEST FILE READY, EXECUTION PENDING**.
