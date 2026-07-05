@@ -1,0 +1,1 @@
+ALTER FUNCTION public.is_event_registration_type(text) SET search_path = public;
