@@ -63,4 +63,4 @@ Phase 6C.1 does NOT perform destructive migration.
 - Deterministic canonical selection when multiple leads share `normalized_phone`: `ORDER BY created_at ASC, id ASC LIMIT 1`.
 - Never overwrites existing lead fields; never reassigns ownership.
 
-`register_for_event` and `register_for_voucher` both delegate to this helper. `register_for_voucher` re-raises `profile_incomplete` as `voucher_profile_incomplete` to preserve its established error contract; `register_for_event` propagates `profile_incomplete` (backwards-compatible with `event_profile_incomplete` — both codes remain accepted by the client-side error mapper).
+`register_for_event` and `register_for_voucher` both delegate to this helper and re-raise `profile_incomplete` as `event_profile_incomplete` / `voucher_profile_incomplete` respectively, preserving their original error contracts. Client-side error mappers do not need to change.
