@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Building2, LayoutGrid, ClipboardList, User } from "lucide-react";
+import { Home, Building2, LayoutGrid, Heart, User } from "lucide-react";
 import type { ComponentType } from "react";
 
 interface Item {
@@ -13,7 +13,7 @@ const items: Item[] = [
   { to: "/", label: "Trang chủ", icon: Home, exact: true },
   { to: "/projects", label: "Dự án", icon: Building2 },
   { to: "/inventory", label: "Bảng hàng", icon: LayoutGrid },
-  { to: "/register", label: "Đăng ký", icon: ClipboardList },
+  { to: "/favorites", label: "Yêu thích", icon: Heart },
   { to: "/account", label: "Tài khoản", icon: User },
 ];
 
