@@ -146,6 +146,20 @@ export const queryKeys = {
     ["registrations", "vouchers", "mine", normalize(filters)] as const,
   voucherEligibility: (voucherId: string, ctx: Record<string, unknown> = {}) =>
     ["vouchers", "eligibility", voucherId, normalize(ctx)] as const,
+
+  // Phase 6C — Events
+  adminEvents: (projectId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "projects", projectId, "events", normalize(filters)] as const,
+  adminEventDetail: (eventId: string) =>
+    ["admin", "events", "detail", eventId] as const,
+  activeProjectEvents: (projectId: string, ctx: Record<string, unknown> = {}) =>
+    ["events", "active", projectId, normalize(ctx)] as const,
+  activeEventDetail: (eventId: string, ctx: Record<string, unknown> = {}) =>
+    ["events", "active", "detail", eventId, normalize(ctx)] as const,
+  myEventRegistrations: (filters: Record<string, unknown> = {}) =>
+    ["registrations", "events", "mine", normalize(filters)] as const,
+  eventEligibility: (eventId: string, ctx: Record<string, unknown> = {}) =>
+    ["events", "eligibility", eventId, normalize(ctx)] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;

@@ -170,81 +170,321 @@ export type Database = {
         }
         Relationships: []
       }
-      events: {
+      event_product_types: {
         Row: {
-          address_text: string | null
-          archived_at: string | null
-          attachment_url: string | null
-          capacity: number | null
-          contact_phone: string | null
-          content: string | null
           created_at: string
-          end_at: string | null
-          event_type: string
+          event_id: string
+          product_type_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          product_type_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          product_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_product_types_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_product_types_product_type_id_fkey"
+            columns: ["product_type_id"]
+            isOneToOne: false
+            referencedRelation: "product_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_products: {
+        Row: {
+          created_at: string
+          event_id: string
+          product_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          product_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_products_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "event_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_sales_policies: {
+        Row: {
+          created_at: string
+          event_id: string
+          policy_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          policy_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          policy_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_sales_policies_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_sales_policies_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "sales_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_sessions: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          ends_at: string
+          event_id: string
           id: string
-          is_featured: boolean
-          location_name: string | null
+          location_text: string | null
           metadata: Json
-          project_id: string | null
-          registered_count: number
-          registration_deadline: string | null
-          slug: string
-          start_at: string | null
-          status: string
-          summary: string | null
-          thumbnail_url: string | null
+          starts_at: string
           title: string
           updated_at: string
         }
         Insert: {
-          address_text?: string | null
-          archived_at?: string | null
-          attachment_url?: string | null
-          capacity?: number | null
-          contact_phone?: string | null
-          content?: string | null
           created_at?: string
-          end_at?: string | null
-          event_type: string
+          description?: string | null
+          display_order?: number
+          ends_at: string
+          event_id: string
           id?: string
-          is_featured?: boolean
-          location_name?: string | null
+          location_text?: string | null
           metadata?: Json
-          project_id?: string | null
-          registered_count?: number
-          registration_deadline?: string | null
-          slug: string
-          start_at?: string | null
-          status?: string
-          summary?: string | null
-          thumbnail_url?: string | null
+          starts_at: string
           title: string
           updated_at?: string
         }
         Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          ends_at?: string
+          event_id?: string
+          id?: string
+          location_text?: string | null
+          metadata?: Json
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_sessions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_vouchers: {
+        Row: {
+          created_at: string
+          event_id: string
+          voucher_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          voucher_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_vouchers_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_vouchers_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          address_text: string | null
+          agenda_json: Json
+          applicability_scope: string
+          archived_at: string | null
+          attachment_url: string | null
+          attachments: Json
+          capacity: number | null
+          contact_phone: string | null
+          content: string | null
+          created_at: string
+          created_by: string | null
+          end_at: string | null
+          event_type: string
+          id: string
+          is_featured: boolean
+          latitude: number | null
+          location_name: string | null
+          location_notes: string | null
+          location_type: string
+          longitude: number | null
+          meeting_url: string | null
+          metadata: Json
+          per_user_limit: number
+          priority: number
+          project_id: string | null
+          published_at: string | null
+          registered_count: number
+          registration_deadline: string | null
+          registration_start: string | null
+          site_tour_details: Json
+          slug: string
+          speakers_json: Json
+          start_at: string | null
+          status: string
+          summary: string | null
+          thumbnail_url: string | null
+          timezone: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
           address_text?: string | null
+          agenda_json?: Json
+          applicability_scope?: string
           archived_at?: string | null
           attachment_url?: string | null
+          attachments?: Json
           capacity?: number | null
           contact_phone?: string | null
           content?: string | null
           created_at?: string
+          created_by?: string | null
           end_at?: string | null
-          event_type?: string
+          event_type: string
           id?: string
           is_featured?: boolean
+          latitude?: number | null
           location_name?: string | null
+          location_notes?: string | null
+          location_type?: string
+          longitude?: number | null
+          meeting_url?: string | null
           metadata?: Json
+          per_user_limit?: number
+          priority?: number
           project_id?: string | null
+          published_at?: string | null
           registered_count?: number
           registration_deadline?: string | null
-          slug?: string
+          registration_start?: string | null
+          site_tour_details?: Json
+          slug: string
+          speakers_json?: Json
           start_at?: string | null
           status?: string
           summary?: string | null
           thumbnail_url?: string | null
+          timezone?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          address_text?: string | null
+          agenda_json?: Json
+          applicability_scope?: string
+          archived_at?: string | null
+          attachment_url?: string | null
+          attachments?: Json
+          capacity?: number | null
+          contact_phone?: string | null
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          end_at?: string | null
+          event_type?: string
+          id?: string
+          is_featured?: boolean
+          latitude?: number | null
+          location_name?: string | null
+          location_notes?: string | null
+          location_type?: string
+          longitude?: number | null
+          meeting_url?: string | null
+          metadata?: Json
+          per_user_limit?: number
+          priority?: number
+          project_id?: string | null
+          published_at?: string | null
+          registered_count?: number
+          registration_deadline?: string | null
+          registration_start?: string | null
+          site_tour_details?: Json
+          slug?: string
+          speakers_json?: Json
+          start_at?: string | null
+          status?: string
+          summary?: string | null
+          thumbnail_url?: string | null
+          timezone?: string
           title?: string
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -2842,6 +3082,26 @@ export type Database = {
       }
     }
     Functions: {
+      _apply_event_audience: {
+        Args: {
+          p_event_id: string
+          p_policy_ids: string[]
+          p_product_ids: string[]
+          p_product_type_ids: string[]
+          p_project_id: string
+          p_voucher_ids: string[]
+        }
+        Returns: undefined
+      }
+      _apply_event_sessions: {
+        Args: {
+          p_event_id: string
+          p_evt_end: string
+          p_evt_start: string
+          p_sessions: Json
+        }
+        Returns: undefined
+      }
       _apply_policy_applicability: {
         Args: {
           p_policy_id: string
@@ -2874,6 +3134,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      _event_registration_count: {
+        Args: { p_event_id: string }
+        Returns: number
+      }
       _voucher_registration_count: {
         Args: { p_voucher_id: string }
         Returns: number
@@ -2886,6 +3150,10 @@ export type Database = {
           p_project_id: string
           p_template_id: string
         }
+        Returns: Json
+      }
+      archive_event: {
+        Args: { p_event_id: string; p_reason?: string }
         Returns: Json
       }
       archive_product: {
@@ -2929,8 +3197,26 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      cancel_event: {
+        Args: { p_event_id: string; p_reason?: string }
+        Returns: Json
+      }
+      cancel_my_event_registration: {
+        Args: { p_registration_id: string }
+        Returns: Json
+      }
       cancel_my_voucher_registration: {
         Args: { p_registration_id: string }
+        Returns: Json
+      }
+      check_event_eligibility: {
+        Args: {
+          p_event_id: string
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id?: string
+        }
         Returns: Json
       }
       check_voucher_eligibility: {
@@ -2939,6 +3225,15 @@ export type Database = {
           p_product_id?: string
           p_product_type_id?: string
           p_voucher_id: string
+        }
+        Returns: Json
+      }
+      clone_event: {
+        Args: {
+          p_event_id: string
+          p_new_slug: string
+          p_new_title?: string
+          p_shift_start?: string
         }
         Returns: Json
       }
@@ -2960,6 +3255,23 @@ export type Database = {
         Returns: Json
       }
       commit_inventory_import: { Args: { p_job_id: string }; Returns: Json }
+      complete_event: {
+        Args: { p_event_id: string; p_reason?: string }
+        Returns: Json
+      }
+      create_event: {
+        Args: {
+          p_event: Json
+          p_policy_ids?: string[]
+          p_product_ids?: string[]
+          p_product_type_ids?: string[]
+          p_project_id: string
+          p_publish?: boolean
+          p_sessions?: Json
+          p_voucher_ids?: string[]
+        }
+        Returns: Json
+      }
       create_product_with_values: {
         Args: {
           p_core: Json
@@ -2998,7 +3310,33 @@ export type Database = {
         Args: { p_code: string; p_name: string; p_source_id: string }
         Returns: string
       }
+      event_derived_state: { Args: { p_event_id: string }; Returns: string }
       generate_registration_code_value: { Args: never; Returns: string }
+      get_active_event_detail: {
+        Args: {
+          p_event_id: string
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id?: string
+        }
+        Returns: Json
+      }
+      get_active_project_events: {
+        Args: {
+          p_event_type?: string
+          p_limit?: number
+          p_offset?: number
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_project_id: string
+          p_starts_from?: string
+          p_starts_to?: string
+          p_voucher_id?: string
+        }
+        Returns: Json
+      }
       get_active_project_policies: {
         Args: {
           p_product_id?: string
@@ -3024,6 +3362,17 @@ export type Database = {
           p_product_id?: string
           p_product_type_id?: string
           p_voucher_id: string
+        }
+        Returns: Json
+      }
+      get_event_admin_detail: { Args: { p_event_id: string }; Returns: Json }
+      get_my_event_registrations: {
+        Args: {
+          p_event_type?: string
+          p_limit?: number
+          p_offset?: number
+          p_project_id?: string
+          p_status?: string
         }
         Returns: Json
       }
@@ -3067,12 +3416,25 @@ export type Database = {
         Returns: boolean
       }
       normalize_phone: { Args: { phone: string }; Returns: string }
+      pause_event: { Args: { p_event_id: string }; Returns: Json }
       pause_voucher: { Args: { p_voucher_id: string }; Returns: Json }
+      publish_event: { Args: { p_event_id: string }; Returns: Json }
       publish_sales_policy: {
         Args: { p_change_summary?: string; p_policy_id: string }
         Returns: Json
       }
       publish_voucher: { Args: { p_voucher_id: string }; Returns: Json }
+      register_for_event: {
+        Args: {
+          p_event_id: string
+          p_note?: string
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id?: string
+        }
+        Returns: Json
+      }
       register_for_voucher: {
         Args: {
           p_note?: string
@@ -3083,13 +3445,31 @@ export type Database = {
         }
         Returns: Json
       }
+      restore_event: { Args: { p_event_id: string }; Returns: Json }
       restore_product: { Args: { p_product_id: string }; Returns: undefined }
       restore_sales_policy: { Args: { p_policy_id: string }; Returns: Json }
       restore_voucher: { Args: { p_voucher_id: string }; Returns: Json }
+      resume_event: { Args: { p_event_id: string }; Returns: Json }
       resume_voucher: { Args: { p_voucher_id: string }; Returns: Json }
       save_inventory_view_fields: {
         Args: { p_fields: Json; p_view_id: string }
         Returns: number
+      }
+      search_events: {
+        Args: {
+          p_derived_state?: string
+          p_event_type?: string
+          p_featured?: boolean
+          p_include_archived?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_project_id: string
+          p_query?: string
+          p_starts_from?: string
+          p_starts_to?: string
+          p_status?: string
+        }
+        Returns: Json
       }
       search_inventory: {
         Args: {
@@ -3201,6 +3581,18 @@ export type Database = {
         Args: { p_change_summary?: string; p_policy_id: string }
         Returns: Json
       }
+      update_event: {
+        Args: {
+          p_event_id: string
+          p_event_patch: Json
+          p_policy_ids?: string[]
+          p_product_ids?: string[]
+          p_product_type_ids?: string[]
+          p_sessions?: Json
+          p_voucher_ids?: string[]
+        }
+        Returns: Json
+      }
       update_product_with_values: {
         Args: {
           p_core?: Json
@@ -3229,6 +3621,45 @@ export type Database = {
           p_voucher_patch: Json
         }
         Returns: Json
+      }
+      validate_event_agenda: { Args: { p_agenda: Json }; Returns: undefined }
+      validate_event_attachments: {
+        Args: { p_attachments: Json }
+        Returns: undefined
+      }
+      validate_event_dates: {
+        Args: {
+          p_end: string
+          p_reg_deadline: string
+          p_reg_start: string
+          p_start: string
+        }
+        Returns: undefined
+      }
+      validate_event_location: {
+        Args: {
+          p_address: string
+          p_lat: number
+          p_lng: number
+          p_type: string
+          p_url: string
+          p_venue: string
+        }
+        Returns: undefined
+      }
+      validate_event_session_row: {
+        Args: {
+          p_end: string
+          p_evt_end: string
+          p_evt_start: string
+          p_start: string
+          p_title: string
+        }
+        Returns: undefined
+      }
+      validate_event_speakers: {
+        Args: { p_speakers: Json }
+        Returns: undefined
       }
       validate_inventory_view: { Args: { p_view_id: string }; Returns: Json }
       validate_policy_applicability: {
@@ -3263,6 +3694,10 @@ export type Database = {
       }
       validate_sales_policy_slug: {
         Args: { p_slug: string }
+        Returns: undefined
+      }
+      validate_site_tour_details: {
+        Args: { p_details: Json; p_event_type: string }
         Returns: undefined
       }
       validate_voucher_attachments: {
