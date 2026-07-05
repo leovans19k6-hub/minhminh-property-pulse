@@ -1,15 +1,31 @@
-import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatchRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Pencil } from "lucide-react";
+import { z } from "zod";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { queryKeys } from "@/lib/queryKeys";
 import { adminGetProject } from "@/services/admin/projects.service";
+import { OverviewTab } from "@/components/admin/tabs/OverviewTab";
+import { ZonesTab } from "@/components/admin/tabs/ZonesTab";
+import { BuildingsTab } from "@/components/admin/tabs/BuildingsTab";
+import { FloorsTab } from "@/components/admin/tabs/FloorsTab";
+import { ProductTypesTab } from "@/components/admin/tabs/ProductTypesTab";
+import { MembersTab } from "@/components/admin/tabs/MembersTab";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { canManageProject } from "@/features/admin/access";
+
+const TAB_VALUES = ["overview", "zones", "buildings", "floors", "product-types", "members", "inventory", "policies", "vouchers", "events"] as const;
+
+const searchSchema = z.object({
+  tab: fallback(z.enum(TAB_VALUES), "overview").default("overview"),
+});
 
 export const Route = createFileRoute("/admin/projects/$projectId")({
+  validateSearch: zodValidator(searchSchema),
   component: ProjectDetailLayout,
 });
 
@@ -21,79 +37,69 @@ function ProjectDetailLayout() {
 
 function ProjectDetail() {
   const { projectId } = Route.useParams();
+  const { tab } = Route.useSearch();
+  const navigate = useNavigate({ from: "/admin/projects/$projectId" });
+  const { currentUser } = useAuth();
+  const canManage = canManageProject(currentUser, projectId);
+
   const q = useQuery({
     queryKey: queryKeys.adminProjectDetail(projectId),
     queryFn: () => adminGetProject(projectId),
   });
+
   if (q.isLoading) return <p className="text-sm text-muted-foreground">Đang tải…</p>;
   if (!q.data) return <p className="text-sm text-muted-foreground">Không tìm thấy dự án.</p>;
   const p = q.data;
   const dev = Array.isArray(p.developers) ? p.developers[0] : p.developers;
+
+  const setTab = (value: string) =>
+    navigate({ search: { tab: (TAB_VALUES as readonly string[]).includes(value) ? (value as typeof tab) : "overview" }, replace: false });
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title={p.name}
-        description={`${p.code} · ${dev?.name ?? "—"}`}
-        breadcrumb={<Link to="/admin/projects" className="inline-flex items-center gap-1 hover:underline"><ArrowLeft className="h-3 w-3" />Dự án</Link>}
+        description={`${p.code} · ${dev?.name ?? "—"} · ${p.location_text ?? ""}`}
+        breadcrumb={
+          <Link to="/admin/projects" className="inline-flex items-center gap-1 hover:underline">
+            <ArrowLeft className="h-3 w-3" />Dự án
+          </Link>
+        }
         actions={
-          <Button asChild size="sm" variant="outline">
-            <Link to="/admin/projects/$projectId/edit" params={{ projectId }}>
-              <Pencil className="mr-1 h-4 w-4" /> Chỉnh sửa
-            </Link>
-          </Button>
+          <>
+            <Badge variant="outline">{p.status}</Badge>
+            {canManage ? (
+              <Button asChild size="sm" variant="outline">
+                <Link to="/admin/projects/$projectId/edit" params={{ projectId }}>
+                  <Pencil className="mr-1 h-4 w-4" /> Chỉnh sửa
+                </Link>
+              </Button>
+            ) : null}
+          </>
         }
       />
 
-      <Tabs defaultValue="overview">
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex flex-wrap">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-          <TabsTrigger value="zones" disabled>Phân khu</TabsTrigger>
-          <TabsTrigger value="buildings" disabled>Tòa nhà</TabsTrigger>
-          <TabsTrigger value="floors" disabled>Tầng</TabsTrigger>
-          <TabsTrigger value="types" disabled>Loại SP</TabsTrigger>
-          <TabsTrigger value="members" disabled>Thành viên</TabsTrigger>
+          <TabsTrigger value="zones">Phân khu</TabsTrigger>
+          <TabsTrigger value="buildings">Tòa nhà</TabsTrigger>
+          <TabsTrigger value="floors">Tầng</TabsTrigger>
+          <TabsTrigger value="product-types">Loại SP</TabsTrigger>
+          <TabsTrigger value="members">Thành viên</TabsTrigger>
           <TabsTrigger value="inventory" disabled>Bảng hàng</TabsTrigger>
           <TabsTrigger value="policies" disabled>Chính sách</TabsTrigger>
+          <TabsTrigger value="vouchers" disabled>Voucher</TabsTrigger>
+          <TabsTrigger value="events" disabled>Sự kiện</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="mt-4">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Card>
-              <CardHeader><CardTitle className="text-base">Thông tin dự án</CardTitle></CardHeader>
-              <CardContent className="grid grid-cols-2 gap-3 text-sm">
-                <Info label="Nhà phát triển" value={dev?.name} />
-                <Info label="Danh mục" value={p.project_category} />
-                <Info label="Trạng thái" value={<Badge variant="outline">{p.status}</Badge>} />
-                <Info label="Featured" value={p.is_featured ? "Có" : "Không"} />
-                <Info label="Địa chỉ" value={p.location_text} />
-                <Info label="Tỉnh/Thành" value={p.province} />
-                <Info label="Quận/Huyện" value={p.district} />
-                <Info label="Thứ tự hiển thị" value={p.display_order} />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle className="text-base">Mô tả</CardTitle></CardHeader>
-              <CardContent>
-                <p className="text-sm whitespace-pre-wrap">{p.description ?? p.short_description ?? "Chưa có mô tả."}</p>
-              </CardContent>
-            </Card>
-          </div>
-          <Card className="mt-4">
-            <CardContent className="py-6 text-center text-sm text-muted-foreground">
-              Các tab quản lý cấu trúc (phân khu, tòa nhà, tầng, loại sản phẩm, thành viên) sẽ có ở bước phát triển tiếp theo.
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <TabsContent value="overview" className="mt-4"><OverviewTab project={p} /></TabsContent>
+        <TabsContent value="zones" className="mt-4">{tab === "zones" && <ZonesTab projectId={projectId} canManage={canManage} />}</TabsContent>
+        <TabsContent value="buildings" className="mt-4">{tab === "buildings" && <BuildingsTab projectId={projectId} canManage={canManage} />}</TabsContent>
+        <TabsContent value="floors" className="mt-4">{tab === "floors" && <FloorsTab projectId={projectId} canManage={canManage} />}</TabsContent>
+        <TabsContent value="product-types" className="mt-4">{tab === "product-types" && <ProductTypesTab projectId={projectId} canManage={canManage} />}</TabsContent>
+        <TabsContent value="members" className="mt-4">{tab === "members" && <MembersTab projectId={projectId} canManage={canManage} />}</TabsContent>
       </Tabs>
-    </div>
-  );
-}
-
-function Info({ label, value }: { label: string; value?: React.ReactNode }) {
-  return (
-    <div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="font-medium">{value ?? "—"}</div>
     </div>
   );
 }
