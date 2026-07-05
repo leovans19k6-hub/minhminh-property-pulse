@@ -133,10 +133,6 @@ function ProjectDetailPage() {
           </section>
         )}
 
-        <section className="pt-3">
-          <h3 className="mb-2 text-sm font-semibold">Sản phẩm nổi bật</h3>
-        </section>
-
         {data.primary_contact && (
           <section className="pt-1">
             <h3 className="mb-2 text-sm font-semibold">Phụ trách kinh doanh</h3>
@@ -169,7 +165,7 @@ function ProjectDetailPage() {
         )}
 
         <section className="pt-3">
-          <h3 className="mb-2 text-sm font-semibold">Sản phẩm nổi bật (tiếp)</h3>
+          <h3 className="mb-2 text-sm font-semibold">Sản phẩm nổi bật</h3>
           {data.featured_products.length === 0 ? (
             <MobileEmptyState title="Chưa có sản phẩm nổi bật." />
           ) : (
