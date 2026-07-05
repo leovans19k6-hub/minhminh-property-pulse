@@ -71,3 +71,14 @@ All Phase 6B functions use `SECURITY DEFINER` + `SET search_path = public`. User
 - `_apply_event_audience`, `_apply_event_sessions`, `_event_registration_count`, `event_derived_state`
 
 All Phase 6C functions use `SECURITY DEFINER` + `SET search_path = public`. User-facing RPCs self-authorize (`auth.uid()` + `is_active_user()` + `is_project_manager()`); direct writes to `events`, `event_sessions`, `event_product_types`, `event_products`, `event_sales_policies`, `event_vouchers` are denied by RLS. Event registrations are denied at `registrations_insert` (`registration_type NOT IN ('voucher','event','site_tour')`) — the only paths are `register_for_event` (Event Engine) and `register_for_voucher` (Voucher Engine). Both serialize concurrent callers via `pg_advisory_xact_lock`; the Event lock uses seed `43` to avoid collisions with the Voucher lock seed `42`.
+
+## Phase 6C.1 — Shared registration helpers
+
+### PUBLIC (immutable predicate, safe to expose)
+- `is_event_registration_type(text)` — returns true for `event` / `site_tour`. `IMMUTABLE`, no side effects, no security concern.
+
+### Internal only (REVOKE PUBLIC, anon, authenticated)
+- `get_or_create_registration_lead(uuid, uuid, uuid)` — SECURITY DEFINER, GRANTed only to `service_role`. Called from `register_for_event` and `register_for_voucher` inside the same transaction; concurrency-safe via `pg_advisory_xact_lock(hashtextextended(normalized_phone, 91))`.
+- `validate_event_timezone()` — trigger function, not directly callable.
+
+Existing warnings in the security linter (0011 / 0028 / 0029) remain acknowledged for user-facing mutation RPCs per the note above.

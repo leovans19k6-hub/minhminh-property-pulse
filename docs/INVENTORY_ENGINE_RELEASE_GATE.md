@@ -35,3 +35,21 @@ Phase 6B is additive; it does **not** make Inventory Engine or Sales Policies pr
 - Phase 6C Event registration concurrency verification — **NOT EXECUTED**.
 
 Phase 6C implementation does **not** make Inventory Engine, Sales Policies, or Voucher Management production-verified. Event Management ships behind the same gate: every SQL and UI check above must be executed and green before any of the modules can be marked "production-ready".
+
+## Phase 6C.1 addition (Event verification + registration hardening)
+
+- IANA timezone validation trigger (`validate_event_timezone`) — INSTALLED via migration.
+- Shared trusted lead helper (`get_or_create_registration_lead`) — INSTALLED; used by `register_for_event` and `register_for_voucher`. Concurrency-safe via `pg_advisory_xact_lock(hashtextextended(normalized_phone, 91))`; deterministic canonical selection `ORDER BY created_at ASC, id ASC`.
+- Canonical predicate `is_event_registration_type(text)` — INSTALLED. Used by `register_for_event` and expected to be used by Phase 6D admin queries. TS mirror: `src/lib/registrationDomain.ts` (`isEventRegistrationType`, `CAPACITY_COUNTING_STATUSES`, `CANCELLABLE_STATUSES`, `getCanonicalRegistrationDomain`).
+
+Gate rows:
+
+| Gate | Status |
+| --- | --- |
+| Phase 6C.1 SQL functional tests (`supabase/tests/phase_6c_events.sql`, executable transactional subset) | NOT EXECUTED |
+| Phase 6C.1 RLS regression (`supabase/tests/phase_6c_events_rls.sql`, requires `authenticated` session) | NOT EXECUTED |
+| Phase 6C.1 concurrency scenarios (`supabase/tests/phase_6c_events_concurrency.sql`, requires two parallel sessions) | NOT EXECUTED |
+| Phase 6C.1 UI regression (Events / Vouchers / Policies / Products tabs, auth flow) | NOT EXECUTED |
+| Voucher regression after shared lead helper refactor | NOT EXECUTED |
+
+Phase 6C.1 does **not** promote any module to production-verified. The additive migration is safe (no schema change, no data migration, RPC signatures unchanged), but all gates above must run green before flipping the release status.

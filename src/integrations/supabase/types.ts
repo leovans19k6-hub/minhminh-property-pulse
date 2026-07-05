@@ -3385,6 +3385,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_or_create_registration_lead: {
+        Args: { p_product_id?: string; p_project_id: string; p_user_id: string }
+        Returns: string
+      }
       get_product_admin_detail: {
         Args: { p_product_id: string }
         Returns: Json
@@ -3409,6 +3413,7 @@ export type Database = {
         Returns: number
       }
       is_active_user: { Args: never; Returns: boolean }
+      is_event_registration_type: { Args: { p_type: string }; Returns: boolean }
       is_project_manager: { Args: { p_project_id: string }; Returns: boolean }
       is_project_member: { Args: { p_project_id: string }; Returns: boolean }
       is_reserved_product_field_key: {
