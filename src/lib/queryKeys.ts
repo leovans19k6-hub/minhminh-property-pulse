@@ -118,6 +118,20 @@ export const queryKeys = {
     ["admin", "inventory-products", productId, "price-history"] as const,
   adminProductDetail: (productId: string) =>
     ["admin", "inventory-products", productId, "detail"] as const,
+
+  // Phase 6A — Sales Policies
+  adminSalesPolicies: (projectId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "projects", projectId, "sales-policies", normalize(filters)] as const,
+  adminSalesPolicyDetail: (policyId: string) =>
+    ["admin", "sales-policies", "detail", policyId] as const,
+  adminSalesPolicyVersions: (policyId: string) =>
+    ["admin", "sales-policies", policyId, "versions"] as const,
+  activeProjectPolicies: (
+    projectId: string,
+    productId?: string | null,
+    productTypeId?: string | null,
+  ) =>
+    ["policies", "active", projectId, productId ?? null, productTypeId ?? null] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;
