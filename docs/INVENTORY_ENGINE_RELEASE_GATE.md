@@ -110,3 +110,57 @@ Phase 6D.2 introduces `get_operations_registration_capabilities(uuid, uuid)` (SE
 **Explicit blocker for executable multi-JWT tests:** the current sandbox database access is a PgBouncer transaction-pooled connection as `authenticator`. Reliable RLS assertions require a direct session-mode connection able to `SET LOCAL ROLE authenticated / anon / service_role` inside `BEGIN … ROLLBACK`, plus a privileged fixture seeder that can insert into `auth.users`. Neither is available in the current environment.
 
 Phase 6D.2 does **not** promote any module to production-verified. It closes the "client-side domain inference on Registration Detail" gap and adds a canonical server capability contract for future callers.
+
+## Phase 7A addition (Mobile Sales App — Projects / Project Detail / Inventory read foundation)
+
+Phase 7A cuts Mobile Home / Projects / Project Detail / Inventory list off mock data and onto real RPCs (`get_mobile_projects`, `get_mobile_project_detail`, `search_mobile_inventory`, `get_mobile_inventory_filters`, `can_access_mobile_project`). Additive migrations only.
+
+| Gate | Status |
+| --- | --- |
+| Mobile project access helper (`can_access_mobile_project`) authorization | PASS (static) — verified via `has_function_privilege` on 2026-07-05 (anon deny / authenticated allow) |
+| Mobile projects RPC privilege grant | PASS (static) — same check |
+| Mobile inventory RPC privilege grant | PASS (static) — same check |
+| Mobile inventory realtime publication (`products`, `product_price_options`, `product_custom_values`) | PASS (static) — verified via `pg_publication_tables` |
+| Mobile UI runtime regression (Home / Projects / Project Detail / Inventory) | NOT EXECUTED |
+| 360 / 390 / 430 px overflow regression | NOT EXECUTED |
+| Authenticated preview regression | NOT EXECUTED |
+
+## Phase 7B addition (Mobile Product Detail + Favorites)
+
+Phase 7B ships `get_mobile_product_detail`, `add_mobile_favorite`, `remove_mobile_favorite`, `get_mobile_favorites`, and `_resolve_mobile_primary_contact`. Product Detail + Favorites are Supabase-backed.
+
+| Gate | Status |
+| --- | --- |
+| Mobile Product authorization (auth + active + accessible + non-archived) | PASS (static) — `get_mobile_product_detail` source verified |
+| Product Detail contract shape at service boundary (runtime type guard) | PASS (implementation) — runtime regression NOT EXECUTED |
+| Nested Policy applicability scope (`get_active_project_policies`) | PASS (static, code review) — runtime regression NOT EXECUTED |
+| Nested Voucher preview scope (`get_active_project_vouchers`) | PASS (static, code review) — runtime regression NOT EXECUTED |
+| Nested Event preview scope (`get_active_project_events`) | PASS (static, code review) — runtime regression NOT EXECUTED |
+| Price history visibility (super_admin/admin/director or project manager) | PASS (static) — RPC source verified |
+| Status history visibility (same gate) | PASS (static) — RPC source verified |
+| Primary Contact privacy (no email/employee_code/role leakage) | PASS (static) — `_resolve_mobile_primary_contact` returns whitelisted columns only |
+| `_resolve_mobile_primary_contact` privilege (internal only) | PASS — verified deny for anon/authenticated on 2026-07-05 |
+| Favorites own-user isolation | PASS (static) — RPC filters by `auth.uid()` |
+| Favorites inaccessible-product rejection on add | PASS (static) — `can_access_mobile_product` guard |
+| Favorites idempotent add (`ON CONFLICT DO NOTHING`) | PASS (static) — source verified |
+| Favorites idempotent remove (unconditional delete on own row) | PASS (static) — source verified |
+| Favorites deterministic pagination (offset + secondary sort) | PASS (static) — RPC source verified; runtime regression NOT EXECUTED |
+| Mobile Product Detail runtime regression | NOT EXECUTED |
+| Mobile Favorites runtime regression | NOT EXECUTED |
+| Project Detail CTA regression | NOT EXECUTED |
+
+## Phase 7B.1 addition (Hardening pass)
+
+Phase 7B.1 is an additive hardening pass: narrows Product Detail realtime to product-scoped tables only (drops project-scoped `sales_policies` / `vouchers` / `events` subscriptions), adds `product_media` to `supabase_realtime`, removes every `as never` cast at mobile service boundaries by consuming the regenerated `Database` types, and inserts a runtime shape guard for the `get_mobile_product_detail` `jsonb` payload.
+
+| Gate | Status |
+| --- | --- |
+| `product_media` in `supabase_realtime` publication | PASS — verified via `pg_publication_tables` post-migration |
+| Product Detail realtime narrowed to product-scoped tables (products / prices / custom_values / media) | PASS (implementation) — runtime regression NOT EXECUTED |
+| Product Detail realtime channel cleanup on unmount / product change | PASS (implementation) — effect depends on `currentProductId`; `removeChannel` + `clearTimeout` in cleanup |
+| Generated RPC type safety at mobile service boundary (no `as never`) | PASS — `rg "as never" src/services/mobile/` returns 0 hits |
+| Runtime shape guard on `get_mobile_product_detail` payload | PASS (implementation) — throws friendly `ServiceError` on malformed / null payload |
+| Static privilege matrix for Phase 7A + 7B mobile RPCs | PASS — `has_function_privilege` matrix executed 2026-07-05 |
+| Full mobile end-to-end regression (auth + Home + Projects + Detail + Inventory + Product Detail + Favorites) | NOT EXECUTED |
+
+Phase 7B.1 does **not** promote Mobile Sales App to production-verified. Static contract checks (privileges, publication, RPC source, generated types) pass; end-to-end runtime regression remains outstanding and is required before any promotion.
