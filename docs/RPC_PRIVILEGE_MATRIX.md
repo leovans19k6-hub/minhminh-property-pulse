@@ -83,6 +83,18 @@ All Phase 6C functions use `SECURITY DEFINER` + `SET search_path = public`. User
 
 Existing warnings in the security linter (0011 / 0028 / 0029) remain acknowledged for user-facing mutation RPCs per the note above.
 
+## Phase 7B — Mobile Product Detail + Favorites
+
+### Authenticated + service_role (REVOKE anon)
+- `can_access_mobile_product(uuid)` — server-authoritative product visibility check.
+- `get_mobile_product_detail(uuid)` — full mobile product detail contract.
+- `add_mobile_favorite(uuid)`, `remove_mobile_favorite(uuid)`, `get_mobile_favorites(int,int)` — favorites API.
+
+### Internal only (REVOKE PUBLIC, anon, authenticated; GRANT service_role)
+- `_resolve_mobile_primary_contact(uuid)` — resolves the project's primary contact for embedding in `get_mobile_project_detail` and `get_mobile_product_detail`.
+
+All Phase 7B functions are `SECURITY DEFINER SET search_path = public`. Warnings 0028/0029 remain acknowledged as with prior mobile RPCs.
+
 ## Phase 6D — Operations Engine additions
 
 ### Authenticated + service_role (REVOKE anon)
