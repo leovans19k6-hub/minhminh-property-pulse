@@ -45,8 +45,8 @@ export async function listInventoryViews(
   return unwrap(await q, "views.list");
 }
 
-export async function getInventoryView(id: string) {
-  return unwrapMaybe(
+export async function getInventoryView(id: string): Promise<InventoryViewRow | null> {
+  return unwrapMaybe<InventoryViewRow>(
     await supabase.from("inventory_views").select("*").eq("id", id).maybeSingle(),
     "views.get",
   );
