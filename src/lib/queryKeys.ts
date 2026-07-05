@@ -43,6 +43,11 @@ export const queryKeys = {
   mobileInventoryFilters: (projectId?: string | null) =>
     ["mobile", "inventory", "filters", projectId ?? "all"] as const,
 
+  // Phase 7B — Mobile Product Detail + Favorites
+  mobileProductDetail: (id: string) => ["mobile", "products", "detail", id] as const,
+  mobileFavorites: (filters: Record<string, unknown> = {}) =>
+    ["mobile", "favorites", normalize(filters)] as const,
+
   projectDetail: (id: string) => ["projects", "detail", id] as const,
   projectStats: (id: string) => ["projects", "stats", id] as const,
 
