@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import type { Database } from "@/integrations/supabase/types";
+type Json = Database["public"]["Tables"]["product_field_definitions"]["Row"]["validation_rules"];
 import { queryKeys } from "@/lib/queryKeys";
 import { ServiceError } from "@/services/_helpers";
 import {
@@ -323,8 +325,8 @@ function numOrUndef(s: string): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-function cleanRules(rules: ValidationRules, dataType: FieldDataType): Record<string, unknown> {
-  const out: Record<string, unknown> = {};
+function cleanRules(rules: ValidationRules, dataType: FieldDataType): Json {
+  const out: Record<string, number> = {};
   const allow: (keyof ValidationRules)[] =
     dataType === "integer" || dataType === "decimal"
       ? ["min", "max", ...(dataType === "decimal" ? (["precision"] as const) : [])]
@@ -335,5 +337,5 @@ function cleanRules(rules: ValidationRules, dataType: FieldDataType): Record<str
     const v = rules[k];
     if (v !== undefined && v !== null) out[k] = v;
   }
-  return out;
+  return out as unknown as Json;
 }
