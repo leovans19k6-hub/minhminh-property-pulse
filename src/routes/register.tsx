@@ -2,28 +2,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { UserPlus, Ticket, MapPinned, PartyPopper } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { Loader2, PartyPopper, Ticket, MapPinned, UserPlus } from "lucide-react";
 import { MobileShell } from "@/components/mobile/MobileShell";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { projects, products } from "@/features/mock/data";
-import type { RegistrationType } from "@/types/models";
+import { registerForVoucher } from "@/services/vouchers.service";
+import { registerForEvent } from "@/services/events.service";
+import { RegisterUnavailableState } from "@/components/mobile/register/RegisterUnavailableState";
+import { RegisterSuccessState } from "@/components/mobile/register/RegisterSuccessState";
 
 const searchSchema = z.object({
-  type: z.enum(["consult", "voucher", "sitetour", "event"]).optional(),
-  projectId: z.string().optional(),
-  productId: z.string().optional(),
-  voucherId: z.string().optional(),
-  eventId: z.string().optional(),
+  type: z.enum(["voucher", "event", "site_tour", "consultation"]).optional(),
+  projectId: z.string().uuid().optional(),
+  productId: z.string().uuid().optional(),
+  productTypeId: z.string().uuid().optional(),
+  policyId: z.string().uuid().optional(),
+  voucherId: z.string().uuid().optional(),
+  eventId: z.string().uuid().optional(),
 });
 
 export const Route = createFileRoute("/register")({
@@ -34,144 +31,288 @@ export const Route = createFileRoute("/register")({
       { title: "Đăng ký — Minh Minh Sales Hub" },
       {
         name: "description",
-        content: "Đăng ký tư vấn, voucher, site tour và sự kiện cho khách hàng.",
+        content: "Đăng ký voucher, sự kiện và site tour cho khách hàng.",
       },
+      { name: "robots", content: "noindex" },
     ],
   }),
 });
 
-const typeMeta: Record<
-  RegistrationType,
-  { label: string; icon: typeof UserPlus; hint: string }
-> = {
-  consult: { label: "Đăng ký tư vấn", icon: UserPlus, hint: "KH cần chuyên viên gọi lại." },
-  voucher: { label: "Đăng ký Voucher", icon: Ticket, hint: "Giữ voucher cho khách hàng." },
-  sitetour: { label: "Đăng ký Site Tour", icon: MapPinned, hint: "Đăng ký lịch tham quan dự án." },
-  event: { label: "Đăng ký Sự kiện", icon: PartyPopper, hint: "Đăng ký khách tham dự sự kiện." },
-};
+type SuccessData = { code: string | null; title: string; description?: string };
 
 function RegisterPage() {
   const search = Route.useSearch();
-  const [type, setType] = useState<RegistrationType>(search.type ?? "consult");
-  const [projectId, setProjectId] = useState<string | undefined>(search.projectId);
-  const [productId, setProductId] = useState<string | undefined>(search.productId);
-  const [submitting, setSubmitting] = useState(false);
+  const [note, setNote] = useState("");
+  const [success, setSuccess] = useState<SuccessData | null>(null);
 
-  const productOptions = products.filter((p) => !projectId || p.projectId === projectId);
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      toast.success("Đã gửi đăng ký", {
-        description: "Chúng tôi sẽ xử lý trong thời gian sớm nhất.",
+  const voucherMut = useMutation({
+    mutationFn: (payload: { voucherId: string; note: string | null }) =>
+      registerForVoucher(payload.voucherId, {
+        productId: search.productId ?? null,
+        productTypeId: search.productTypeId ?? null,
+        policyId: search.policyId ?? null,
+        note: payload.note,
+      }),
+    onSuccess: (data) => {
+      setSuccess({
+        code: data.registration_code,
+        title: "Đã đăng ký voucher thành công",
+        description: "Chúng tôi sẽ liên hệ xác nhận trong thời gian sớm nhất.",
       });
-      (e.target as HTMLFormElement).reset();
-    }, 600);
-  };
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : "Không thể đăng ký voucher."),
+  });
 
+  const eventMut = useMutation({
+    mutationFn: (payload: { eventId: string; note: string | null }) =>
+      registerForEvent(payload.eventId, {
+        productId: search.productId ?? null,
+        productTypeId: search.productTypeId ?? null,
+        policyId: search.policyId ?? null,
+        voucherId: search.voucherId ?? null,
+        note: payload.note,
+      }),
+    onSuccess: (data) => {
+      setSuccess({
+        code: data.registration_code,
+        title:
+          data.event_type === "site_tour"
+            ? "Đã đăng ký Site Tour thành công"
+            : "Đã đăng ký sự kiện thành công",
+        description: "Vui lòng theo dõi thông báo để nhận cập nhật.",
+      });
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : "Không thể đăng ký sự kiện."),
+  });
+
+  if (success) {
+    return (
+      <MobileShell title="Đăng ký">
+        <RegisterSuccessState
+          title={success.title}
+          description={success.description}
+          registrationCode={success.code}
+        />
+      </MobileShell>
+    );
+  }
+
+  // Consultation is not yet available on mobile — no canonical mobile RPC.
+  if (search.type === "consultation") {
+    return (
+      <MobileShell title="Đăng ký tư vấn">
+        <RegisterUnavailableState
+          title="Đăng ký tư vấn chưa sẵn sàng"
+          description="Luồng đăng ký tư vấn sẽ được kích hoạt khi API mobile chuyên dụng hoàn tất."
+        />
+      </MobileShell>
+    );
+  }
+
+  if (search.type === "voucher" && search.voucherId) {
+    return (
+      <VoucherRegisterForm
+        voucherId={search.voucherId}
+        note={note}
+        setNote={setNote}
+        pending={voucherMut.isPending}
+        onSubmit={(n) => voucherMut.mutate({ voucherId: search.voucherId!, note: n || null })}
+      />
+    );
+  }
+
+  if ((search.type === "event" || search.type === "site_tour") && search.eventId) {
+    return (
+      <EventRegisterForm
+        eventId={search.eventId}
+        kind={search.type}
+        note={note}
+        setNote={setNote}
+        pending={eventMut.isPending}
+        onSubmit={(n) => eventMut.mutate({ eventId: search.eventId!, note: n || null })}
+      />
+    );
+  }
+
+  // Missing/invalid intent.
   return (
     <MobileShell title="Đăng ký">
-      <div className="space-y-4 p-4">
-        <div>
-          <p className="text-xs uppercase text-muted-foreground">Loại đăng ký</p>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            {(Object.keys(typeMeta) as RegistrationType[]).map((k) => {
-              const M = typeMeta[k];
-              const active = type === k;
-              return (
-                <button
-                  key={k}
-                  type="button"
-                  onClick={() => setType(k)}
-                  className={
-                    "flex items-center gap-2 rounded-2xl border p-3 text-left " +
-                    (active
-                      ? "border-[var(--brand-navy)] bg-[var(--brand-navy)]/5"
-                      : "border-border bg-card")
-                  }
-                >
-                  <span
-                    className={
-                      "grid h-9 w-9 place-items-center rounded-xl " +
-                      (active
-                        ? "bg-[var(--brand-navy)] text-primary-foreground"
-                        : "bg-muted text-foreground")
-                    }
-                  >
-                    <M.icon className="h-4 w-4" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">{M.label}</span>
-                    <span className="block truncate text-[11px] text-muted-foreground">
-                      {M.hint}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <RegisterUnavailableState
+        title="Liên kết đăng ký không hợp lệ"
+        description="Vui lòng mở đăng ký từ sản phẩm, voucher hoặc sự kiện cụ thể."
+      />
 
-        <form onSubmit={onSubmit} className="space-y-3 rounded-2xl border border-border bg-card p-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="name">Họ tên khách hàng</Label>
-            <Input id="name" name="name" required placeholder="VD: Nguyễn Văn A" className="h-11" />
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="phone">Số điện thoại</Label>
-              <Input id="phone" name="phone" required type="tel" placeholder="09xx xxx xxx" className="h-11" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="email@..." className="h-11" />
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Dự án quan tâm</Label>
-            <Select value={projectId} onValueChange={(v) => setProjectId(v)}>
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder="Chọn dự án" />
-              </SelectTrigger>
-              <SelectContent>
-                {projects.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Sản phẩm quan tâm</Label>
-            <Select value={productId} onValueChange={(v) => setProductId(v)}>
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder="Chọn sản phẩm (tuỳ chọn)" />
-              </SelectTrigger>
-              <SelectContent>
-                {productOptions.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.code} — {p.type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="note">Ghi chú</Label>
-            <Textarea id="note" name="note" rows={3} placeholder="Nhu cầu, khung giờ liên hệ..." />
-          </div>
-          <Button
-            type="submit"
-            className="h-12 w-full bg-[var(--brand-navy)] text-primary-foreground"
-            disabled={submitting}
-          >
-            {submitting ? "Đang gửi..." : "Gửi đăng ký"}
-          </Button>
-        </form>
+      <div className="px-4 pb-4">
+        <div className="rounded-2xl border border-border bg-[color:var(--surface)] p-4">
+          <p className="text-[13px] font-semibold text-[color:var(--text-primary)]">
+            Các loại đăng ký hiện có
+          </p>
+          <ul className="mt-2 space-y-2 text-[12.5px] text-[color:var(--text-secondary)]">
+            <IntentHint icon={Ticket} label="Voucher" hint="Mở từ trang voucher cụ thể" />
+            <IntentHint icon={PartyPopper} label="Sự kiện" hint="Mở từ trang sự kiện cụ thể" />
+            <IntentHint icon={MapPinned} label="Site tour" hint="Mở từ sự kiện tham quan" />
+            <IntentHint icon={UserPlus} label="Tư vấn" hint="Chưa mở trên bản mobile" />
+          </ul>
+        </div>
       </div>
     </MobileShell>
+  );
+}
+
+function IntentHint({
+  icon: Icon,
+  label,
+  hint,
+}: {
+  icon: typeof Ticket;
+  label: string;
+  hint: string;
+}) {
+  return (
+    <li className="flex items-center gap-2.5">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[color:var(--brand-navy-soft)] text-[color:var(--brand-navy)]">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0">
+        <span className="block font-medium text-[color:var(--text-primary)]">{label}</span>
+        <span className="block text-[11px] text-[color:var(--text-tertiary)]">{hint}</span>
+      </span>
+    </li>
+  );
+}
+
+function VoucherRegisterForm({
+  voucherId,
+  note,
+  setNote,
+  pending,
+  onSubmit,
+}: {
+  voucherId: string;
+  note: string;
+  setNote: (v: string) => void;
+  pending: boolean;
+  onSubmit: (note: string) => void;
+}) {
+  return (
+    <MobileShell title="Đăng ký voucher">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(note.trim());
+        }}
+        className="space-y-4 p-4"
+      >
+        <div className="rounded-2xl border border-border bg-[color:var(--surface)] p-4">
+          <div className="flex items-center gap-2 text-[color:var(--brand-navy)]">
+            <Ticket className="h-4 w-4" />
+            <p className="text-[13px] font-semibold">Đăng ký voucher</p>
+          </div>
+          <p className="mt-1 text-[11.5px] text-[color:var(--text-tertiary)]">
+            Voucher ID: <span className="font-mono">{voucherId.slice(0, 8)}…</span>
+          </p>
+        </div>
+
+        <div className="space-y-2 rounded-2xl border border-border bg-[color:var(--surface)] p-4">
+          <Label htmlFor="note" className="text-[12.5px]">Ghi chú (tuỳ chọn)</Label>
+          <Textarea
+            id="note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={3}
+            placeholder="Nhu cầu, khung giờ liên hệ..."
+            maxLength={500}
+          />
+          <p className="text-[10.5px] text-[color:var(--text-tertiary)]">
+            Thông tin cá nhân được lấy từ hồ sơ tài khoản.
+          </p>
+        </div>
+
+        <SubmitButton pending={pending} label="Đăng ký voucher" />
+      </form>
+    </MobileShell>
+  );
+}
+
+function EventRegisterForm({
+  eventId,
+  kind,
+  note,
+  setNote,
+  pending,
+  onSubmit,
+}: {
+  eventId: string;
+  kind: "event" | "site_tour";
+  note: string;
+  setNote: (v: string) => void;
+  pending: boolean;
+  onSubmit: (note: string) => void;
+}) {
+  const isTour = kind === "site_tour";
+  const Icon = isTour ? MapPinned : PartyPopper;
+  return (
+    <MobileShell title={isTour ? "Đăng ký Site Tour" : "Đăng ký sự kiện"}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(note.trim());
+        }}
+        className="space-y-4 p-4"
+      >
+        <div className="rounded-2xl border border-border bg-[color:var(--surface)] p-4">
+          <div className="flex items-center gap-2 text-[color:var(--brand-navy)]">
+            <Icon className="h-4 w-4" />
+            <p className="text-[13px] font-semibold">
+              {isTour ? "Đăng ký tham quan dự án" : "Đăng ký tham dự sự kiện"}
+            </p>
+          </div>
+          <p className="mt-1 text-[11.5px] text-[color:var(--text-tertiary)]">
+            Event ID: <span className="font-mono">{eventId.slice(0, 8)}…</span>
+          </p>
+        </div>
+
+        <div className="space-y-2 rounded-2xl border border-border bg-[color:var(--surface)] p-4">
+          <Label htmlFor="note" className="text-[12.5px]">Ghi chú (tuỳ chọn)</Label>
+          <Textarea
+            id="note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={3}
+            placeholder="Số lượng khách, yêu cầu đặc biệt..."
+            maxLength={500}
+          />
+          <p className="text-[10.5px] text-[color:var(--text-tertiary)]">
+            Thông tin cá nhân được lấy từ hồ sơ tài khoản.
+          </p>
+        </div>
+
+        <SubmitButton
+          pending={pending}
+          label={isTour ? "Đăng ký Site Tour" : "Đăng ký sự kiện"}
+        />
+      </form>
+    </MobileShell>
+  );
+}
+
+function SubmitButton({ pending, label }: { pending: boolean; label: string }) {
+  return (
+    <Button
+      type="submit"
+      className="h-12 w-full rounded-xl bg-[color:var(--brand-navy)] text-[color:var(--primary-foreground)]"
+      disabled={pending}
+    >
+      {pending ? (
+        <span className="inline-flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Đang gửi...
+        </span>
+      ) : (
+        label
+      )}
+    </Button>
   );
 }
