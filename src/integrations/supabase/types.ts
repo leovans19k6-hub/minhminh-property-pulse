@@ -163,6 +163,251 @@ export type Database = {
           },
         ]
       }
+      product_media: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          display_order: number
+          file_url: string
+          id: string
+          is_primary: boolean
+          media_type: string
+          metadata: Json
+          product_id: string
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          display_order?: number
+          file_url: string
+          id?: string
+          is_primary?: boolean
+          media_type: string
+          metadata?: Json
+          product_id: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          display_order?: number
+          file_url?: string
+          id?: string
+          is_primary?: boolean
+          media_type?: string
+          metadata?: Json
+          product_id?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_price_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          currency: string
+          id: string
+          metadata: Json
+          new_amount: number
+          old_amount: number | null
+          price_code: string | null
+          price_option_id: string | null
+          product_id: string
+          reason: string | null
+          source: string | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          currency?: string
+          id?: string
+          metadata?: Json
+          new_amount: number
+          old_amount?: number | null
+          price_code?: string | null
+          price_option_id?: string | null
+          product_id: string
+          reason?: string | null
+          source?: string | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          currency?: string
+          id?: string
+          metadata?: Json
+          new_amount?: number
+          old_amount?: number | null
+          price_code?: string | null
+          price_option_id?: string | null
+          product_id?: string
+          reason?: string | null
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_price_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_price_history_price_option_id_fkey"
+            columns: ["price_option_id"]
+            isOneToOne: false
+            referencedRelation: "product_price_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_price_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_price_options: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          discount_amount: number | null
+          discount_percent: number | null
+          effective_from: string | null
+          effective_to: string | null
+          grace_period_months: number | null
+          id: string
+          is_primary: boolean
+          loan_ratio: number | null
+          metadata: Json
+          payment_term_summary: string | null
+          price_code: string
+          price_name: string
+          price_per_sqm: number | null
+          product_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          discount_percent?: number | null
+          effective_from?: string | null
+          effective_to?: string | null
+          grace_period_months?: number | null
+          id?: string
+          is_primary?: boolean
+          loan_ratio?: number | null
+          metadata?: Json
+          payment_term_summary?: string | null
+          price_code: string
+          price_name: string
+          price_per_sqm?: number | null
+          product_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          discount_percent?: number | null
+          effective_from?: string | null
+          effective_to?: string | null
+          grace_period_months?: number | null
+          id?: string
+          is_primary?: boolean
+          loan_ratio?: number | null
+          metadata?: Json
+          payment_term_summary?: string | null
+          price_code?: string
+          price_name?: string
+          price_per_sqm?: number | null
+          product_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_price_options_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_status_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          id: string
+          metadata: Json
+          new_status: string
+          old_status: string | null
+          product_id: string
+          reason: string | null
+          source: string | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          metadata?: Json
+          new_status: string
+          old_status?: string | null
+          product_id: string
+          reason?: string | null
+          source?: string | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          metadata?: Json
+          new_status?: string
+          old_status?: string | null
+          product_id?: string
+          reason?: string | null
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_status_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_status_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_types: {
         Row: {
           category: string
@@ -213,6 +458,168 @@ export type Database = {
           },
         ]
       }
+      products: {
+        Row: {
+          archived_at: string | null
+          balcony_direction: string | null
+          bathrooms: number | null
+          bedrooms: number | null
+          building_id: string | null
+          built_up_area: number | null
+          carpet_area: number | null
+          category: string
+          construction_area: number | null
+          construction_status: string | null
+          created_at: string
+          depth: number | null
+          description: string | null
+          direction: string | null
+          door_direction: string | null
+          external_code: string | null
+          featured: boolean
+          floor_id: string | null
+          floor_number: number | null
+          frontage: number | null
+          handover_standard: string | null
+          id: string
+          inventory_source: string | null
+          land_area: number | null
+          legal_status: string | null
+          metadata: Json
+          number_of_floors: number | null
+          ownership_type: string | null
+          product_code: string
+          product_name: string | null
+          product_type_id: string | null
+          project_id: string
+          release_date: string | null
+          status: string
+          total_floor_area: number | null
+          unit_type: string | null
+          updated_at: string
+          view_text: string | null
+          zone_id: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          balcony_direction?: string | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_id?: string | null
+          built_up_area?: number | null
+          carpet_area?: number | null
+          category: string
+          construction_area?: number | null
+          construction_status?: string | null
+          created_at?: string
+          depth?: number | null
+          description?: string | null
+          direction?: string | null
+          door_direction?: string | null
+          external_code?: string | null
+          featured?: boolean
+          floor_id?: string | null
+          floor_number?: number | null
+          frontage?: number | null
+          handover_standard?: string | null
+          id?: string
+          inventory_source?: string | null
+          land_area?: number | null
+          legal_status?: string | null
+          metadata?: Json
+          number_of_floors?: number | null
+          ownership_type?: string | null
+          product_code: string
+          product_name?: string | null
+          product_type_id?: string | null
+          project_id: string
+          release_date?: string | null
+          status?: string
+          total_floor_area?: number | null
+          unit_type?: string | null
+          updated_at?: string
+          view_text?: string | null
+          zone_id?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          balcony_direction?: string | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_id?: string | null
+          built_up_area?: number | null
+          carpet_area?: number | null
+          category?: string
+          construction_area?: number | null
+          construction_status?: string | null
+          created_at?: string
+          depth?: number | null
+          description?: string | null
+          direction?: string | null
+          door_direction?: string | null
+          external_code?: string | null
+          featured?: boolean
+          floor_id?: string | null
+          floor_number?: number | null
+          frontage?: number | null
+          handover_standard?: string | null
+          id?: string
+          inventory_source?: string | null
+          land_area?: number | null
+          legal_status?: string | null
+          metadata?: Json
+          number_of_floors?: number | null
+          ownership_type?: string | null
+          product_code?: string
+          product_name?: string | null
+          product_type_id?: string | null
+          project_id?: string
+          release_date?: string | null
+          status?: string
+          total_floor_area?: number | null
+          unit_type?: string | null
+          updated_at?: string
+          view_text?: string | null
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_product_type_id_fkey"
+            columns: ["product_type_id"]
+            isOneToOne: false
+            referencedRelation: "product_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "project_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -254,6 +661,71 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_documents: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          description: string | null
+          display_order: number
+          document_type: string
+          effective_date: string | null
+          file_url: string
+          id: string
+          is_public: boolean
+          metadata: Json
+          project_id: string
+          status: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          version: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          document_type: string
+          effective_date?: string | null
+          file_url: string
+          id?: string
+          is_public?: boolean
+          metadata?: Json
+          project_id: string
+          status?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          version?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          document_type?: string
+          effective_date?: string | null
+          file_url?: string
+          id?: string
+          is_public?: boolean
+          metadata?: Json
+          project_id?: string
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_members: {
         Row: {
