@@ -105,6 +105,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Minh Minh Sales Hub" },
+      { name: "description", content: "Ứng dụng quản trị & kinh doanh bất động sản dành cho đội ngũ Minh Minh Group Hải Phòng." },
+      { property: "og:description", content: "Ứng dụng quản trị & kinh doanh bất động sản dành cho đội ngũ Minh Minh Group Hải Phòng." },
+      { name: "twitter:description", content: "Ứng dụng quản trị & kinh doanh bất động sản dành cho đội ngũ Minh Minh Group Hải Phòng." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0032c56-cecd-4b03-b686-fe77ffc13904/id-preview-4ca20c05--37f7a0c3-ec51-4230-ab38-8667b2bad290.lovable.app-1783265939725.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0032c56-cecd-4b03-b686-fe77ffc13904/id-preview-4ca20c05--37f7a0c3-ec51-4230-ab38-8667b2bad290.lovable.app-1783265939725.png" },
     ],
     links: [
       {
