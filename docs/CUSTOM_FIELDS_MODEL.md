@@ -81,3 +81,23 @@ Hàm `public.is_reserved_product_field_key(text) → boolean` (IMMUTABLE) trả 
 - Phase 5B: services `productFields.service.ts` + UI cấu hình trường / tuỳ chọn.
 - Phase 5C: RPC `create_product_with_values`/`update_product_with_values` — nơi enforce required + validation_rules.
 - Phase 5D: template apply — sao chép field definitions + options an toàn.
+---
+
+## Phase 5E addendum — DB-enforced invariants
+
+| Invariant | Enforcement |
+|-----------|-------------|
+| `field_key ~ '^[a-z][a-z0-9_]{0,62}$'` | trigger `validate_product_field_definition` (5E) |
+| `field_key` ∉ reserved allow-list | same trigger (5E) |
+| `product_type_id` same project | same trigger |
+| `field_key` immutable once values exist | trigger `guard_product_field_key_immutable` |
+| `data_type` immutable once values exist | trigger `guard_product_field_data_type_immutable` (5E) |
+| `option_value` immutable once used | trigger `guard_product_field_option_value_immutable` |
+| Custom value one typed column, matching `data_type` | trigger `validate_product_custom_value` |
+| Custom value: single/multi select ∈ active options | same trigger |
+| `validation_rules` (min/max/min_length/max_length/pattern) | `_apply_product_custom_values` (5E, via Mutation Engine) |
+| Required fields have a value for the product's product_type | same (5E) |
+
+### Write path (5E)
+
+All UI writes go through `create_product_with_values` / `update_product_with_values`. Payload shape: `{ "<field_key>": <value> }`. `null` clears; missing key = unchanged. Legacy `set_product_custom_values` (id-based array with `delete:true`) remains for batch tools.
