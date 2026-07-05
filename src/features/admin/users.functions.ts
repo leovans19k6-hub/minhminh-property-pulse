@@ -97,9 +97,11 @@ export const listAdminUsers = createServerFn({ method: "POST" })
         status: r.status,
         avatar_url: r.avatar_url,
         created_at: r.created_at,
-        roles: (r.user_roles ?? [])
-          .map((ur: { roles: { code: string; name: string } | null }) => ur.roles)
-          .filter(Boolean),
+        roles: ((r as { user_roles?: Array<{ roles: unknown }> }).user_roles ?? []).flatMap((ur) => {
+          const rel = ur.roles as { code: string; name: string } | { code: string; name: string }[] | null;
+          if (!rel) return [];
+          return Array.isArray(rel) ? rel : [rel];
+        }),
       })),
       total: count ?? 0,
     };
