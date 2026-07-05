@@ -17,10 +17,11 @@ import { ProductTypesTab } from "@/components/admin/tabs/ProductTypesTab";
 import { MembersTab } from "@/components/admin/tabs/MembersTab";
 import { FieldsTab } from "@/components/admin/tabs/FieldsTab";
 import { InventorySettingsTab } from "@/components/admin/tabs/InventorySettingsTab";
+import { ViewsTab } from "@/components/admin/tabs/ViewsTab";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { canManageProject } from "@/features/admin/access";
 
-const TAB_VALUES = ["overview", "zones", "buildings", "floors", "product-types", "fields", "settings", "members", "inventory", "policies", "vouchers", "events"] as const;
+const TAB_VALUES = ["overview", "zones", "buildings", "floors", "product-types", "fields", "views", "settings", "members", "inventory", "policies", "vouchers", "events"] as const;
 
 const searchSchema = z.object({
   tab: fallback(z.enum(TAB_VALUES), "overview").default("overview"),
@@ -89,6 +90,7 @@ function ProjectDetail() {
           <TabsTrigger value="floors">Tầng</TabsTrigger>
           <TabsTrigger value="product-types">Loại SP</TabsTrigger>
           <TabsTrigger value="fields">Trường tuỳ chỉnh</TabsTrigger>
+          <TabsTrigger value="views">Bảng hiển thị</TabsTrigger>
           <TabsTrigger value="settings">Cấu hình</TabsTrigger>
           <TabsTrigger value="members">Thành viên</TabsTrigger>
           <TabsTrigger value="inventory" disabled>Bảng hàng</TabsTrigger>
@@ -103,6 +105,7 @@ function ProjectDetail() {
         <TabsContent value="floors" className="mt-4">{tab === "floors" && <FloorsTab projectId={projectId} canManage={canManage} />}</TabsContent>
         <TabsContent value="product-types" className="mt-4">{tab === "product-types" && <ProductTypesTab projectId={projectId} canManage={canManage} />}</TabsContent>
         <TabsContent value="fields" className="mt-4">{tab === "fields" && <FieldsTab projectId={projectId} canManage={canManage} />}</TabsContent>
+        <TabsContent value="views" className="mt-4">{tab === "views" && <ViewsTab projectId={projectId} canManage={canManage} />}</TabsContent>
         <TabsContent value="settings" className="mt-4">{tab === "settings" && <InventorySettingsTab projectId={projectId} canManage={canManage} />}</TabsContent>
         <TabsContent value="members" className="mt-4">{tab === "members" && <MembersTab projectId={projectId} canManage={canManage} />}</TabsContent>
       </Tabs>

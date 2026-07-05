@@ -2745,6 +2745,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      set_product_custom_values: {
+        Args: { p_product_id: string; p_values: Json }
+        Returns: undefined
+      }
       set_project_primary_contact: {
         Args: { p_project_id: string; p_project_member_id: string }
         Returns: undefined
