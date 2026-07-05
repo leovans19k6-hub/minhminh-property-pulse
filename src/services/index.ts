@@ -1,0 +1,10 @@
+export * as projectsService from "./projects.service";
+export * as inventoryService from "./inventory.service";
+export * as productsService from "./products.service";
+export * as policiesService from "./policies.service";
+export * as vouchersService from "./vouchers.service";
+export * as eventsService from "./events.service";
+export * as registrationsService from "./registrations.service";
+export * as favoritesService from "./favorites.service";
+export * as notificationsService from "./notifications.service";
+export * as realtimeService from "./realtime.service";
