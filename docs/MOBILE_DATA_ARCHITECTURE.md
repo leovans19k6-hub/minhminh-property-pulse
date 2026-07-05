@@ -36,6 +36,15 @@ All SECURITY DEFINER, `search_path=public`, `REVOKE PUBLIC/anon`, `GRANT authent
 | `/projects` | Supabase |
 | `/projects/$projectId` | Supabase |
 | `/inventory` | Supabase (paginated + realtime) |
-| `/products/$productId` | **Mock** (Phase 7B) |
-| `/favorites` | **Mock** (Phase 7B) |
+| `/products/$productId` | Supabase (`get_mobile_product_detail` + realtime) |
+| `/favorites` | Supabase (`get_mobile_favorites` / `add_/remove_mobile_favorite`) |
 | `/notifications`, `/register`, `/policies` | **Mock** |
+
+## Phase 7B additions
+
+- `get_mobile_product_detail(uuid)` — see `MOBILE_PRODUCT_DETAIL_QUERY.md`.
+- `add_mobile_favorite`, `remove_mobile_favorite`, `get_mobile_favorites` — see `MOBILE_FAVORITES.md`.
+- Primary contact resolver `_resolve_mobile_primary_contact(uuid)` (service-role only) is embedded in `get_mobile_project_detail` and `get_mobile_product_detail`.
+- Realtime for product detail is described in `MOBILE_PRODUCT_REALTIME.md`.
+
+Policy, voucher, event mobile *detail* routes and registration flows remain unshipped (Phase 7C).
