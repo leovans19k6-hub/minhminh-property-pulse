@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Archive, History, Pencil, Plus, RotateCcw, Search, Star, Upload } from "lucide-react";
+import { Archive, ExternalLink, History, Pencil, Plus, RotateCcw, Search, Star, Upload } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -225,6 +226,13 @@ export function ProductsTab({ projectId, canManage }: { projectId: string; canMa
                     <Button size="icon" variant="ghost" onClick={() => row.product_id && editMut.mutate(row.product_id)} title="Sửa">
                       <Pencil className="h-4 w-4" />
                     </Button>
+                    {row.product_id ? (
+                      <Button size="icon" variant="ghost" title="Mở chi tiết" asChild>
+                        <Link to="/admin/projects/$projectId/products/$productId" params={{ projectId, productId: row.product_id }}>
+                          <ExternalLink className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    ) : null}
                     {row.product_id ? (
                       <Button
                         size="icon"

@@ -17,8 +17,8 @@ import { ServiceError } from "@/services/_helpers";
 import {
   listInventoryViews,
   setViewStatus,
-  setDefaultView,
   duplicateInventoryView,
+  setDefaultViewRpc,
   VIEW_TYPES,
   VIEW_TYPE_LABELS,
   type InventoryViewRow,
@@ -62,7 +62,7 @@ export function ViewsTab({ projectId, canManage }: { projectId: string; canManag
   });
 
   const defaultMut = useMutation({
-    mutationFn: setDefaultView,
+    mutationFn: (v: InventoryViewRow) => setDefaultViewRpc(v.id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: listKey }); toast.success("Đã đặt mặc định"); },
     onError: (e: unknown) => toast.error(e instanceof ServiceError ? e.message : "Lỗi"),
   });

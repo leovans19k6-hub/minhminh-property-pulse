@@ -152,3 +152,90 @@ export async function setProductCustomValues(
   });
   if (res.error) throw new ServiceError(res.error.message, res.error);
 }
+
+// ---------------------------------------------------------------------------
+// Phase 5E — Atomic Product Mutation Engine
+// ---------------------------------------------------------------------------
+
+export interface ProductCoreInput {
+  product_code: string;
+  product_name?: string | null;
+  category?: string;
+  status?: string;
+  product_type_id?: string | null;
+  zone_id?: string | null;
+  building_id?: string | null;
+  floor_id?: string | null;
+  featured?: boolean;
+  description?: string | null;
+  external_code?: string | null;
+  inventory_source?: string;
+}
+
+export interface ProductPriceInput {
+  price_code: string;
+  price_name?: string | null;
+  amount: number;
+  currency?: string;
+  is_primary?: boolean;
+  status?: "active" | "archived";
+  effective_from?: string | null;
+  effective_to?: string | null;
+  payment_term_summary?: string | null;
+}
+
+/** Custom values as { field_key: value }. `null` clears the value; omitted keys are unchanged. */
+export type CustomValuesMap = Record<string, unknown>;
+
+export async function createProductWithValues(input: {
+  projectId: string;
+  core: ProductCoreInput;
+  custom?: CustomValuesMap;
+  prices?: ProductPriceInput[];
+}): Promise<string> {
+  const res = await supabase.rpc("create_product_with_values", {
+    p_project_id: input.projectId,
+    p_core: input.core as unknown as never,
+    p_custom: (input.custom ?? {}) as unknown as never,
+    p_prices: (input.prices ?? []) as unknown as never,
+  });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+  return res.data as unknown as string;
+}
+
+export async function updateProductWithValues(input: {
+  productId: string;
+  core?: Partial<ProductCoreInput>;
+  custom?: CustomValuesMap;
+  prices?: ProductPriceInput[];
+}): Promise<void> {
+  const res = await supabase.rpc("update_product_with_values", {
+    p_product_id: input.productId,
+    p_core: (input.core ?? null) as unknown as never,
+    p_custom: (input.custom ?? null) as unknown as never,
+    p_prices: (input.prices ?? null) as unknown as never,
+  });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+}
+
+export async function cloneProduct(sourceId: string, newCode: string): Promise<string> {
+  const res = await supabase.rpc("clone_product", { p_source_id: sourceId, p_new_code: newCode });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+  return res.data as unknown as string;
+}
+
+export async function archiveProductRpc(productId: string, reason?: string): Promise<void> {
+  const res = await supabase.rpc("archive_product", { p_product_id: productId, p_reason: reason });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+}
+
+export async function restoreProductRpc(productId: string): Promise<void> {
+  const res = await supabase.rpc("restore_product", { p_product_id: productId });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+}
+
+export async function getProductAdminDetail(productId: string): Promise<Record<string, unknown> | null> {
+  const res = await supabase.rpc("get_product_admin_detail", { p_product_id: productId });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+  return res.data as Record<string, unknown> | null;
+}

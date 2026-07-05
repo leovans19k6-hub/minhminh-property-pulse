@@ -101,51 +101,48 @@ export async function duplicateInventoryView(
   sourceId: string,
   overrides: { name: string; code: string },
 ): Promise<InventoryViewRow> {
+  // Phase 5E: atomic RPC (validates + copies fields in one transaction).
   const codeErr = validateViewCode(overrides.code);
   if (codeErr) throw new ServiceError(codeErr);
-
-  const src = await getInventoryView(sourceId);
-  if (!src) throw new ServiceError("Không tìm thấy view gốc");
-
-  const insert: InventoryViewInsert = {
-    project_id: src.project_id,
-    name: overrides.name,
-    code: overrides.code,
-    description: src.description,
-    view_type: src.view_type,
-    is_default: false,
-    status: "active",
-    default_sort_field: src.default_sort_field,
-    default_sort_direction: src.default_sort_direction,
-    page_size: src.page_size,
-  };
-  const created = await createInventoryView(insert);
-
-  const fields = await supabase
-    .from("inventory_view_fields")
-    .select("*")
-    .eq("inventory_view_id", sourceId);
-  if (fields.error) throw new ServiceError(fields.error.message, fields.error);
-
-  if (fields.data && fields.data.length > 0) {
-    const rows = fields.data.map((f) => ({
-      inventory_view_id: created.id,
-      field_source: f.field_source,
-      core_field_key: f.core_field_key,
-      field_definition_id: f.field_definition_id,
-      price_code: f.price_code,
-      column_label: f.column_label,
-      display_order: f.display_order,
-      width: f.width,
-      visible: f.visible,
-      pinned: f.pinned,
-      sortable: f.sortable,
-      filterable: f.filterable,
-      searchable: f.searchable,
-      mobile_visible: f.mobile_visible,
-    }));
-    const ins = await supabase.from("inventory_view_fields").insert(rows);
-    if (ins.error) throw new ServiceError(ins.error.message, ins.error);
-  }
+  const res = await supabase.rpc("duplicate_inventory_view", {
+    p_source_id: sourceId,
+    p_name: overrides.name,
+    p_code: overrides.code,
+  });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+  const newId = res.data as unknown as string;
+  const created = await getInventoryView(newId);
+  if (!created) throw new ServiceError("Không đọc được view vừa tạo");
   return created;
+}
+
+/** Set default per view_type atomically + sync project_inventory_settings. */
+export async function setDefaultViewRpc(viewId: string): Promise<void> {
+  const res = await supabase.rpc("set_default_inventory_view", { p_view_id: viewId });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+}
+
+/** Validate view configuration server-side. */
+export async function validateInventoryViewRpc(viewId: string): Promise<{
+  is_valid: boolean;
+  errors: string[];
+  warnings: string[];
+  field_count: number;
+}> {
+  const res = await supabase.rpc("validate_inventory_view", { p_view_id: viewId });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+  return res.data as never;
+}
+
+/** Atomic replace of all fields for a view. */
+export async function saveInventoryViewFields(
+  viewId: string,
+  fields: Array<Record<string, unknown>>,
+): Promise<number> {
+  const res = await supabase.rpc("save_inventory_view_fields", {
+    p_view_id: viewId,
+    p_fields: fields as unknown as never,
+  });
+  if (res.error) throw new ServiceError(res.error.message, res.error);
+  return res.data as unknown as number;
 }

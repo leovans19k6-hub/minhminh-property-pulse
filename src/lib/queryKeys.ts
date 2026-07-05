@@ -116,6 +116,8 @@ export const queryKeys = {
     ["admin", "inventory-products", productId, "status-history"] as const,
   adminProductPriceHistory: (productId: string) =>
     ["admin", "inventory-products", productId, "price-history"] as const,
+  adminProductDetail: (productId: string) =>
+    ["admin", "inventory-products", productId, "detail"] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;

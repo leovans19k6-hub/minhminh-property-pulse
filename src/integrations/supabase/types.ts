@@ -2641,6 +2641,19 @@ export type Database = {
       }
     }
     Functions: {
+      _apply_product_custom_values: {
+        Args: {
+          p_product_id: string
+          p_product_type_id: string
+          p_project_id: string
+          p_values: Json
+        }
+        Returns: undefined
+      }
+      _apply_product_prices: {
+        Args: { p_prices: Json; p_product_id: string }
+        Returns: undefined
+      }
       apply_inventory_template: {
         Args: {
           p_include_fields?: boolean
@@ -2650,6 +2663,10 @@ export type Database = {
           p_template_id: string
         }
         Returns: Json
+      }
+      archive_product: {
+        Args: { p_product_id: string; p_reason?: string }
+        Returns: undefined
       }
       bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
       bulk_create_floors: {
@@ -2680,8 +2697,29 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      clone_product: {
+        Args: { p_new_code: string; p_source_id: string }
+        Returns: string
+      }
       commit_inventory_import: { Args: { p_job_id: string }; Returns: Json }
+      create_product_with_values: {
+        Args: {
+          p_core: Json
+          p_custom?: Json
+          p_prices?: Json
+          p_project_id: string
+        }
+        Returns: string
+      }
+      duplicate_inventory_view: {
+        Args: { p_code: string; p_name: string; p_source_id: string }
+        Returns: string
+      }
       generate_registration_code_value: { Args: never; Returns: string }
+      get_product_admin_detail: {
+        Args: { p_product_id: string }
+        Returns: Json
+      }
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
       has_project_role: {
@@ -2701,6 +2739,11 @@ export type Database = {
         Returns: boolean
       }
       normalize_phone: { Args: { phone: string }; Returns: string }
+      restore_product: { Args: { p_product_id: string }; Returns: undefined }
+      save_inventory_view_fields: {
+        Args: { p_fields: Json; p_view_id: string }
+        Returns: number
+      }
       search_inventory: {
         Args: {
           p_area_max?: number
@@ -2760,6 +2803,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      set_default_inventory_view: {
+        Args: { p_view_id: string }
+        Returns: undefined
+      }
       set_product_custom_values: {
         Args: { p_product_id: string; p_values: Json }
         Returns: undefined
@@ -2777,6 +2824,26 @@ export type Database = {
           p_project_id: string
         }
         Returns: string
+      }
+      update_product_with_values: {
+        Args: {
+          p_core?: Json
+          p_custom?: Json
+          p_prices?: Json
+          p_product_id: string
+        }
+        Returns: undefined
+      }
+      validate_inventory_view: { Args: { p_view_id: string }; Returns: Json }
+      validate_product_relationships: {
+        Args: {
+          p_building_id: string
+          p_floor_id: string
+          p_product_type_id: string
+          p_project_id: string
+          p_zone_id: string
+        }
+        Returns: undefined
       }
       write_audit_log: {
         Args: {

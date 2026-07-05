@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,19 +14,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { queryKeys } from "@/lib/queryKeys";
 import { ServiceError } from "@/services/_helpers";
 import {
-  createProduct,
-  updateProduct,
   listProductCustomValues,
-  setProductCustomValues,
+  createProductWithValues,
+  updateProductWithValues,
   PRODUCT_STATUSES,
   PRODUCT_STATUS_LABELS,
   PRODUCT_CATEGORIES,
   PRODUCT_CATEGORY_LABELS,
+  type ProductPriceInput,
   type ProductRow,
   type ProductStatus,
   type ProductCategory,
-  type CustomValuePayload,
 } from "@/services/admin/adminProducts.service";
+import { supabase } from "@/integrations/supabase/client";
 import {
   listFieldDefinitions,
   type FieldDataType,
@@ -104,16 +105,38 @@ export function ProductFormDialog({
     enabled: !!product,
   });
 
+  // Existing price options (edit mode)
+  const pricesQ = useQuery({
+    queryKey: product ? ["admin", "products", "prices", product.id] : ["admin", "products", "prices", "new"],
+    queryFn: async () => {
+      if (!product) return [] as ProductPriceInput[];
+      const res = await supabase
+        .from("product_price_options")
+        .select("price_code, price_name, amount, currency, is_primary, status")
+        .eq("product_id", product.id)
+        .eq("status", "active")
+        .order("is_primary", { ascending: false });
+      if (res.error) throw new ServiceError(res.error.message, res.error);
+      return (res.data ?? []) as ProductPriceInput[];
+    },
+    enabled: !!product,
+  });
+  const [prices, setPrices] = useState<ProductPriceInput[]>([]);
+  useEffect(() => {
+    if (!pricesQ.data) return;
+    setPrices(pricesQ.data.length > 0 ? pricesQ.data : []);
+  }, [pricesQ.data]);
+
   const [values, setValues] = useState<Values>({});
   useEffect(() => {
-    if (!cvQ.data) { setValues({}); return; }
+    if (!cvQ.data) { if (!product) setValues({}); return; }
     const next: Values = {};
     for (const row of cvQ.data) {
       const v = row.value_text ?? row.value_integer ?? row.value_decimal ?? row.value_boolean ?? row.value_date ?? row.value_datetime ?? row.value_jsonb;
       if (v !== undefined && v !== null) next[row.field_definition_id] = v;
     }
     setValues(next);
-  }, [cvQ.data]);
+  }, [cvQ.data, product]);
 
   const filteredBuildings = useMemo(() => {
     if (!buildingsQ.data) return [];
@@ -123,8 +146,7 @@ export function ProductFormDialog({
 
   const mut = useMutation({
     mutationFn: async () => {
-      const payload = {
-        project_id: projectId,
+      const core = {
         product_code: productCode.trim(),
         product_name: productName.trim() || null,
         category,
@@ -136,41 +158,53 @@ export function ProductFormDialog({
         description: description.trim() || null,
         featured,
       };
-      const row = isEdit
-        ? await updateProduct(product!.id, payload)
-        : await createProduct(payload);
 
-      // Persist custom values via RPC (also handles create-then-set)
-      const cvPayloads: CustomValuePayload[] = applicableFields.map((f) => {
+      // Build custom map { field_key: value } — null clears; omitted keys unchanged.
+      const customMap: Record<string, unknown> = {};
+      for (const f of applicableFields) {
         const raw = values[f.id];
         const empty = raw === undefined || raw === null || raw === "";
-        if (empty) return { field_definition_id: f.id, delete: true };
-        const base: CustomValuePayload = { field_definition_id: f.id };
-        switch (f.data_type as FieldDataType) {
-          case "text":
-          case "long_text":
-          case "url":
-          case "phone":
-          case "single_select":
-            return { ...base, value_text: String(raw) };
-          case "integer":
-            return { ...base, value_integer: Number(raw) };
-          case "decimal":
-            return { ...base, value_decimal: Number(raw) };
-          case "boolean":
-            return { ...base, value_boolean: raw === true || raw === "true" };
-          case "date":
-            return { ...base, value_date: String(raw) };
-          case "datetime":
-            return { ...base, value_datetime: String(raw) };
-          case "multi_select":
-            return { ...base, value_jsonb: Array.isArray(raw) ? raw : [] };
-          default:
-            return { ...base, delete: true };
+        if (empty) {
+          customMap[f.field_key] = null;
+          continue;
         }
-      });
-      await setProductCustomValues(row.id, cvPayloads);
-      return row;
+        const t = f.data_type as FieldDataType;
+        if (t === "boolean") customMap[f.field_key] = raw === true || raw === "true";
+        else if (t === "integer") customMap[f.field_key] = Math.trunc(Number(raw));
+        else if (t === "decimal") customMap[f.field_key] = Number(raw);
+        else if (t === "multi_select") customMap[f.field_key] = Array.isArray(raw) ? raw : [];
+        else customMap[f.field_key] = String(raw);
+      }
+
+      // Validate pricing client-side
+      const cleanedPrices = prices
+        .filter((p) => p.price_code.trim().length > 0)
+        .map((p) => ({ ...p, price_code: p.price_code.trim(), amount: Number(p.amount) || 0 }));
+      const activePrimary = cleanedPrices.filter((p) => p.is_primary && (p.status ?? "active") === "active");
+      if (activePrimary.length > 1) throw new ServiceError("Chỉ được có 1 giá chính (is_primary) đang hoạt động");
+      const codes = new Set<string>();
+      for (const p of cleanedPrices) {
+        if (codes.has(p.price_code)) throw new ServiceError(`Trùng price_code: ${p.price_code}`);
+        codes.add(p.price_code);
+        if (p.amount < 0) throw new ServiceError(`Giá không được âm: ${p.price_code}`);
+      }
+
+      if (isEdit) {
+        await updateProductWithValues({
+          productId: product!.id,
+          core,
+          custom: customMap,
+          prices: cleanedPrices,
+        });
+        return product!.id;
+      } else {
+        return await createProductWithValues({
+          projectId,
+          core,
+          custom: customMap,
+          prices: cleanedPrices,
+        });
+      }
     },
     onSuccess: () => {
       toast.success(isEdit ? "Đã cập nhật sản phẩm" : "Đã tạo sản phẩm");
@@ -297,6 +331,86 @@ export function ProductFormDialog({
                     value={values[f.id]}
                     onChange={(v) => setValues((prev) => ({ ...prev, [f.id]: v }))}
                   />
+                ))}
+              </div>
+            )}
+          </section>
+
+          <Separator />
+
+          {/* Pricing */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Giá bán</div>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  setPrices((p) => [
+                    ...p,
+                    { price_code: p.length === 0 ? "primary" : "", amount: 0, currency: "VND", is_primary: p.length === 0, status: "active" },
+                  ])
+                }
+              >
+                <Plus className="mr-1 h-4 w-4" /> Thêm giá
+              </Button>
+            </div>
+            {prices.length === 0 ? (
+              <p className="text-xs text-muted-foreground">Chưa có giá. Thêm ít nhất 1 giá primary để hiển thị trên lưới.</p>
+            ) : (
+              <div className="space-y-2">
+                {prices.map((p, idx) => (
+                  <div key={idx} className="grid grid-cols-12 gap-2 items-end rounded border p-2">
+                    <div className="col-span-3 space-y-1">
+                      <Label className="text-xs">Mã (code)</Label>
+                      <Input
+                        value={p.price_code}
+                        placeholder="primary"
+                        onChange={(e) => setPrices((arr) => arr.map((x, i) => i === idx ? { ...x, price_code: e.target.value.toLowerCase() } : x))}
+                      />
+                    </div>
+                    <div className="col-span-3 space-y-1">
+                      <Label className="text-xs">Tên</Label>
+                      <Input
+                        value={p.price_name ?? ""}
+                        onChange={(e) => setPrices((arr) => arr.map((x, i) => i === idx ? { ...x, price_name: e.target.value || null } : x))}
+                      />
+                    </div>
+                    <div className="col-span-2 space-y-1">
+                      <Label className="text-xs">Giá</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={String(p.amount)}
+                        onChange={(e) => setPrices((arr) => arr.map((x, i) => i === idx ? { ...x, amount: Number(e.target.value) } : x))}
+                      />
+                    </div>
+                    <div className="col-span-1 space-y-1">
+                      <Label className="text-xs">CCY</Label>
+                      <Input
+                        value={p.currency ?? "VND"}
+                        onChange={(e) => setPrices((arr) => arr.map((x, i) => i === idx ? { ...x, currency: e.target.value } : x))}
+                      />
+                    </div>
+                    <div className="col-span-2 flex items-center gap-2">
+                      <Switch
+                        checked={!!p.is_primary}
+                        onCheckedChange={(c) => setPrices((arr) => arr.map((x, i) => i === idx ? { ...x, is_primary: c } : x))}
+                      />
+                      <Label className="text-xs">Chính</Label>
+                    </div>
+                    <div className="col-span-1 text-right">
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setPrices((arr) => arr.filter((_, i) => i !== idx))}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
