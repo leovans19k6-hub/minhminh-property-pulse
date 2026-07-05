@@ -335,7 +335,7 @@ function cleanRules(rules: ValidationRules, dataType: FieldDataType): Json {
       : [];
   for (const k of allow) {
     const v = rules[k];
-    if (v !== undefined && v !== null) out[k] = v;
+    if (typeof v === "number" && Number.isFinite(v)) out[k] = v;
   }
   return out as unknown as Json;
 }
