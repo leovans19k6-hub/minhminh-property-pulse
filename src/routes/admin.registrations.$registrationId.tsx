@@ -46,12 +46,12 @@ function RegistrationDetailPage() {
 
   const r = detail.data?.registration;
   const domain = detail.data?.domain;
-  // Phase 6D.1 — hide generic Cancel/Complete for domain-owned registrations.
-  const allowed = (detail.data?.allowed_transitions ?? []).filter((s) => {
-    if ((domain === "VOUCHER" || domain === "EVENT") && (s === "cancelled" || s === "completed")) return false;
-    return true;
-  });
-  const reviewable = r ? ["new", "in_progress"].includes(String(r.status)) : false;
+  // Phase 6D.2 — server-authoritative capabilities (no client-side inference).
+  const caps = detail.data?.capabilities;
+  const allowed = caps?.allowed_transitions ?? detail.data?.allowed_transitions ?? [];
+  const reviewable = caps?.can_review ?? false;
+  const allowedDecisions = new Set(caps?.allowed_review_decisions ?? []);
+  const restrictions = caps?.domain_restrictions ?? detail.data?.domain_restrictions ?? [];
 
   return (
     <div className="space-y-6">
@@ -78,14 +78,20 @@ function RegistrationDetailPage() {
             </CardContent></Card>
             <Card><CardHeader><CardTitle className="text-sm">Duyệt</CardTitle></CardHeader><CardContent className="flex flex-wrap gap-2">
               {reviewable ? (<>
-                <Button size="sm" onClick={() => reviewMut.mutate({ decision: "accept" })}>Duyệt</Button>
-                <Button size="sm" variant="destructive" onClick={() => { const n = window.prompt("Lý do từ chối?") ?? undefined; reviewMut.mutate({ decision: "reject", note: n }); }}>Từ chối</Button>
-                <Button size="sm" variant="outline" onClick={() => { const n = window.prompt("Yêu cầu bổ sung?") ?? undefined; reviewMut.mutate({ decision: "request_more_info", note: n }); }}>Yêu cầu bổ sung</Button>
+                {allowedDecisions.has("accept") && (
+                  <Button size="sm" onClick={() => reviewMut.mutate({ decision: "accept" })}>Duyệt</Button>
+                )}
+                {allowedDecisions.has("reject") && (
+                  <Button size="sm" variant="destructive" onClick={() => { const n = window.prompt("Lý do từ chối?") ?? undefined; reviewMut.mutate({ decision: "reject", note: n }); }}>Từ chối</Button>
+                )}
+                {allowedDecisions.has("request_more_info") && (
+                  <Button size="sm" variant="outline" onClick={() => { const n = window.prompt("Yêu cầu bổ sung?") ?? undefined; reviewMut.mutate({ decision: "request_more_info", note: n }); }}>Yêu cầu bổ sung</Button>
+                )}
               </>) : <span className="text-xs text-muted-foreground">Đăng ký không ở trạng thái duyệt.</span>}
-              {(domain === "VOUCHER" || domain === "EVENT") && (
-                <p className="mt-2 w-full text-[11px] text-muted-foreground">
-                  Hủy/hoàn tất phải dùng luồng {domain === "VOUCHER" ? "voucher" : "sự kiện"} chuyên dụng.
-                </p>
+              {restrictions.length > 0 && (
+                <ul className="mt-2 w-full space-y-1 text-[11px] text-muted-foreground">
+                  {restrictions.map((x) => (<li key={x.code}>• {x.message}</li>))}
+                </ul>
               )}
             </CardContent></Card>
             <Card><CardHeader><CardTitle className="text-sm">Khách hàng</CardTitle></CardHeader><CardContent className="text-sm">

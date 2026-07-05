@@ -3799,6 +3799,10 @@ export type Database = {
         Args: { p_project_id?: string }
         Returns: Json
       }
+      get_operations_registration_capabilities: {
+        Args: { p_caller_id?: string; p_registration_id: string }
+        Returns: Json
+      }
       get_or_create_registration_lead: {
         Args: { p_product_id?: string; p_project_id: string; p_user_id: string }
         Returns: string

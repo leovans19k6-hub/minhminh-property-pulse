@@ -172,9 +172,29 @@ export interface RegistrationAdminDetail {
   tasks: Array<{ id: string; title: string; status: string; priority: string; due_at: string | null; assigned_to: string | null }>;
   activities: Array<{ id: string; activity_type: string; title: string; content: string | null; occurred_at: string; created_by: string | null }>;
   allowed_transitions: string[];
+  can_review?: boolean;
+  domain_restrictions?: Array<{ code: string; message: string }>;
+  capabilities?: RegistrationCapabilities;
+}
+
+export interface RegistrationCapabilities {
+  domain: string;
+  status: string;
+  allowed_transitions: string[];
+  allowed_review_decisions: Array<"accept" | "reject" | "request_more_info">;
+  can_review: boolean;
+  can_assign: boolean;
+  can_create_task: boolean;
+  can_create_activity: boolean;
+  can_use_generic_cancel: boolean;
+  can_use_generic_complete: boolean;
+  domain_restrictions: Array<{ code: string; message: string }>;
 }
 export const getRegistrationAdminDetail = (registrationId: string) =>
   rpc<RegistrationAdminDetail>("get_registration_admin_detail", { p_registration_id: registrationId });
+
+export const getRegistrationCapabilities = (registrationId: string) =>
+  rpc<RegistrationCapabilities>("get_operations_registration_capabilities", { p_registration_id: registrationId });
 
 export const assignRegistration = (registrationId: string, assignedTo: string | null) =>
   rpc<Record<string, unknown>>("assign_registration", { p_registration_id: registrationId, p_assigned_to: assignedTo });
