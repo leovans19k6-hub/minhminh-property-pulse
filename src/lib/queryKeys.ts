@@ -61,6 +61,21 @@ export const queryKeys = {
   notifications: (userId: string) => ["notifications", userId] as const,
   unreadNotificationCount: (userId: string) =>
     ["notifications", userId, "unread-count"] as const,
+
+  // Admin portal
+  adminUsers: (filters: Record<string, unknown> = {}) =>
+    ["admin", "users", normalize(filters as Record<string, unknown>)] as const,
+  adminUserDetail: (userId: string) => ["admin", "users", "detail", userId] as const,
+  adminDevelopers: () => ["admin", "developers"] as const,
+  adminDeveloperDetail: (id: string) => ["admin", "developers", "detail", id] as const,
+  adminProjects: (filters: Record<string, unknown> = {}) =>
+    ["admin", "projects", normalize(filters as Record<string, unknown>)] as const,
+  adminProjectDetail: (id: string) => ["admin", "projects", "detail", id] as const,
+  adminProjectZones: (projectId: string) => ["admin", "projects", projectId, "zones"] as const,
+  adminProjectBuildings: (projectId: string) => ["admin", "projects", projectId, "buildings"] as const,
+  adminProjectFloors: (buildingId: string) => ["admin", "buildings", buildingId, "floors"] as const,
+  adminProjectProductTypes: (projectId: string) => ["admin", "projects", projectId, "product-types"] as const,
+  adminProjectMembers: (projectId: string) => ["admin", "projects", projectId, "members"] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;
