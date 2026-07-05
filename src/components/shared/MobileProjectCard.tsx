@@ -50,8 +50,8 @@ export function MobileProjectCard({
   if (variant === "compact") {
     return (
       <Link
-        to="/projects/$projectId"
-        params={{ projectId: project.id }}
+        to="/inventory"
+        search={{ projectId: project.id }}
         aria-label={project.name}
         className="group block w-[260px] shrink-0 overflow-hidden rounded-2xl border border-border bg-[color:var(--surface)] shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
       >
@@ -91,8 +91,8 @@ export function MobileProjectCard({
 
   return (
     <Link
-      to="/projects/$projectId"
-      params={{ projectId: project.id }}
+      to="/inventory"
+      search={{ projectId: project.id }}
       aria-label={project.name}
       className="group block w-full overflow-hidden rounded-2xl border border-border bg-[color:var(--surface)] shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
     >
