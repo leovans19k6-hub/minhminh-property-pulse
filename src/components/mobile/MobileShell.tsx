@@ -25,7 +25,7 @@ export function MobileShell({
   greeting,
 }: MobileShellProps) {
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-[520px] flex-col bg-background text-foreground md:max-w-[640px]">
+    <div className="relative mx-auto flex min-h-dvh w-full max-w-full flex-col bg-background text-foreground sm:max-w-[640px] md:max-w-[720px]">
       {showHeader && (
         <MobileHeader
           title={title}

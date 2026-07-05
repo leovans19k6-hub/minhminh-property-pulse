@@ -63,32 +63,67 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.985 0.005 250);
-  --foreground: oklch(0.18 0.03 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 260);
-  --primary: oklch(0.28 0.08 258);
-  --primary-foreground: oklch(0.985 0.005 250);
-  --secondary: oklch(0.96 0.01 250);
-  --secondary-foreground: oklch(0.28 0.08 258);
-  --muted: oklch(0.96 0.01 250);
-  --muted-foreground: oklch(0.52 0.02 258);
-  --accent: oklch(0.78 0.13 78);
-  --accent-foreground: oklch(0.22 0.05 258);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.92 0.01 255);
-  --input: oklch(0.92 0.01 255);
-  --ring: oklch(0.28 0.08 258);
-  --success: oklch(0.62 0.14 155);
-  --warning: oklch(0.78 0.14 75);
-  --danger: oklch(0.6 0.22 27);
-  --brand-navy: oklch(0.24 0.07 258);
-  --brand-gold: oklch(0.78 0.13 78);
-  --surface: oklch(0.985 0.005 250);
+  /* Brand — Minh Minh Group Hải Phòng */
+  --brand-navy: oklch(0.24 0.07 258);           /* #0F2A52 */
+  --brand-navy-hover: oklch(0.29 0.08 258);
+  --brand-navy-soft: oklch(0.95 0.02 258);
+  --brand-gold: oklch(0.78 0.11 78);            /* #C8A96B */
+  --brand-gold-soft: oklch(0.95 0.04 82);
+
+  /* Surfaces */
+  --app-background: oklch(0.98 0.005 250);      /* #F5F7FA */
+  --surface: oklch(1 0 0);
+  --surface-secondary: oklch(0.975 0.006 250);
   --surface-elevated: oklch(1 0 0);
+
+  /* Text */
+  --text-primary: oklch(0.22 0.03 260);
+  --text-secondary: oklch(0.52 0.02 258);
+  --text-tertiary: oklch(0.65 0.015 258);
+
+  /* Semantic */
+  --border: oklch(0.92 0.008 255);
+  --border-strong: oklch(0.86 0.01 255);
+  --success: oklch(0.58 0.13 155);
+  --success-soft: oklch(0.95 0.04 155);
+  --warning: oklch(0.72 0.14 75);
+  --warning-soft: oklch(0.96 0.04 82);
+  --danger: oklch(0.58 0.2 27);
+  --danger-soft: oklch(0.96 0.03 27);
+  --info: oklch(0.55 0.14 245);
+  --info-soft: oklch(0.95 0.03 245);
+
+  /* Shadow */
+  --shadow-xs: 0 1px 2px 0 rgb(15 42 82 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(15 42 82 / 0.06), 0 1px 2px -1px rgb(15 42 82 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(15 42 82 / 0.08), 0 2px 4px -2px rgb(15 42 82 / 0.04);
+
+  /* Mobile layout */
+  --mobile-header-height: 56px;
+  --mobile-bottom-nav-height: 68px;
+  --mobile-content-max-width: 720px;
+  --mobile-page-padding: 16px;
+  --mobile-section-gap: 24px;
+
+  /* shadcn compatibility mapping */
+  --background: var(--app-background);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-navy);
+  --primary-foreground: oklch(0.985 0.005 250);
+  --secondary: var(--brand-navy-soft);
+  --secondary-foreground: var(--brand-navy);
+  --muted: var(--surface-secondary);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--brand-gold-soft);
+  --accent-foreground: var(--brand-navy);
+  --destructive: var(--danger);
+  --destructive-foreground: oklch(0.985 0.003 247);
+  --input: var(--border);
+  --ring: var(--brand-navy);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
