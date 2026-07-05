@@ -34,6 +34,15 @@ function normalize<T extends Record<string, unknown>>(input: T): Record<string, 
 
 export const queryKeys = {
   projects: () => ["projects"] as const,
+
+  // Phase 7A — Mobile
+  mobileProjects: () => ["mobile", "projects"] as const,
+  mobileProjectDetail: (id: string) => ["mobile", "projects", "detail", id] as const,
+  mobileInventory: (filters: Record<string, unknown> = {}) =>
+    ["mobile", "inventory", "search", normalize(filters)] as const,
+  mobileInventoryFilters: (projectId?: string | null) =>
+    ["mobile", "inventory", "filters", projectId ?? "all"] as const,
+
   projectDetail: (id: string) => ["projects", "detail", id] as const,
   projectStats: (id: string) => ["projects", "stats", id] as const,
 

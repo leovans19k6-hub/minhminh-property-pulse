@@ -3482,6 +3482,7 @@ export type Database = {
         Args: { p_voucher_id: string }
         Returns: number
       }
+      accessible_mobile_project_ids: { Args: never; Returns: string[] }
       apply_inventory_template: {
         Args: {
           p_include_fields?: boolean
@@ -3556,6 +3557,10 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      can_access_mobile_project: {
+        Args: { p_project_id: string }
+        Returns: boolean
       }
       can_transition_lead_status: {
         Args: { p_from: string; p_to: string }
@@ -3772,6 +3777,15 @@ export type Database = {
         Args: { p_lead_id: string; p_limit?: number; p_offset?: number }
         Returns: Json
       }
+      get_mobile_inventory_filters: {
+        Args: { p_project_id?: string }
+        Returns: Json
+      }
+      get_mobile_project_detail: {
+        Args: { p_project_id: string }
+        Returns: Json
+      }
+      get_mobile_projects: { Args: never; Returns: Json }
       get_my_event_registrations: {
         Args: {
           p_event_type?: string
@@ -4023,6 +4037,27 @@ export type Database = {
           p_source_id?: string
           p_status?: string
           p_unassigned?: boolean
+        }
+        Returns: Json
+      }
+      search_mobile_inventory: {
+        Args: {
+          p_area_max?: number
+          p_area_min?: number
+          p_building_id?: string
+          p_category?: string
+          p_direction?: string
+          p_floor_max?: number
+          p_floor_min?: number
+          p_limit?: number
+          p_offset?: number
+          p_price_max?: number
+          p_price_min?: number
+          p_product_type_id?: string
+          p_project_id?: string
+          p_query?: string
+          p_status?: string
+          p_zone_id?: string
         }
         Returns: Json
       }

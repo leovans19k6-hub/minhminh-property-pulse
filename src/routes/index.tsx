@@ -12,10 +12,12 @@ import {
 } from "lucide-react";
 import { MobileShell } from "@/components/mobile/MobileShell";
 import { SectionHeader } from "@/components/mobile/SectionHeader";
-import { ProjectCard } from "@/components/shared/ProjectCard";
+import { MobileProjectCard } from "@/components/shared/MobileProjectCard";
 import { ProductCard } from "@/components/shared/ProductCard";
-import { projects, products, policies, vouchers, events } from "@/features/mock/data";
+import { products, policies, vouchers, events } from "@/features/mock/data";
 import { formatDate, formatDateTime } from "@/utils/format";
+import { useMobileProjects } from "@/features/projects/queries";
+import { MobileInlineLoader } from "@/components/mobile/MobileStates";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -42,6 +44,7 @@ const quickActions = [
 
 function HomePage() {
   const featured = products.filter((p) => p.status === "Còn hàng").slice(0, 6);
+  const { data: projects, isLoading: projectsLoading } = useMobileProjects();
   return (
     <MobileShell greeting="Xin chào, Sale MMG 👋">
       <div className="space-y-6 pt-3">
@@ -91,9 +94,10 @@ function HomePage() {
             }
           />
           <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2">
-            {projects.map((p) => (
+            {projectsLoading && <MobileInlineLoader />}
+            {(projects ?? []).map((p) => (
               <div key={p.id} className="snap-start">
-                <ProjectCard project={p} compact />
+                <MobileProjectCard project={p} compact />
               </div>
             ))}
           </div>
