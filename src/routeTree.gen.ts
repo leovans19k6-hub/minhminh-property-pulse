@@ -33,6 +33,7 @@ import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.ne
 import { Route as AdminProjectsProjectIdRouteImport } from './routes/admin.projects.$projectId'
 import { Route as AdminInventoryTemplatesTemplateIdRouteImport } from './routes/admin.inventory-templates.$templateId'
 import { Route as AdminProjectsProjectIdEditRouteImport } from './routes/admin.projects.$projectId.edit'
+import { Route as AdminProjectsProjectIdProductsProductIdRouteImport } from './routes/admin.projects.$projectId.products.$productId'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -156,6 +157,12 @@ const AdminProjectsProjectIdEditRoute =
     path: '/edit',
     getParentRoute: () => AdminProjectsProjectIdRoute,
   } as any)
+const AdminProjectsProjectIdProductsProductIdRoute =
+  AdminProjectsProjectIdProductsProductIdRouteImport.update({
+    id: '/products/$productId',
+    path: '/products/$productId',
+    getParentRoute: () => AdminProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -207,6 +215,7 @@ export interface FileRoutesByTo {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -234,6 +243,7 @@ export interface FileRoutesById {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/products/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/products/$productId'
   id:
     | '__root__'
     | '/'
@@ -313,6 +325,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/products/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -501,6 +514,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsProjectIdEditRouteImport
       parentRoute: typeof AdminProjectsProjectIdRoute
     }
+    '/admin/projects/$projectId/products/$productId': {
+      id: '/admin/projects/$projectId/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/admin/projects/$projectId/products/$productId'
+      preLoaderRoute: typeof AdminProjectsProjectIdProductsProductIdRouteImport
+      parentRoute: typeof AdminProjectsProjectIdRoute
+    }
   }
 }
 
@@ -521,11 +541,14 @@ const AdminInventoryTemplatesRouteWithChildren =
 
 interface AdminProjectsProjectIdRouteChildren {
   AdminProjectsProjectIdEditRoute: typeof AdminProjectsProjectIdEditRoute
+  AdminProjectsProjectIdProductsProductIdRoute: typeof AdminProjectsProjectIdProductsProductIdRoute
 }
 
 const AdminProjectsProjectIdRouteChildren: AdminProjectsProjectIdRouteChildren =
   {
     AdminProjectsProjectIdEditRoute: AdminProjectsProjectIdEditRoute,
+    AdminProjectsProjectIdProductsProductIdRoute:
+      AdminProjectsProjectIdProductsProductIdRoute,
   }
 
 const AdminProjectsProjectIdRouteWithChildren =
