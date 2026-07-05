@@ -134,6 +134,204 @@ export type Database = {
           },
         ]
       }
+      crm_activities: {
+        Row: {
+          activity_type: string
+          content: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          lead_id: string | null
+          metadata: Json
+          occurred_at: string
+          project_id: string | null
+          registration_id: string | null
+          title: string
+        }
+        Insert: {
+          activity_type: string
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          occurred_at?: string
+          project_id?: string | null
+          registration_id?: string | null
+          title: string
+        }
+        Update: {
+          activity_type?: string
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          occurred_at?: string
+          project_id?: string | null
+          registration_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_activities_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "crm_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_tasks: {
+        Row: {
+          assigned_to: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_at: string | null
+          id: string
+          lead_id: string | null
+          metadata: Json
+          priority: string
+          project_id: string | null
+          registration_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          priority?: string
+          project_id?: string | null
+          registration_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          priority?: string
+          project_id?: string | null
+          registration_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_tasks_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_cancelled_by_fkey"
+            columns: ["cancelled_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_completed_by_fkey"
+            columns: ["completed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       developers: {
         Row: {
           created_at: string
@@ -1103,6 +1301,9 @@ export type Database = {
         Row: {
           archived_at: string | null
           assigned_to: string | null
+          conversion_reason: string | null
+          converted_at: string | null
+          converted_by: string | null
           created_at: string
           created_by: string | null
           email: string | null
@@ -1110,6 +1311,12 @@ export type Database = {
           id: string
           interested_product_id: string | null
           interested_project_id: string | null
+          lost_at: string | null
+          lost_by: string | null
+          lost_reason: string | null
+          merged_at: string | null
+          merged_by: string | null
+          merged_into_lead_id: string | null
           metadata: Json
           normalized_phone: string | null
           note: string | null
@@ -1122,6 +1329,9 @@ export type Database = {
         Insert: {
           archived_at?: string | null
           assigned_to?: string | null
+          conversion_reason?: string | null
+          converted_at?: string | null
+          converted_by?: string | null
           created_at?: string
           created_by?: string | null
           email?: string | null
@@ -1129,6 +1339,12 @@ export type Database = {
           id?: string
           interested_product_id?: string | null
           interested_project_id?: string | null
+          lost_at?: string | null
+          lost_by?: string | null
+          lost_reason?: string | null
+          merged_at?: string | null
+          merged_by?: string | null
+          merged_into_lead_id?: string | null
           metadata?: Json
           normalized_phone?: string | null
           note?: string | null
@@ -1141,6 +1357,9 @@ export type Database = {
         Update: {
           archived_at?: string | null
           assigned_to?: string | null
+          conversion_reason?: string | null
+          converted_at?: string | null
+          converted_by?: string | null
           created_at?: string
           created_by?: string | null
           email?: string | null
@@ -1148,6 +1367,12 @@ export type Database = {
           id?: string
           interested_product_id?: string | null
           interested_project_id?: string | null
+          lost_at?: string | null
+          lost_by?: string | null
+          lost_reason?: string | null
+          merged_at?: string | null
+          merged_by?: string | null
+          merged_into_lead_id?: string | null
           metadata?: Json
           normalized_phone?: string | null
           note?: string | null
@@ -1161,6 +1386,13 @@ export type Database = {
           {
             foreignKeyName: "leads_assigned_to_fkey"
             columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_converted_by_fkey"
+            columns: ["converted_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1198,6 +1430,27 @@ export type Database = {
             columns: ["interested_project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_lost_by_fkey"
+            columns: ["lost_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_merged_by_fkey"
+            columns: ["merged_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_merged_into_lead_id_fkey"
+            columns: ["merged_into_lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
           {
@@ -2441,6 +2694,71 @@ export type Database = {
           },
         ]
       }
+      registration_reviews: {
+        Row: {
+          created_at: string
+          decision: string
+          id: string
+          metadata: Json
+          note: string | null
+          project_id: string | null
+          registration_id: string
+          reviewed_at: string
+          reviewed_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          decision: string
+          id?: string
+          metadata?: Json
+          note?: string | null
+          project_id?: string | null
+          registration_id: string
+          reviewed_at?: string
+          reviewed_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          decision?: string
+          id?: string
+          metadata?: Json
+          note?: string | null
+          project_id?: string | null
+          registration_id?: string
+          reviewed_at?: string
+          reviewed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registration_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "registration_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registration_reviews_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registration_reviews_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       registrations: {
         Row: {
           assigned_to: string | null
@@ -3138,6 +3456,28 @@ export type Database = {
         Args: { p_event_id: string }
         Returns: number
       }
+      _log_crm_activity: {
+        Args: {
+          p_content: string
+          p_lead: string
+          p_metadata: Json
+          p_project: string
+          p_reg: string
+          p_title: string
+          p_type: string
+        }
+        Returns: string
+      }
+      _ops_can_access_lead: { Args: { p_lead: string }; Returns: boolean }
+      _ops_can_access_registration: {
+        Args: { p_reg: string }
+        Returns: boolean
+      }
+      _ops_can_manage_project: { Args: { p_project: string }; Returns: boolean }
+      _task_access: {
+        Args: { p_task_id: string }
+        Returns: Record<string, unknown>
+      }
       _voucher_registration_count: {
         Args: { p_voucher_id: string }
         Returns: number
@@ -3168,7 +3508,27 @@ export type Database = {
         Args: { p_reason?: string; p_voucher_id: string }
         Returns: Json
       }
+      assign_crm_task: {
+        Args: { p_assigned_to: string; p_task_id: string }
+        Returns: Json
+      }
+      assign_lead: {
+        Args: { p_assigned_to: string; p_lead_id: string }
+        Returns: Json
+      }
+      assign_registration: {
+        Args: { p_assigned_to: string; p_registration_id: string }
+        Returns: Json
+      }
       bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
+      bulk_assign_leads: {
+        Args: { p_assigned_to: string; p_lead_ids: string[] }
+        Returns: Json
+      }
+      bulk_assign_registrations: {
+        Args: { p_assigned_to: string; p_registration_ids: string[] }
+        Returns: Json
+      }
       bulk_create_floors: {
         Args: {
           p_building_id: string
@@ -3196,6 +3556,18 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      can_transition_lead_status: {
+        Args: { p_from: string; p_to: string }
+        Returns: boolean
+      }
+      can_transition_registration_status: {
+        Args: { p_from: string; p_to: string }
+        Returns: boolean
+      }
+      cancel_crm_task: {
+        Args: { p_reason?: string; p_task_id: string }
+        Returns: Json
       }
       cancel_event: {
         Args: { p_event_id: string; p_reason?: string }
@@ -3255,8 +3627,37 @@ export type Database = {
         Returns: Json
       }
       commit_inventory_import: { Args: { p_job_id: string }; Returns: Json }
+      complete_crm_task: { Args: { p_task_id: string }; Returns: Json }
       complete_event: {
         Args: { p_event_id: string; p_reason?: string }
+        Returns: Json
+      }
+      convert_lead: {
+        Args: { p_lead_id: string; p_reason?: string }
+        Returns: Json
+      }
+      create_crm_activity: {
+        Args: {
+          p_activity_type: string
+          p_content?: string
+          p_lead_id: string
+          p_metadata?: Json
+          p_occurred_at?: string
+          p_registration_id: string
+          p_title: string
+        }
+        Returns: Json
+      }
+      create_crm_task: {
+        Args: {
+          p_assigned_to?: string
+          p_description?: string
+          p_due_at?: string
+          p_lead_id: string
+          p_priority?: string
+          p_registration_id: string
+          p_title: string
+        }
         Returns: Json
       }
       create_event: {
@@ -3366,6 +3767,11 @@ export type Database = {
         Returns: Json
       }
       get_event_admin_detail: { Args: { p_event_id: string }; Returns: Json }
+      get_lead_admin_detail: { Args: { p_lead_id: string }; Returns: Json }
+      get_lead_timeline: {
+        Args: { p_lead_id: string; p_limit?: number; p_offset?: number }
+        Returns: Json
+      }
       get_my_event_registrations: {
         Args: {
           p_event_type?: string
@@ -3374,6 +3780,10 @@ export type Database = {
           p_project_id?: string
           p_status?: string
         }
+        Returns: Json
+      }
+      get_my_operations_work: {
+        Args: { p_limit?: number; p_project_id?: string }
         Returns: Json
       }
       get_my_voucher_registrations: {
@@ -3385,6 +3795,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_operations_dashboard: {
+        Args: { p_project_id?: string }
+        Returns: Json
+      }
       get_or_create_registration_lead: {
         Args: { p_product_id?: string; p_project_id: string; p_user_id: string }
         Returns: string
@@ -3394,6 +3808,15 @@ export type Database = {
         Returns: Json
       }
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
+      get_registration_admin_detail: {
+        Args: { p_registration_id: string }
+        Returns: Json
+      }
+      get_registration_domain: { Args: { p_type: string }; Returns: string }
+      get_registration_timeline: {
+        Args: { p_limit?: number; p_offset?: number; p_registration_id: string }
+        Returns: Json
+      }
       get_sales_policy_admin_detail: {
         Args: { p_policy_id: string }
         Returns: Json
@@ -3419,6 +3842,14 @@ export type Database = {
       is_reserved_product_field_key: {
         Args: { p_key: string }
         Returns: boolean
+      }
+      is_valid_assignee: {
+        Args: { p_project: string; p_user: string }
+        Returns: boolean
+      }
+      mark_lead_lost: {
+        Args: { p_lead_id: string; p_reason: string }
+        Returns: Json
       }
       normalize_phone: { Args: { phone: string }; Returns: string }
       pause_event: { Args: { p_event_id: string }; Returns: Json }
@@ -3450,15 +3881,37 @@ export type Database = {
         }
         Returns: Json
       }
+      reopen_lead: {
+        Args: { p_lead_id: string; p_reason?: string }
+        Returns: Json
+      }
       restore_event: { Args: { p_event_id: string }; Returns: Json }
       restore_product: { Args: { p_product_id: string }; Returns: undefined }
       restore_sales_policy: { Args: { p_policy_id: string }; Returns: Json }
       restore_voucher: { Args: { p_voucher_id: string }; Returns: Json }
       resume_event: { Args: { p_event_id: string }; Returns: Json }
       resume_voucher: { Args: { p_voucher_id: string }; Returns: Json }
+      review_registration: {
+        Args: { p_decision: string; p_note?: string; p_registration_id: string }
+        Returns: Json
+      }
       save_inventory_view_fields: {
         Args: { p_fields: Json; p_view_id: string }
         Returns: number
+      }
+      search_crm_tasks: {
+        Args: {
+          p_assigned_to?: string
+          p_due_today?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_overdue?: boolean
+          p_priority?: string
+          p_project_id?: string
+          p_query?: string
+          p_status?: string
+        }
+        Returns: Json
       }
       search_events: {
         Args: {
@@ -3535,6 +3988,38 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      search_leads: {
+        Args: {
+          p_assigned_to?: string
+          p_created_from?: string
+          p_created_to?: string
+          p_limit?: number
+          p_offset?: number
+          p_priority?: string
+          p_project_id?: string
+          p_query?: string
+          p_source_id?: string
+          p_status?: string
+          p_unassigned?: boolean
+        }
+        Returns: Json
+      }
+      search_registrations: {
+        Args: {
+          p_assigned_to?: string
+          p_created_from?: string
+          p_created_to?: string
+          p_domain?: string
+          p_limit?: number
+          p_offset?: number
+          p_project_id?: string
+          p_query?: string
+          p_registration_type?: string
+          p_status?: string
+          p_unassigned?: boolean
+        }
+        Returns: Json
+      }
       search_sales_policies: {
         Args: {
           p_effective_state?: string
@@ -3564,6 +4049,10 @@ export type Database = {
         Args: { p_view_id: string }
         Returns: undefined
       }
+      set_lead_priority: {
+        Args: { p_lead_id: string; p_priority: string }
+        Returns: Json
+      }
       set_product_custom_values: {
         Args: { p_product_id: string; p_values: Json }
         Returns: undefined
@@ -3582,8 +4071,27 @@ export type Database = {
         }
         Returns: string
       }
+      start_crm_task: { Args: { p_task_id: string }; Returns: Json }
+      transition_lead_status: {
+        Args: { p_lead_id: string; p_reason?: string; p_status: string }
+        Returns: Json
+      }
+      transition_registration_status: {
+        Args: { p_reason?: string; p_registration_id: string; p_status: string }
+        Returns: Json
+      }
       unpublish_sales_policy: {
         Args: { p_change_summary?: string; p_policy_id: string }
+        Returns: Json
+      }
+      update_crm_task: {
+        Args: {
+          p_description?: string
+          p_due_at?: string
+          p_priority?: string
+          p_task_id: string
+          p_title?: string
+        }
         Returns: Json
       }
       update_event: {
@@ -3595,6 +4103,18 @@ export type Database = {
           p_product_type_ids?: string[]
           p_sessions?: Json
           p_voucher_ids?: string[]
+        }
+        Returns: Json
+      }
+      update_lead_profile: {
+        Args: {
+          p_email?: string
+          p_full_name?: string
+          p_interested_project_id?: string
+          p_lead_id: string
+          p_note?: string
+          p_phone?: string
+          p_source_id?: string
         }
         Returns: Json
       }
