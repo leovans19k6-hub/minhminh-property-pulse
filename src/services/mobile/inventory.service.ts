@@ -80,24 +80,24 @@ function mapErr(msg: string): string {
 export async function searchMobileInventory(
   f: MobileInventoryFilters = {},
 ): Promise<MobileInventoryPage> {
-  const res = await supabase.rpc("search_mobile_inventory" as never, {
-    p_project_id: f.projectId ?? null,
-    p_query: f.query ?? null,
-    p_category: f.category ?? null,
-    p_zone_id: f.zoneId ?? null,
-    p_building_id: f.buildingId ?? null,
-    p_product_type_id: f.productTypeId ?? null,
-    p_status: f.status ?? null,
-    p_floor_min: f.floorMin ?? null,
-    p_floor_max: f.floorMax ?? null,
-    p_area_min: f.areaMin ?? null,
-    p_area_max: f.areaMax ?? null,
-    p_price_min: f.priceMin ?? null,
-    p_price_max: f.priceMax ?? null,
-    p_direction: f.direction ?? null,
+  const res = await supabase.rpc("search_mobile_inventory", {
+    p_project_id: f.projectId ?? undefined,
+    p_query: f.query ?? undefined,
+    p_category: f.category ?? undefined,
+    p_zone_id: f.zoneId ?? undefined,
+    p_building_id: f.buildingId ?? undefined,
+    p_product_type_id: f.productTypeId ?? undefined,
+    p_status: f.status ?? undefined,
+    p_floor_min: f.floorMin ?? undefined,
+    p_floor_max: f.floorMax ?? undefined,
+    p_area_min: f.areaMin ?? undefined,
+    p_area_max: f.areaMax ?? undefined,
+    p_price_min: f.priceMin ?? undefined,
+    p_price_max: f.priceMax ?? undefined,
+    p_direction: f.direction ?? undefined,
     p_limit: f.limit ?? 30,
     p_offset: f.offset ?? 0,
-  } as never);
+  });
   if (res.error) throw new ServiceError(mapErr(res.error.message), res.error);
   return res.data as unknown as MobileInventoryPage;
 }
@@ -105,9 +105,9 @@ export async function searchMobileInventory(
 export async function getMobileInventoryFilters(
   projectId?: string | null,
 ): Promise<MobileFilterOptions> {
-  const res = await supabase.rpc("get_mobile_inventory_filters" as never, {
-    p_project_id: projectId ?? null,
-  } as never);
+  const res = await supabase.rpc("get_mobile_inventory_filters", {
+    p_project_id: projectId ?? undefined,
+  });
   if (res.error) throw new ServiceError(mapErr(res.error.message), res.error);
   return res.data as unknown as MobileFilterOptions;
 }
