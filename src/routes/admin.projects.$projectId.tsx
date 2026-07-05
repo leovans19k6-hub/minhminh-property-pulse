@@ -21,6 +21,7 @@ import { ViewsTab } from "@/components/admin/tabs/ViewsTab";
 import { ProductsTab } from "@/components/admin/tabs/ProductsTab";
 import { PoliciesTab } from "@/components/admin/tabs/PoliciesTab";
 import { VouchersTab } from "@/components/admin/tabs/VouchersTab";
+import { EventsTab } from "@/components/admin/tabs/EventsTab";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { canManageProject } from "@/features/admin/access";
 
@@ -99,7 +100,7 @@ function ProjectDetail() {
           <TabsTrigger value="inventory">Bảng hàng</TabsTrigger>
           <TabsTrigger value="policies">Chính sách</TabsTrigger>
           <TabsTrigger value="vouchers">Voucher</TabsTrigger>
-          <TabsTrigger value="events" disabled>Sự kiện</TabsTrigger>
+          <TabsTrigger value="events">Sự kiện</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4"><OverviewTab project={p} /></TabsContent>
@@ -114,6 +115,7 @@ function ProjectDetail() {
         <TabsContent value="inventory" className="mt-4">{tab === "inventory" && <ProductsTab projectId={projectId} canManage={canManage} />}</TabsContent>
         <TabsContent value="policies" className="mt-4">{tab === "policies" && <PoliciesTab projectId={projectId} canManage={canManage} />}</TabsContent>
         <TabsContent value="vouchers" className="mt-4">{tab === "vouchers" && <VouchersTab projectId={projectId} canManage={canManage} />}</TabsContent>
+        <TabsContent value="events" className="mt-4">{tab === "events" && <EventsTab projectId={projectId} canManage={canManage} />}</TabsContent>
       </Tabs>
     </div>
   );

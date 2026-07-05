@@ -36,6 +36,7 @@ import { Route as AdminProjectsProjectIdEditRouteImport } from './routes/admin.p
 import { Route as AdminProjectsProjectIdVouchersVoucherIdRouteImport } from './routes/admin.projects.$projectId.vouchers.$voucherId'
 import { Route as AdminProjectsProjectIdProductsProductIdRouteImport } from './routes/admin.projects.$projectId.products.$productId'
 import { Route as AdminProjectsProjectIdPoliciesPolicyIdRouteImport } from './routes/admin.projects.$projectId.policies.$policyId'
+import { Route as AdminProjectsProjectIdEventsEventIdRouteImport } from './routes/admin.projects.$projectId.events.$eventId'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -177,6 +178,12 @@ const AdminProjectsProjectIdPoliciesPolicyIdRoute =
     path: '/policies/$policyId',
     getParentRoute: () => AdminProjectsProjectIdRoute,
   } as any)
+const AdminProjectsProjectIdEventsEventIdRoute =
+  AdminProjectsProjectIdEventsEventIdRouteImport.update({
+    id: '/events/$eventId',
+    path: '/events/$eventId',
+    getParentRoute: () => AdminProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
   '/admin/projects/$projectId/policies/$policyId': typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
   '/admin/projects/$projectId/vouchers/$voucherId': typeof AdminProjectsProjectIdVouchersVoucherIdRoute
@@ -231,6 +239,7 @@ export interface FileRoutesByTo {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
   '/admin/projects/$projectId/policies/$policyId': typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
   '/admin/projects/$projectId/vouchers/$voucherId': typeof AdminProjectsProjectIdVouchersVoucherIdRoute
@@ -261,6 +270,7 @@ export interface FileRoutesById {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/admin/projects/$projectId/edit': typeof AdminProjectsProjectIdEditRoute
+  '/admin/projects/$projectId/events/$eventId': typeof AdminProjectsProjectIdEventsEventIdRoute
   '/admin/projects/$projectId/policies/$policyId': typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   '/admin/projects/$projectId/products/$productId': typeof AdminProjectsProjectIdProductsProductIdRoute
   '/admin/projects/$projectId/vouchers/$voucherId': typeof AdminProjectsProjectIdVouchersVoucherIdRoute
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/events/$eventId'
     | '/admin/projects/$projectId/policies/$policyId'
     | '/admin/projects/$projectId/products/$productId'
     | '/admin/projects/$projectId/vouchers/$voucherId'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/events/$eventId'
     | '/admin/projects/$projectId/policies/$policyId'
     | '/admin/projects/$projectId/products/$productId'
     | '/admin/projects/$projectId/vouchers/$voucherId'
@@ -349,6 +361,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/users/$userId'
     | '/admin/projects/$projectId/edit'
+    | '/admin/projects/$projectId/events/$eventId'
     | '/admin/projects/$projectId/policies/$policyId'
     | '/admin/projects/$projectId/products/$productId'
     | '/admin/projects/$projectId/vouchers/$voucherId'
@@ -561,6 +574,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsProjectIdPoliciesPolicyIdRouteImport
       parentRoute: typeof AdminProjectsProjectIdRoute
     }
+    '/admin/projects/$projectId/events/$eventId': {
+      id: '/admin/projects/$projectId/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/admin/projects/$projectId/events/$eventId'
+      preLoaderRoute: typeof AdminProjectsProjectIdEventsEventIdRouteImport
+      parentRoute: typeof AdminProjectsProjectIdRoute
+    }
   }
 }
 
@@ -581,6 +601,7 @@ const AdminInventoryTemplatesRouteWithChildren =
 
 interface AdminProjectsProjectIdRouteChildren {
   AdminProjectsProjectIdEditRoute: typeof AdminProjectsProjectIdEditRoute
+  AdminProjectsProjectIdEventsEventIdRoute: typeof AdminProjectsProjectIdEventsEventIdRoute
   AdminProjectsProjectIdPoliciesPolicyIdRoute: typeof AdminProjectsProjectIdPoliciesPolicyIdRoute
   AdminProjectsProjectIdProductsProductIdRoute: typeof AdminProjectsProjectIdProductsProductIdRoute
   AdminProjectsProjectIdVouchersVoucherIdRoute: typeof AdminProjectsProjectIdVouchersVoucherIdRoute
@@ -589,6 +610,8 @@ interface AdminProjectsProjectIdRouteChildren {
 const AdminProjectsProjectIdRouteChildren: AdminProjectsProjectIdRouteChildren =
   {
     AdminProjectsProjectIdEditRoute: AdminProjectsProjectIdEditRoute,
+    AdminProjectsProjectIdEventsEventIdRoute:
+      AdminProjectsProjectIdEventsEventIdRoute,
     AdminProjectsProjectIdPoliciesPolicyIdRoute:
       AdminProjectsProjectIdPoliciesPolicyIdRoute,
     AdminProjectsProjectIdProductsProductIdRoute:
