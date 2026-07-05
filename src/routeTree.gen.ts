@@ -25,6 +25,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
 import { Route as AdminRegistrationsRouteImport } from './routes/admin.registrations'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
@@ -121,6 +122,11 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTasksRoute = AdminTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminRegistrationsRoute = AdminRegistrationsRouteImport.update({
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
+  '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -269,6 +276,7 @@ export interface FileRoutesByTo {
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
+  '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -305,6 +313,7 @@ export interface FileRoutesById {
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
+  '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -342,6 +351,7 @@ export interface FileRouteTypes {
     | '/admin/operations'
     | '/admin/projects'
     | '/admin/registrations'
+    | '/admin/tasks'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -376,6 +386,7 @@ export interface FileRouteTypes {
     | '/admin/operations'
     | '/admin/projects'
     | '/admin/registrations'
+    | '/admin/tasks'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -411,6 +422,7 @@ export interface FileRouteTypes {
     | '/admin/operations'
     | '/admin/projects'
     | '/admin/registrations'
+    | '/admin/tasks'
     | '/admin/users'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -556,6 +568,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tasks': {
+      id: '/admin/tasks'
+      path: '/tasks'
+      fullPath: '/admin/tasks'
+      preLoaderRoute: typeof AdminTasksRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/registrations': {
@@ -777,6 +796,7 @@ interface AdminRouteChildren {
   AdminOperationsRoute: typeof AdminOperationsRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminRegistrationsRoute: typeof AdminRegistrationsRouteWithChildren
+  AdminTasksRoute: typeof AdminTasksRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -788,6 +808,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminOperationsRoute: AdminOperationsRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminRegistrationsRoute: AdminRegistrationsRouteWithChildren,
+  AdminTasksRoute: AdminTasksRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
