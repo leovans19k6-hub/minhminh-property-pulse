@@ -490,6 +490,348 @@ export type Database = {
           },
         ]
       }
+      inventory_template_fields: {
+        Row: {
+          created_at: string
+          data_type: string
+          display_order: number
+          field_group: string | null
+          field_key: string
+          field_label: string
+          help_text: string | null
+          id: string
+          is_filterable: boolean
+          is_required: boolean
+          is_searchable: boolean
+          is_sortable: boolean
+          metadata: Json
+          options: Json
+          placeholder: string | null
+          show_in_admin_table: boolean
+          show_in_form: boolean
+          show_in_mobile_list: boolean
+          show_in_product_detail: boolean
+          template_id: string
+          unit: string | null
+          updated_at: string
+          validation_rules: Json
+        }
+        Insert: {
+          created_at?: string
+          data_type: string
+          display_order?: number
+          field_group?: string | null
+          field_key: string
+          field_label: string
+          help_text?: string | null
+          id?: string
+          is_filterable?: boolean
+          is_required?: boolean
+          is_searchable?: boolean
+          is_sortable?: boolean
+          metadata?: Json
+          options?: Json
+          placeholder?: string | null
+          show_in_admin_table?: boolean
+          show_in_form?: boolean
+          show_in_mobile_list?: boolean
+          show_in_product_detail?: boolean
+          template_id: string
+          unit?: string | null
+          updated_at?: string
+          validation_rules?: Json
+        }
+        Update: {
+          created_at?: string
+          data_type?: string
+          display_order?: number
+          field_group?: string | null
+          field_key?: string
+          field_label?: string
+          help_text?: string | null
+          id?: string
+          is_filterable?: boolean
+          is_required?: boolean
+          is_searchable?: boolean
+          is_sortable?: boolean
+          metadata?: Json
+          options?: Json
+          placeholder?: string | null
+          show_in_admin_table?: boolean
+          show_in_form?: boolean
+          show_in_mobile_list?: boolean
+          show_in_product_detail?: boolean
+          template_id?: string
+          unit?: string | null
+          updated_at?: string
+          validation_rules?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_template_fields_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_template_views: {
+        Row: {
+          code: string
+          configuration: Json
+          created_at: string
+          display_order: number
+          id: string
+          name: string
+          template_id: string
+          updated_at: string
+          view_type: string
+        }
+        Insert: {
+          code: string
+          configuration?: Json
+          created_at?: string
+          display_order?: number
+          id?: string
+          name: string
+          template_id: string
+          updated_at?: string
+          view_type: string
+        }
+        Update: {
+          code?: string
+          configuration?: Json
+          created_at?: string
+          display_order?: number
+          id?: string
+          name?: string
+          template_id?: string
+          updated_at?: string
+          view_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_template_views_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_templates: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_system: boolean
+          name: string
+          project_category: string | null
+          source_project_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean
+          name: string
+          project_category?: string | null
+          source_project_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean
+          name?: string
+          project_category?: string | null
+          source_project_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_templates_source_project_id_fkey"
+            columns: ["source_project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "inventory_templates_source_project_id_fkey"
+            columns: ["source_project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_view_fields: {
+        Row: {
+          column_label: string
+          core_field_key: string | null
+          created_at: string
+          display_order: number
+          field_definition_id: string | null
+          field_source: string
+          filterable: boolean
+          id: string
+          inventory_view_id: string
+          mobile_visible: boolean
+          pinned: string | null
+          price_code: string | null
+          searchable: boolean
+          sortable: boolean
+          updated_at: string
+          visible: boolean
+          width: number | null
+        }
+        Insert: {
+          column_label: string
+          core_field_key?: string | null
+          created_at?: string
+          display_order?: number
+          field_definition_id?: string | null
+          field_source: string
+          filterable?: boolean
+          id?: string
+          inventory_view_id: string
+          mobile_visible?: boolean
+          pinned?: string | null
+          price_code?: string | null
+          searchable?: boolean
+          sortable?: boolean
+          updated_at?: string
+          visible?: boolean
+          width?: number | null
+        }
+        Update: {
+          column_label?: string
+          core_field_key?: string | null
+          created_at?: string
+          display_order?: number
+          field_definition_id?: string | null
+          field_source?: string
+          filterable?: boolean
+          id?: string
+          inventory_view_id?: string
+          mobile_visible?: boolean
+          pinned?: string | null
+          price_code?: string | null
+          searchable?: boolean
+          sortable?: boolean
+          updated_at?: string
+          visible?: boolean
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_view_fields_field_definition_id_fkey"
+            columns: ["field_definition_id"]
+            isOneToOne: false
+            referencedRelation: "product_field_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_view_fields_inventory_view_id_fkey"
+            columns: ["inventory_view_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_views"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_views: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          default_sort_direction: string
+          default_sort_field: string | null
+          description: string | null
+          id: string
+          is_default: boolean
+          name: string
+          page_size: number
+          project_id: string
+          status: string
+          updated_at: string
+          view_type: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          default_sort_direction?: string
+          default_sort_field?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          name: string
+          page_size?: number
+          project_id: string
+          status?: string
+          updated_at?: string
+          view_type: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          default_sort_direction?: string
+          default_sort_field?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          page_size?: number
+          project_id?: string
+          status?: string
+          updated_at?: string
+          view_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_views_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_views_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "inventory_views_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_sources: {
         Row: {
           code: string
@@ -740,6 +1082,220 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_custom_values: {
+        Row: {
+          created_at: string
+          field_definition_id: string
+          id: string
+          product_id: string
+          updated_at: string
+          value_boolean: boolean | null
+          value_date: string | null
+          value_datetime: string | null
+          value_decimal: number | null
+          value_integer: number | null
+          value_jsonb: Json | null
+          value_text: string | null
+        }
+        Insert: {
+          created_at?: string
+          field_definition_id: string
+          id?: string
+          product_id: string
+          updated_at?: string
+          value_boolean?: boolean | null
+          value_date?: string | null
+          value_datetime?: string | null
+          value_decimal?: number | null
+          value_integer?: number | null
+          value_jsonb?: Json | null
+          value_text?: string | null
+        }
+        Update: {
+          created_at?: string
+          field_definition_id?: string
+          id?: string
+          product_id?: string
+          updated_at?: string
+          value_boolean?: boolean | null
+          value_date?: string | null
+          value_datetime?: string | null
+          value_decimal?: number | null
+          value_integer?: number | null
+          value_jsonb?: Json | null
+          value_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_custom_values_field_definition_id_fkey"
+            columns: ["field_definition_id"]
+            isOneToOne: false
+            referencedRelation: "product_field_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_custom_values_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_product_summary"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "product_custom_values_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_field_definitions: {
+        Row: {
+          created_at: string
+          data_type: string
+          display_order: number
+          field_group: string | null
+          field_key: string
+          field_label: string
+          help_text: string | null
+          id: string
+          is_filterable: boolean
+          is_required: boolean
+          is_searchable: boolean
+          is_sortable: boolean
+          metadata: Json
+          placeholder: string | null
+          product_type_id: string | null
+          project_id: string
+          show_in_admin_table: boolean
+          show_in_form: boolean
+          show_in_mobile_list: boolean
+          show_in_product_detail: boolean
+          status: string
+          unit: string | null
+          updated_at: string
+          validation_rules: Json
+        }
+        Insert: {
+          created_at?: string
+          data_type: string
+          display_order?: number
+          field_group?: string | null
+          field_key: string
+          field_label: string
+          help_text?: string | null
+          id?: string
+          is_filterable?: boolean
+          is_required?: boolean
+          is_searchable?: boolean
+          is_sortable?: boolean
+          metadata?: Json
+          placeholder?: string | null
+          product_type_id?: string | null
+          project_id: string
+          show_in_admin_table?: boolean
+          show_in_form?: boolean
+          show_in_mobile_list?: boolean
+          show_in_product_detail?: boolean
+          status?: string
+          unit?: string | null
+          updated_at?: string
+          validation_rules?: Json
+        }
+        Update: {
+          created_at?: string
+          data_type?: string
+          display_order?: number
+          field_group?: string | null
+          field_key?: string
+          field_label?: string
+          help_text?: string | null
+          id?: string
+          is_filterable?: boolean
+          is_required?: boolean
+          is_searchable?: boolean
+          is_sortable?: boolean
+          metadata?: Json
+          placeholder?: string | null
+          product_type_id?: string | null
+          project_id?: string
+          show_in_admin_table?: boolean
+          show_in_form?: boolean
+          show_in_mobile_list?: boolean
+          show_in_product_detail?: boolean
+          status?: string
+          unit?: string | null
+          updated_at?: string
+          validation_rules?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_field_definitions_product_type_id_fkey"
+            columns: ["product_type_id"]
+            isOneToOne: false
+            referencedRelation: "product_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_field_definitions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "product_field_definitions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_field_options: {
+        Row: {
+          created_at: string
+          display_order: number
+          field_definition_id: string
+          id: string
+          metadata: Json
+          option_label: string
+          option_value: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          field_definition_id: string
+          id?: string
+          metadata?: Json
+          option_label: string
+          option_value: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          field_definition_id?: string
+          id?: string
+          metadata?: Json
+          option_label?: string
+          option_value?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_field_options_field_definition_id_fkey"
+            columns: ["field_definition_id"]
+            isOneToOne: false
+            referencedRelation: "product_field_definitions"
             referencedColumns: ["id"]
           },
         ]
@@ -1352,6 +1908,83 @@ export type Database = {
             foreignKeyName: "project_documents_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_inventory_settings: {
+        Row: {
+          allow_bulk_edit: boolean
+          allow_bulk_price_update: boolean
+          allow_bulk_status_update: boolean
+          allow_custom_fields: boolean
+          allow_product_clone: boolean
+          created_at: string
+          default_admin_view_id: string | null
+          default_mobile_view_id: string | null
+          inventory_display_name: string
+          metadata: Json
+          project_id: string
+          realtime_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          allow_bulk_edit?: boolean
+          allow_bulk_price_update?: boolean
+          allow_bulk_status_update?: boolean
+          allow_custom_fields?: boolean
+          allow_product_clone?: boolean
+          created_at?: string
+          default_admin_view_id?: string | null
+          default_mobile_view_id?: string | null
+          inventory_display_name?: string
+          metadata?: Json
+          project_id: string
+          realtime_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          allow_bulk_edit?: boolean
+          allow_bulk_price_update?: boolean
+          allow_bulk_status_update?: boolean
+          allow_custom_fields?: boolean
+          allow_product_clone?: boolean
+          created_at?: string
+          default_admin_view_id?: string | null
+          default_mobile_view_id?: string | null
+          inventory_display_name?: string
+          metadata?: Json
+          project_id?: string
+          realtime_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_inventory_settings_default_admin_view_id_fkey"
+            columns: ["default_admin_view_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_views"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_inventory_settings_default_mobile_view_id_fkey"
+            columns: ["default_mobile_view_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_views"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_inventory_settings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "project_inventory_stats"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "project_inventory_settings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -2048,6 +2681,10 @@ export type Database = {
       is_active_user: { Args: never; Returns: boolean }
       is_project_manager: { Args: { p_project_id: string }; Returns: boolean }
       is_project_member: { Args: { p_project_id: string }; Returns: boolean }
+      is_reserved_product_field_key: {
+        Args: { p_key: string }
+        Returns: boolean
+      }
       normalize_phone: { Args: { phone: string }; Returns: string }
       search_inventory: {
         Args: {

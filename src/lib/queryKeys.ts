@@ -76,6 +76,32 @@ export const queryKeys = {
   adminProjectFloors: (buildingId: string) => ["admin", "buildings", buildingId, "floors"] as const,
   adminProjectProductTypes: (projectId: string) => ["admin", "projects", projectId, "product-types"] as const,
   adminProjectMembers: (projectId: string) => ["admin", "projects", projectId, "members"] as const,
+
+  // Inventory Engine (Phase 5)
+  adminProjectInventorySettings: (projectId: string) =>
+    ["admin", "projects", projectId, "inventory-settings"] as const,
+  adminProductFields: (projectId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "projects", projectId, "product-fields", normalize(filters)] as const,
+  adminProductFieldDetail: (fieldId: string) =>
+    ["admin", "product-fields", "detail", fieldId] as const,
+  adminProductFieldOptions: (fieldId: string) =>
+    ["admin", "product-fields", fieldId, "options"] as const,
+  adminInventoryViews: (projectId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "projects", projectId, "inventory-views", normalize(filters)] as const,
+  adminInventoryViewDetail: (viewId: string) =>
+    ["admin", "inventory-views", "detail", viewId] as const,
+  adminInventoryViewFields: (viewId: string) =>
+    ["admin", "inventory-views", viewId, "fields"] as const,
+  adminInventoryTemplates: (filters: Record<string, unknown> = {}) =>
+    ["admin", "inventory-templates", normalize(filters)] as const,
+  adminInventoryTemplateDetail: (templateId: string) =>
+    ["admin", "inventory-templates", "detail", templateId] as const,
+  adminInventoryProducts: (projectId: string, filters: Record<string, unknown> = {}) =>
+    ["admin", "projects", projectId, "inventory-products", normalize(filters)] as const,
+  adminInventoryProductDetail: (productId: string) =>
+    ["admin", "inventory-products", "detail", productId] as const,
+  adminProductHistory: (productId: string) =>
+    ["admin", "inventory-products", productId, "history"] as const,
 } as const;
 
 export type QueryKeys = typeof queryKeys;
