@@ -22,6 +22,8 @@ Shared building blocks for the Minh Minh Sales Hub mobile app.
 
 - `MobileProjectCard`, `MobileInventoryCard`, `ProductCard`, `ProjectCard` — unchanged in 7B.2; all inherit new tokens via CSS.
 - `StatusBadge` — semantic tones (`success | warning | danger | info | neutral | premium`) mapped from Vietnamese status labels.
+- `PrimaryContactCard` — reusable primary-contact card with Call / Copy / Zalo actions. Skips actions that lack real data.
+- `product-detail/*` — Product Detail composition components (`ProductMediaGallery`, `ProductIdentityCard`, `ProductSpecsCard`, `ProductPriceOptions`, `ProductCustomFields`, `ProductPriceHistoryCard`, `ProductStatusHistoryCard`, `PoliciesPreview`, `VouchersPreview`, `EventsPreview`, `ProductStatusBadge`, `ProductDetailSkeleton`). See `docs/MOBILE_PRODUCT_DETAIL_UI.md`.
 
 ## States
 
