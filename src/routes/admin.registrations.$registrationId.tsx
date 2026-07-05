@@ -45,7 +45,16 @@ function RegistrationDetailPage() {
   });
 
   const r = detail.data?.registration;
-  const allowed = detail.data?.allowed_transitions ?? [];
+  const domain = detail.data?.domain;
+  // Phase 6D.1 — hide generic Cancel/Complete for domain-owned registrations.
+  const allowed = (detail.data?.allowed_transitions ?? []).filter((s) => {
+    if ((domain === "VOUCHER" || domain === "EVENT") && (s === "cancelled" || s === "completed")) return false;
+    return true;
+  });
+  const reviewable = r ? ["new", "in_progress"].includes(String(r.status)) : false;
+  const canReviewDomain = !(
+    (domain === "EVENT" || domain === "VOUCHER") && !reviewable
+  );
 
   return (
     <div className="space-y-6">
