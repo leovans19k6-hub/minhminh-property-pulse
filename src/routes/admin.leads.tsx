@@ -100,7 +100,15 @@ function LeadsPage() {
             </tbody>
           </table>}
       </CardContent></Card>
-      <AssignmentDialog open={bulkOpen} onOpenChange={setBulkOpen} onAssign={async (u) => { await bulkMut.mutateAsync(u); }} title={`Phân công ${selected.size} lead`} />
+      <AssignmentDialog
+        open={bulkOpen}
+        onOpenChange={setBulkOpen}
+        targetType="lead"
+        projectIds={Array.from(new Set((q.data ?? []).filter((l) => selected.has(l.id)).map((l) => l.interested_project_id).filter((p): p is string => !!p)))}
+        onAssign={async (u) => { await bulkMut.mutateAsync(u); }}
+        title={`Phân công ${selected.size} lead`}
+        selectionCount={selected.size}
+      />
     </div>
   );
 }

@@ -120,7 +120,14 @@ function RegistrationDetailPage() {
           </Tabs>
         </>
       )}
-      <AssignmentDialog open={assignOpen} onOpenChange={setAssignOpen} currentAssignee={r?.assigned_to as string | null} onAssign={async (u) => { await assignMut.mutateAsync(u); }} />
+      <AssignmentDialog
+        open={assignOpen}
+        onOpenChange={setAssignOpen}
+        targetType="registration"
+        projectId={(r?.project_id as string | null) ?? null}
+        currentAssignee={r?.assigned_to as string | null}
+        onAssign={async (u) => { await assignMut.mutateAsync(u); }}
+      />
       <ActivityDialog open={actOpen} onOpenChange={setActOpen} onSubmit={async (v) => {
         try { await createCrmActivity({ registrationId, activityType: v.activityType, title: v.title, content: v.content }); toast.success("Đã thêm hoạt động"); invalidate(); }
         catch (e) { toast.error(mapOpsError(e)); }

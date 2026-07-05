@@ -94,7 +94,15 @@ function RegistrationsPage() {
             </tbody>
           </table>}
       </CardContent></Card>
-      <AssignmentDialog open={bulkOpen} onOpenChange={setBulkOpen} onAssign={async (u) => { await bulkMut.mutateAsync(u); }} title={`Phân công ${selected.size} đăng ký`} />
+      <AssignmentDialog
+        open={bulkOpen}
+        onOpenChange={setBulkOpen}
+        targetType="registration"
+        projectIds={Array.from(new Set((q.data ?? []).filter((r) => selected.has(r.id)).map((r) => r.project_id).filter((p): p is string => !!p)))}
+        onAssign={async (u) => { await bulkMut.mutateAsync(u); }}
+        title={`Phân công ${selected.size} đăng ký`}
+        selectionCount={selected.size}
+      />
     </div>
   );
 }
