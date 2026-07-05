@@ -79,13 +79,13 @@ function mapErr(msg: string): string {
 }
 
 export async function getMobileProjects(): Promise<MobileProjectSummary[]> {
-  const res = await supabase.rpc("get_mobile_projects" as never);
+  const res = await supabase.rpc("get_mobile_projects");
   if (res.error) throw new ServiceError(mapErr(res.error.message), res.error);
-  return (res.data as MobileProjectSummary[] | null) ?? [];
+  return (res.data as unknown as MobileProjectSummary[] | null) ?? [];
 }
 
 export async function getMobileProjectDetail(projectId: string): Promise<MobileProjectDetail> {
-  const res = await supabase.rpc("get_mobile_project_detail" as never, { p_project_id: projectId } as never);
+  const res = await supabase.rpc("get_mobile_project_detail", { p_project_id: projectId });
   if (res.error) throw new ServiceError(mapErr(res.error.message), res.error);
   return res.data as unknown as MobileProjectDetail;
 }
