@@ -141,7 +141,14 @@ function LeadDetailPage() {
         </>
       )}
 
-      <AssignmentDialog open={assignOpen} onOpenChange={setAssignOpen} currentAssignee={lead?.assigned_to as string | null} onAssign={async (u) => { await assignMut.mutateAsync(u as never); }} />
+      <AssignmentDialog
+        open={assignOpen}
+        onOpenChange={setAssignOpen}
+        targetType="lead"
+        projectId={(lead?.interested_project_id as string | null) ?? null}
+        currentAssignee={lead?.assigned_to as string | null}
+        onAssign={async (u) => { await assignMut.mutateAsync(u as never); }}
+      />
       <ActivityDialog open={actOpen} onOpenChange={setActOpen} onSubmit={async (v) => {
         try { await createCrmActivity({ leadId, activityType: v.activityType, title: v.title, content: v.content }); toast.success("Đã thêm hoạt động"); invalidate(); qc.invalidateQueries({ queryKey: queryKeys.adminLeadTimeline(leadId) }); }
         catch (e) { toast.error(mapOpsError(e)); }
