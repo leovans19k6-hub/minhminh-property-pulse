@@ -12,7 +12,6 @@ import {
   FileClock,
   Factory,
   LayoutTemplate,
-  Briefcase,
   ListChecks,
   ClipboardList,
   Activity,
