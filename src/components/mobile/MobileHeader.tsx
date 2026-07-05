@@ -24,7 +24,7 @@ export function MobileHeader({ title, greeting, left, right }: MobileHeaderProps
                 MM
               </div>
               <span className="truncate text-[15px] font-semibold tracking-tight">
-                {title ?? "Minh Minh Sales"}
+                {title ?? "Minh Minh Portal"}
               </span>
             </Link>
           )}
