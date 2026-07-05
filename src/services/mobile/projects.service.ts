@@ -59,6 +59,17 @@ export interface MobileProjectDetail {
     direction: string | null;
     balcony_direction: string | null;
   }>;
+  primary_contact: {
+    user_id: string;
+    full_name: string | null;
+    phone: string | null;
+    avatar_url: string | null;
+    position: string | null;
+    branch: string | null;
+    department: string | null;
+    zalo_url: string | null;
+    member_role: string | null;
+  } | null;
 }
 
 function mapErr(msg: string): string {

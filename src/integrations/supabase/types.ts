@@ -3474,6 +3474,10 @@ export type Database = {
         Returns: boolean
       }
       _ops_can_manage_project: { Args: { p_project: string }; Returns: boolean }
+      _resolve_mobile_primary_contact: {
+        Args: { p_project_id: string }
+        Returns: Json
+      }
       _task_access: {
         Args: { p_task_id: string }
         Returns: Record<string, unknown>
@@ -3483,6 +3487,10 @@ export type Database = {
         Returns: number
       }
       accessible_mobile_project_ids: { Args: never; Returns: string[] }
+      add_mobile_favorite: {
+        Args: { p_product_id: string }
+        Returns: undefined
+      }
       apply_inventory_template: {
         Args: {
           p_include_fields?: boolean
@@ -3557,6 +3565,10 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      can_access_mobile_product: {
+        Args: { p_product_id: string }
+        Returns: boolean
       }
       can_access_mobile_project: {
         Args: { p_project_id: string }
@@ -3777,8 +3789,16 @@ export type Database = {
         Args: { p_lead_id: string; p_limit?: number; p_offset?: number }
         Returns: Json
       }
+      get_mobile_favorites: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: Json
+      }
       get_mobile_inventory_filters: {
         Args: { p_project_id?: string }
+        Returns: Json
+      }
+      get_mobile_product_detail: {
+        Args: { p_product_id: string }
         Returns: Json
       }
       get_mobile_project_detail: {
@@ -3898,6 +3918,10 @@ export type Database = {
           p_voucher_id: string
         }
         Returns: Json
+      }
+      remove_mobile_favorite: {
+        Args: { p_product_id: string }
+        Returns: undefined
       }
       reopen_lead: {
         Args: { p_lead_id: string; p_reason?: string }

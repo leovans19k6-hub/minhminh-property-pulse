@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin, LayoutGrid, Building2 } from "lucide-react";
+import { MapPin, LayoutGrid, Building2, Phone, MessageCircle } from "lucide-react";
 import { PageHeader } from "@/components/mobile/PageHeader";
 import { MobileShell } from "@/components/mobile/MobileShell";
 import { MobileInventoryCard } from "@/components/shared/MobileInventoryCard";
@@ -129,6 +129,37 @@ function ProjectDetailPage() {
                   {b.name}
                 </span>
               ))}
+            </div>
+          </section>
+        )}
+
+        {data.primary_contact && (
+          <section className="pt-1">
+            <h3 className="mb-2 text-sm font-semibold">Phụ trách kinh doanh</h3>
+            <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+              {data.primary_contact.avatar_url ? (
+                <img src={data.primary_contact.avatar_url} alt={data.primary_contact.full_name ?? ""} className="h-11 w-11 rounded-full object-cover" />
+              ) : (
+                <div className="grid h-11 w-11 place-items-center rounded-full bg-muted text-sm font-semibold">
+                  {(data.primary_contact.full_name ?? "?").slice(0, 1).toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{data.primary_contact.full_name ?? "—"}</p>
+                <p className="truncate text-[11px] text-muted-foreground">
+                  {[data.primary_contact.position, data.primary_contact.branch].filter(Boolean).join(" · ") || "Sale"}
+                </p>
+              </div>
+              {data.primary_contact.phone && (
+                <a href={`tel:${data.primary_contact.phone.replace(/\s/g, "")}`} aria-label="Gọi" className="grid h-9 w-9 place-items-center rounded-lg bg-emerald-600 text-white">
+                  <Phone className="h-4 w-4" />
+                </a>
+              )}
+              {data.primary_contact.zalo_url && (
+                <a href={data.primary_contact.zalo_url} target="_blank" rel="noreferrer noopener" aria-label="Zalo" className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--brand-navy)] text-white">
+                  <MessageCircle className="h-4 w-4" />
+                </a>
+              )}
             </div>
           </section>
         )}
