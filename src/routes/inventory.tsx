@@ -64,7 +64,9 @@ function InventoryPage() {
   useEffect(() => {
     const t = setTimeout(() => {
       if ((search.q ?? "") !== qDraft) {
-        navigate({ search: (prev) => ({ ...prev, q: qDraft || undefined }) });
+        navigate({
+          search: ((prev: SearchState) => ({ ...prev, q: qDraft || undefined })) as never,
+        });
       }
     }, 300);
     return () => clearTimeout(t);
@@ -141,11 +143,11 @@ function InventoryPage() {
 
   const clearFilters = () =>
     navigate({
-      search: (prev) => ({
-        projectId: prev.projectId, // preserve project context
+      search: ((prev: SearchState) => ({
+        projectId: prev.projectId,
         focus: prev.focus,
         q: prev.q,
-      }),
+      })) as never,
     });
 
   return (
@@ -217,8 +219,8 @@ function InventoryPage() {
   );
 }
 
-type NavigateFn = ReturnType<typeof useNavigate<"/inventory">>;
 type SearchState = z.infer<typeof searchSchema>;
+type NavigateFn = ReturnType<typeof useNavigate>;
 
 function FilterSheet({
   children,
@@ -250,7 +252,7 @@ function FilterSheet({
   }, [open, search]);
 
   const apply = () => {
-    navigate({ search: () => ({ ...draft }) });
+    navigate({ search: (() => ({ ...draft })) as never });
     setOpen(false);
   };
   const clear = () =>
