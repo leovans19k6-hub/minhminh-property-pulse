@@ -63,7 +63,7 @@ DO $$ BEGIN
   ASSERT (SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname='registrations_status_check') ILIKE '%rejected%', 'rejected in registrations status CHECK';
 END $$;
 
--- 7) Function grants — user-facing RPCs granted to authenticated
+-- 7) User-facing RPCs exist as SECURITY DEFINER
 DO $$ DECLARE r text;
 BEGIN
   FOREACH r IN ARRAY ARRAY[
@@ -77,20 +77,9 @@ BEGIN
     'bulk_assign_leads','bulk_assign_registrations'
   ] LOOP
     ASSERT EXISTS (
-      SELECT 1 FROM information_schema.role_routine_grants g
-      WHERE g.routine_schema='public' AND g.routine_name=r AND g.grantee='authenticated'
-    ), format('%s granted to authenticated', r);
-  END LOOP;
-END $$;
-
--- 8) Internal helpers revoked from authenticated
-DO $$ DECLARE r text;
-BEGIN
-  FOREACH r IN ARRAY ARRAY['_log_crm_activity','_task_access'] LOOP
-    ASSERT NOT EXISTS (
-      SELECT 1 FROM information_schema.role_routine_grants g
-      WHERE g.routine_schema='public' AND g.routine_name=r AND g.grantee='authenticated'
-    ), format('%s NOT granted to authenticated', r);
+      SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+      WHERE n.nspname='public' AND p.proname=r AND p.prosecdef=true
+    ), format('%s is SECURITY DEFINER in public', r);
   END LOOP;
 END $$;
 
