@@ -2009,6 +2009,34 @@ export type Database = {
     }
     Functions: {
       bootstrap_super_admin: { Args: { p_user_id: string }; Returns: undefined }
+      bulk_create_floors: {
+        Args: {
+          p_building_id: string
+          p_code_prefix?: string
+          p_code_suffix?: string
+          p_end_floor: number
+          p_excluded_floors?: number[]
+          p_project_id: string
+          p_start_floor: number
+        }
+        Returns: {
+          building_id: string
+          created_at: string
+          display_order: number
+          floor_code: string
+          floor_name: string | null
+          floor_number: number | null
+          id: string
+          metadata: Json
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "floors"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       generate_registration_code_value: { Args: never; Returns: string }
       get_product_detail: { Args: { p_product_id: string }; Returns: Json }
       has_any_role: { Args: { role_codes: string[] }; Returns: boolean }
@@ -2079,6 +2107,10 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      set_project_primary_contact: {
+        Args: { p_project_id: string; p_project_member_id: string }
+        Returns: undefined
       }
       write_audit_log: {
         Args: {

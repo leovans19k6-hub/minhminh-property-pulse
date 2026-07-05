@@ -41,6 +41,21 @@ export const P = {
 
   audit_read: "audit.read",
   notifications_read: "notifications.read",
+
+  users_create: "users.create",
+  users_update: "users.update",
+  users_disable: "users.disable",
+
+  developers_read: "developers.read",
+  developers_manage: "developers.manage",
+
+  project_members_read: "project_members.read",
+  project_members_manage: "project_members.manage",
+
+  project_structure_read: "project_structure.read",
+  project_structure_manage: "project_structure.manage",
+
+  admin_portal_access: "admin_portal.access",
 } as const;
 
 export type Permission = (typeof P)[keyof typeof P];
@@ -98,6 +113,7 @@ export function computePermissions(systemRoles: string[]): Set<string> {
   }
   if (systemRoles.includes("admin")) {
     ALL_PERMISSIONS.forEach((p) => perms.add(p));
+    // Admin cannot manage super_admin — enforced at server; permission strings still granted.
     return perms;
   }
   if (systemRoles.includes("director")) {
@@ -105,6 +121,12 @@ export function computePermissions(systemRoles: string[]): Set<string> {
     MANAGER_BASE.forEach((p) => perms.add(p));
     perms.add(P.audit_read);
     perms.add(P.users_read);
+    perms.add(P.developers_read);
+    perms.add(P.project_members_read);
+    perms.add(P.project_members_manage);
+    perms.add(P.project_structure_read);
+    perms.add(P.project_structure_manage);
+    perms.add(P.admin_portal_access);
     return perms;
   }
   if (systemRoles.includes("project_director")) {
@@ -112,15 +134,25 @@ export function computePermissions(systemRoles: string[]): Set<string> {
     perms.add(P.policies_manage);
     perms.add(P.vouchers_manage);
     perms.add(P.events_manage);
+    perms.add(P.project_members_read);
+    perms.add(P.project_members_manage);
+    perms.add(P.project_structure_read);
+    perms.add(P.project_structure_manage);
+    perms.add(P.developers_read);
+    perms.add(P.admin_portal_access);
   }
   if (systemRoles.includes("sales_manager")) {
     MANAGER_BASE.forEach((p) => perms.add(p));
+    perms.add(P.project_members_read);
+    perms.add(P.project_structure_read);
+    perms.add(P.admin_portal_access);
   }
   if (systemRoles.includes("sales")) {
     SALES_BASE.forEach((p) => perms.add(p));
   }
   if (systemRoles.includes("marketing")) {
     MARKETING_BASE.forEach((p) => perms.add(p));
+    perms.add(P.admin_portal_access);
   }
   if (systemRoles.includes("staff")) {
     READ_ONLY.forEach((p) => perms.add(p));

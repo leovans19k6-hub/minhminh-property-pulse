@@ -74,19 +74,30 @@ export async function fetchCurrentUserContext(
   userId: string,
   email: string | null,
 ): Promise<CurrentUserContext> {
-  const [profileRes, rolesRes, membershipsRes] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", userId).maybeSingle(),
-    supabase
-      .from("user_roles")
-      .select("roles(code)")
-      .eq("user_id", userId),
+  // Step 1: fetch profile alone. Inactive users may not read business tables,
+  // so we short-circuit before touching roles / project_members.
+  const profileRes = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
+  if (profileRes.error) throw new AuthError("profile_load_failed", profileRes.error.message);
+  const profile = profileRes.data ?? null;
+  const status = (profile?.status as string | undefined) ?? "active";
+  const isActive = status === "active";
+
+  if (!isActive) {
+    return {
+      userId, email, profile,
+      systemRoles: [], projectMemberships: [],
+      permissions: computePermissions([]),
+      isSuperAdmin: false, isAdmin: false, isDirector: false, isActive: false,
+    };
+  }
+
+  const [rolesRes, membershipsRes] = await Promise.all([
+    supabase.from("user_roles").select("roles(code)").eq("user_id", userId),
     supabase
       .from("project_members")
       .select("project_id, member_role, is_primary_contact")
       .eq("user_id", userId),
   ]);
-
-  if (profileRes.error) throw new AuthError("profile_load_failed", profileRes.error.message);
 
   const systemRoles: string[] = (rolesRes.data ?? [])
     .map((r: { roles: { code: string } | null }) => r.roles?.code)
@@ -98,9 +109,6 @@ export async function fetchCurrentUserContext(
     isPrimaryContact: Boolean(m.is_primary_contact),
   }));
 
-  const profile = profileRes.data ?? null;
-  const status = (profile?.status as string | undefined) ?? "active";
-
   return {
     userId,
     email,
@@ -111,6 +119,6 @@ export async function fetchCurrentUserContext(
     isSuperAdmin: systemRoles.includes("super_admin"),
     isAdmin: systemRoles.includes("admin"),
     isDirector: systemRoles.includes("director"),
-    isActive: status === "active",
+    isActive: true,
   };
 }
