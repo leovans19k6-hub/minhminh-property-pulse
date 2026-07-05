@@ -1,0 +1,15 @@
+{
+  "name": "Minh Minh Sales Hub",
+  "short_name": "MMG Sales",
+  "description": "Ứng dụng quản trị & kinh doanh bất động sản của Minh Minh Group Hải Phòng.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f2a52",
+  "theme_color": "#0f2a52",
+  "lang": "vi",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "64x64 32x32 24x24 16x16", "type": "image/x-icon" }
+  ]
+}
