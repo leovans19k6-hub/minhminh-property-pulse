@@ -59,6 +59,16 @@ export interface MobileProjectDetail {
     direction: string | null;
     balcony_direction: string | null;
   }>;
+  policies_preview: Array<{
+    id: string;
+    title: string;
+    summary: string | null;
+    is_featured: boolean;
+    effective_from: string | null;
+    effective_to: string | null;
+    registration_deadline: string | null;
+    priority: number;
+  }>;
   primary_contact: {
     user_id: string;
     full_name: string | null;
