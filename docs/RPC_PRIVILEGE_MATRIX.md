@@ -31,3 +31,16 @@ Used inside RLS `USING`/`WITH CHECK`; must remain callable by the policy evaluat
 ## Linter note
 
 Supabase linter rules `0028`/`0029` flag every SECURITY DEFINER function callable by anon/authenticated. Phase 5E intentionally keeps user-facing mutation RPCs SECURITY DEFINER with inline authorization — this is the documented pattern for RLS-bypass RPCs. Warnings acknowledged, not suppressed.
+
+## Phase 6A — Sales Policies additions
+
+### Authenticated + service_role (REVOKE anon)
+- `create_sales_policy`, `update_sales_policy`, `publish_sales_policy`, `unpublish_sales_policy`, `clone_sales_policy`, `archive_sales_policy`, `restore_sales_policy`
+- `get_sales_policy_admin_detail`, `search_sales_policies`, `get_active_project_policies`
+
+### Internal only (REVOKE PUBLIC, anon, authenticated)
+- `validate_sales_policy_content`, `validate_sales_policy_attachments`, `validate_sales_policy_dates`, `validate_sales_policy_slug`, `validate_policy_applicability`
+- `create_sales_policy_version`
+- `_apply_policy_applicability`
+
+All Phase 6A functions use `SECURITY DEFINER` + `SET search_path = public`. User-facing RPCs self-authorize (`auth.uid()` + `is_active_user()` + `is_project_manager()`); direct writes to `sales_policies`, `policy_product_types`, `policy_products`, `sales_policy_versions` are denied by RLS.
