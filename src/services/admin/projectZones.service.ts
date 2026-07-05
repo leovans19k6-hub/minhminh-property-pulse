@@ -73,7 +73,7 @@ export async function validateZoneParent(
 ): Promise<void> {
   if (!parentZoneId) return;
   if (zoneId && parentZoneId === zoneId) throw new ServiceError("Không thể chọn chính phân khu này làm cha.");
-  const p = unwrapMaybe(
+  const p: { id: string; project_id: string; parent_zone_id: string | null } | null = unwrapMaybe(
     await supabase.from("project_zones").select("id, project_id, parent_zone_id").eq("id", parentZoneId).maybeSingle(),
     "zones.parent",
   );
