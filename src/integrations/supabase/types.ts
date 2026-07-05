@@ -3797,6 +3797,10 @@ export type Database = {
         Args: { p_project_id?: string }
         Returns: Json
       }
+      get_mobile_policy_detail: {
+        Args: { p_policy_id: string; p_product_id?: string }
+        Returns: Json
+      }
       get_mobile_product_detail: {
         Args: { p_product_id: string }
         Returns: Json
@@ -4082,6 +4086,16 @@ export type Database = {
           p_query?: string
           p_status?: string
           p_zone_id?: string
+        }
+        Returns: Json
+      }
+      search_mobile_policies: {
+        Args: {
+          p_featured?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_project_id?: string
+          p_query?: string
         }
         Returns: Json
       }
