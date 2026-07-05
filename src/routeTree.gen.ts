@@ -23,6 +23,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
 import { Route as AdminRegistrationsRouteImport } from './routes/admin.registrations'
@@ -112,6 +113,11 @@ const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/$projectId',
   path: '/$projectId',
   getParentRoute: () => ProjectsRoute,
+} as any)
+const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
+  id: '/products/$productId',
+  path: '/products/$productId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
@@ -271,6 +278,7 @@ export interface FileRoutesByTo {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
@@ -307,6 +315,7 @@ export interface FileRoutesById {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
@@ -344,6 +353,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/products/$productId'
     | '/projects/$projectId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
@@ -378,6 +388,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/products/$productId'
     | '/projects/$projectId'
     | '/admin'
     | '/admin/inventory-templates/$templateId'
@@ -413,6 +424,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/products/$productId'
     | '/projects/$projectId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
@@ -441,6 +453,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
+  ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -542,6 +555,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/$projectId'
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
       parentRoute: typeof ProjectsRoute
+    }
+    '/products/$productId': {
+      id: '/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof ProductsProductIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/users': {
       id: '/admin/users'
@@ -820,6 +840,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   UnauthorizedRoute: UnauthorizedRoute,
+  ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -116,10 +116,12 @@ function ProductDetailPage() {
       url: typeof window !== "undefined" ? window.location.href : "",
     };
     try {
-      if (typeof navigator !== "undefined" && "share" in navigator) {
-        await navigator.share(shareData);
-      } else if (navigator.clipboard && shareData.url) {
-        await navigator.clipboard.writeText(shareData.url);
+      const nav: Navigator | undefined =
+        typeof navigator !== "undefined" ? navigator : undefined;
+      if (nav && typeof nav.share === "function") {
+        await nav.share(shareData);
+      } else if (nav?.clipboard && shareData.url) {
+        await nav.clipboard.writeText(shareData.url);
         toast.success("Đã sao chép liên kết");
       }
     } catch {
