@@ -96,7 +96,7 @@ function LeadsPage() {
             </tbody>
           </table>}
       </CardContent></Card>
-      <AssignmentDialog open={bulkOpen} onOpenChange={setBulkOpen} onAssign={(u) => bulkMut.mutateAsync(u)} title={`Phân công ${selected.size} lead`} />
+      <AssignmentDialog open={bulkOpen} onOpenChange={setBulkOpen} onAssign={async (u) => { await bulkMut.mutateAsync(u); }} title={`Phân công ${selected.size} lead`} />
     </div>
   );
 }

@@ -27,6 +27,7 @@ import { Route as ProductsProductIdRouteImport } from './routes/products.$produc
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminInventoryTemplatesRouteImport } from './routes/admin.inventory-templates'
 import { Route as AdminDevelopersRouteImport } from './routes/admin.developers'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
@@ -129,6 +130,11 @@ const AdminOperationsRoute = AdminOperationsRouteImport.update({
   path: '/operations',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInventoryTemplatesRoute = AdminInventoryTemplatesRouteImport.update({
   id: '/inventory-templates',
   path: '/inventory-templates',
@@ -206,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -236,6 +243,7 @@ export interface FileRoutesByTo {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/unauthorized': typeof UnauthorizedRoute
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/users': typeof AdminUsersRouteWithChildren
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/leads'
     | '/admin/operations'
     | '/admin/projects'
     | '/admin/users'
@@ -331,6 +341,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/leads'
     | '/admin/operations'
     | '/admin/projects'
     | '/admin/users'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/admin/developers'
     | '/admin/inventory-templates'
+    | '/admin/leads'
     | '/admin/operations'
     | '/admin/projects'
     | '/admin/users'
@@ -523,6 +535,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOperationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/inventory-templates': {
       id: '/admin/inventory-templates'
       path: '/inventory-templates'
@@ -673,6 +692,7 @@ const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminDevelopersRoute: typeof AdminDevelopersRoute
   AdminInventoryTemplatesRoute: typeof AdminInventoryTemplatesRouteWithChildren
+  AdminLeadsRoute: typeof AdminLeadsRoute
   AdminOperationsRoute: typeof AdminOperationsRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
@@ -682,6 +702,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDevelopersRoute: AdminDevelopersRoute,
   AdminInventoryTemplatesRoute: AdminInventoryTemplatesRouteWithChildren,
+  AdminLeadsRoute: AdminLeadsRoute,
   AdminOperationsRoute: AdminOperationsRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminUsersRoute: AdminUsersRouteWithChildren,
