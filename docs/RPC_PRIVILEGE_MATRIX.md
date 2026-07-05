@@ -82,3 +82,24 @@ All Phase 6C functions use `SECURITY DEFINER` + `SET search_path = public`. User
 - `validate_event_timezone()` — trigger function, not directly callable.
 
 Existing warnings in the security linter (0011 / 0028 / 0029) remain acknowledged for user-facing mutation RPCs per the note above.
+
+## Phase 6D — Operations Engine additions
+
+### Authenticated + service_role (REVOKE anon)
+- `update_lead_profile`, `assign_lead`, `set_lead_priority`, `transition_lead_status`, `convert_lead`, `mark_lead_lost`, `reopen_lead`
+- `assign_registration`, `transition_registration_status`, `review_registration`
+- `create_crm_activity`, `get_lead_timeline`, `get_registration_timeline`
+- `create_crm_task`, `update_crm_task`, `assign_crm_task`, `start_crm_task`, `complete_crm_task`, `cancel_crm_task`, `search_crm_tasks`
+- `search_leads`, `get_lead_admin_detail`, `search_registrations`, `get_registration_admin_detail`
+- `get_operations_dashboard`, `get_my_operations_work`
+- `bulk_assign_leads`, `bulk_assign_registrations`
+- `is_valid_assignee`, `_ops_can_manage_project`, `_ops_can_access_lead`, `_ops_can_access_registration`
+
+### PUBLIC (immutable / helper)
+- `get_registration_domain(text)`, `can_transition_lead_status(text,text)`, `can_transition_registration_status(text,text)` — `IMMUTABLE`, side-effect free.
+
+### Internal only (REVOKE PUBLIC, anon, authenticated)
+- `_log_crm_activity(uuid,uuid,uuid,text,text,text,jsonb)` — writes to `crm_activities` bypassing RLS; called only from other trusted RPCs.
+- `_task_access(uuid)` — internal permission accessor.
+
+All Phase 6D user-facing RPCs are `SECURITY DEFINER SET search_path = public`; direct writes to `crm_activities`, `crm_tasks`, `registration_reviews` are denied at RLS (no write policies). `bulk_assign_leads` / `bulk_assign_registrations` cap at 100 rows and validate the assignee per project before any UPDATE.
