@@ -45,36 +45,36 @@ function ProductDetailPage() {
   // Policy/Voucher/Event previews rely on staleTime + refetchOnFocus/reconnect
   // to avoid one project-wide subscription per opened product (see
   // docs/MOBILE_PRODUCT_REALTIME.md).
-  const productId = data?.product.id;
+  const currentProductId = data?.product.id;
   useEffect(() => {
-    if (!productId) return;
+    if (!currentProductId) return;
     let timer: ReturnType<typeof setTimeout> | null = null;
     const invalidate = () => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        qc.invalidateQueries({ queryKey: queryKeys.mobileProductDetail(productId) });
+        qc.invalidateQueries({ queryKey: queryKeys.mobileProductDetail(currentProductId) });
       }, 700);
     };
     const channel = supabase
-      .channel(`mobile-product-${productId}`)
+      .channel(`mobile-product-${currentProductId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "products", filter: `id=eq.${productId}` },
+        { event: "*", schema: "public", table: "products", filter: `id=eq.${currentProductId}` },
         invalidate,
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "product_price_options", filter: `product_id=eq.${productId}` },
+        { event: "*", schema: "public", table: "product_price_options", filter: `product_id=eq.${currentProductId}` },
         invalidate,
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "product_custom_values", filter: `product_id=eq.${productId}` },
+        { event: "*", schema: "public", table: "product_custom_values", filter: `product_id=eq.${currentProductId}` },
         invalidate,
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "product_media", filter: `product_id=eq.${productId}` },
+        { event: "*", schema: "public", table: "product_media", filter: `product_id=eq.${currentProductId}` },
         invalidate,
       )
       .subscribe();
@@ -82,7 +82,7 @@ function ProductDetailPage() {
       if (timer) clearTimeout(timer);
       void supabase.removeChannel(channel);
     };
-  }, [productId, qc]);
+  }, [currentProductId, qc]);
 
   if (isLoading) {
     return (
