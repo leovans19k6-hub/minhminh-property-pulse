@@ -54,6 +54,17 @@ export const queryKeys = {
   mobilePolicyDetail: (id: string, productId?: string | null) =>
     ["mobile", "policies", "detail", id, productId ?? null] as const,
 
+  // Phase 7C.2 — Mobile Vouchers
+  mobileVouchers: (filters: Record<string, unknown> = {}) =>
+    ["mobile", "vouchers", "search", normalize(filters)] as const,
+  mobileVoucherDetail: (
+    id: string,
+    productId?: string | null,
+    policyId?: string | null,
+  ) => ["mobile", "vouchers", "detail", id, productId ?? null, policyId ?? null] as const,
+  mobileMyVoucherRegistrations: (filters: Record<string, unknown> = {}) =>
+    ["mobile", "vouchers", "mine", normalize(filters)] as const,
+
   projectDetail: (id: string) => ["projects", "detail", id] as const,
   projectStats: (id: string) => ["projects", "stats", id] as const,
 
