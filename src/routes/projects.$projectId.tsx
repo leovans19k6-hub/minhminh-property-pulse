@@ -12,6 +12,7 @@ import { ServiceError } from "@/services/_helpers";
 import { ProjectIdentityCard } from "@/components/mobile/project-detail/ProjectIdentityCard";
 import { ProjectDetailSkeleton } from "@/components/mobile/project-detail/ProjectDetailSkeleton";
 import { MobilePolicyCard } from "@/components/mobile/policies/MobilePolicyCard";
+import { MobileVoucherCard } from "@/components/mobile/vouchers/MobileVoucherCard";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectDetailPage,
@@ -94,6 +95,7 @@ function ProjectDetailPage() {
   const phoneDigits = contact?.phone?.replace(/\s/g, "") ?? "";
   const hasFeatured = data.featured_products.length > 0;
   const policies = data.policies_preview ?? [];
+  const vouchers = data.vouchers_preview ?? [];
 
   return (
     <MobileShell showHeader={false}>
@@ -240,6 +242,54 @@ function ProjectDetailPage() {
                       effective_to: pol.effective_to,
                       registration_deadline: pol.registration_deadline,
                       published_at: null,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Vouchers preview */}
+        {vouchers.length > 0 && (
+          <section>
+            <div className="mb-2 flex items-end justify-between px-1">
+              <h2 className="text-[14px] font-semibold tracking-tight text-[color:var(--text-primary)]">
+                Voucher đang áp dụng
+              </h2>
+              <Link
+                to="/vouchers"
+                search={{ projectId: p.id }}
+                className="text-[12px] font-semibold text-[color:var(--brand-navy)]"
+              >
+                Xem tất cả
+              </Link>
+            </div>
+            <ul className="space-y-2.5">
+              {vouchers.map((v) => (
+                <li key={v.id}>
+                  <MobileVoucherCard
+                    item={{
+                      id: v.id,
+                      project_id: p.id,
+                      project_name: p.name,
+                      project_code: (p.code as string | null) ?? null,
+                      title: v.title,
+                      code: v.code,
+                      summary: v.summary,
+                      is_featured: v.is_featured,
+                      priority: v.priority,
+                      derived_state: v.derived_state,
+                      effective_from: null,
+                      effective_to: null,
+                      registration_start: null,
+                      registration_deadline: v.registration_deadline,
+                      quantity: v.quantity,
+                      capacity_used: 0,
+                      capacity_remaining: v.capacity_remaining,
+                      is_unlimited: v.is_unlimited,
+                      per_user_limit: 1,
+                      primary_benefit_summary: v.primary_benefit_summary,
                     }}
                   />
                 </li>
