@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VouchersRouteImport } from './routes/vouchers'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -23,6 +24,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as VouchersVoucherIdRouteImport } from './routes/vouchers.$voucherId'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as PoliciesPolicyIdRouteImport } from './routes/policies.$policyId'
@@ -46,6 +48,11 @@ import { Route as AdminProjectsProjectIdProductsProductIdRouteImport } from './r
 import { Route as AdminProjectsProjectIdPoliciesPolicyIdRouteImport } from './routes/admin.projects.$projectId.policies.$policyId'
 import { Route as AdminProjectsProjectIdEventsEventIdRouteImport } from './routes/admin.projects.$projectId.events.$eventId'
 
+const VouchersRoute = VouchersRouteImport.update({
+  id: '/vouchers',
+  path: '/vouchers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
   path: '/unauthorized',
@@ -115,6 +122,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const VouchersVoucherIdRoute = VouchersVoucherIdRouteImport.update({
+  id: '/$voucherId',
+  path: '/$voucherId',
+  getParentRoute: () => VouchersRoute,
 } as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/$projectId',
@@ -248,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/vouchers': typeof VouchersRouteWithChildren
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
   '/admin/leads': typeof AdminLeadsRouteWithChildren
@@ -259,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/vouchers/$voucherId': typeof VouchersVoucherIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
   '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
@@ -285,6 +299,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/vouchers': typeof VouchersRouteWithChildren
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
   '/admin/leads': typeof AdminLeadsRouteWithChildren
@@ -296,6 +311,7 @@ export interface FileRoutesByTo {
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/vouchers/$voucherId': typeof VouchersVoucherIdRoute
   '/admin': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
   '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
@@ -324,6 +340,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/vouchers': typeof VouchersRouteWithChildren
   '/admin/developers': typeof AdminDevelopersRoute
   '/admin/inventory-templates': typeof AdminInventoryTemplatesRouteWithChildren
   '/admin/leads': typeof AdminLeadsRouteWithChildren
@@ -335,6 +352,7 @@ export interface FileRoutesById {
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/vouchers/$voucherId': typeof VouchersVoucherIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
   '/admin/leads/$leadId': typeof AdminLeadsLeadIdRoute
@@ -364,6 +382,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/unauthorized'
+    | '/vouchers'
     | '/admin/developers'
     | '/admin/inventory-templates'
     | '/admin/leads'
@@ -375,6 +394,7 @@ export interface FileRouteTypes {
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
+    | '/vouchers/$voucherId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
     | '/admin/leads/$leadId'
@@ -401,6 +421,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/unauthorized'
+    | '/vouchers'
     | '/admin/developers'
     | '/admin/inventory-templates'
     | '/admin/leads'
@@ -412,6 +433,7 @@ export interface FileRouteTypes {
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
+    | '/vouchers/$voucherId'
     | '/admin'
     | '/admin/inventory-templates/$templateId'
     | '/admin/leads/$leadId'
@@ -439,6 +461,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/unauthorized'
+    | '/vouchers'
     | '/admin/developers'
     | '/admin/inventory-templates'
     | '/admin/leads'
@@ -450,6 +473,7 @@ export interface FileRouteTypes {
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
+    | '/vouchers/$voucherId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
     | '/admin/leads/$leadId'
@@ -478,11 +502,19 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
+  VouchersRoute: typeof VouchersRouteWithChildren
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vouchers': {
+      id: '/vouchers'
+      path: '/vouchers'
+      fullPath: '/vouchers'
+      preLoaderRoute: typeof VouchersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unauthorized': {
       id: '/unauthorized'
       path: '/unauthorized'
@@ -580,6 +612,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/vouchers/$voucherId': {
+      id: '/vouchers/$voucherId'
+      path: '/$voucherId'
+      fullPath: '/vouchers/$voucherId'
+      preLoaderRoute: typeof VouchersVoucherIdRouteImport
+      parentRoute: typeof VouchersRoute
     }
     '/projects/$projectId': {
       id: '/projects/$projectId'
@@ -878,6 +917,18 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
   ProjectsRouteChildren,
 )
 
+interface VouchersRouteChildren {
+  VouchersVoucherIdRoute: typeof VouchersVoucherIdRoute
+}
+
+const VouchersRouteChildren: VouchersRouteChildren = {
+  VouchersVoucherIdRoute: VouchersVoucherIdRoute,
+}
+
+const VouchersRouteWithChildren = VouchersRoute._addFileChildren(
+  VouchersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
@@ -892,6 +943,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   UnauthorizedRoute: UnauthorizedRoute,
+  VouchersRoute: VouchersRouteWithChildren,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport

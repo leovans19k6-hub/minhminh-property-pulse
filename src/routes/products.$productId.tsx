@@ -269,7 +269,7 @@ function ProductBody({
         <ProductStatusHistoryCard s={data.status_history_summary} />
 
         <PoliciesPreview items={data.applicable_policies} productId={data.product.id} />
-        <VouchersPreview items={data.project_vouchers} />
+        <VouchersPreview items={data.project_vouchers} productId={data.product.id} />
         <EventsPreview items={data.upcoming_events} />
 
         {contact && <PrimaryContactCard contact={contact} />}

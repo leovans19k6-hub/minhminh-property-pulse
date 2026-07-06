@@ -62,7 +62,13 @@ export function PoliciesPreview({
   );
 }
 
-export function VouchersPreview({ items }: { items: MobileVoucherPreview[] }) {
+export function VouchersPreview({
+  items,
+  productId,
+}: {
+  items: MobileVoucherPreview[];
+  productId?: string | null;
+}) {
   if (items.length === 0) return null;
   return (
     <SectionCard title="Ưu đãi áp dụng" padded={false}>
@@ -75,8 +81,13 @@ export function VouchersPreview({ items }: { items: MobileVoucherPreview[] }) {
                 ? `${v.value_percent}%`
                 : null;
           return (
-            <li key={v.id} className="px-4 py-3">
-              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+            <li key={v.id}>
+              <Link
+                to="/vouchers/$voucherId"
+                params={{ voucherId: v.id }}
+                search={productId ? { productId } : undefined}
+                className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-4 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
+              >
                 <div className="min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
                     <Ticket className="h-3.5 w-3.5 shrink-0 text-[color:var(--brand-gold)]" />
@@ -107,12 +118,18 @@ export function VouchersPreview({ items }: { items: MobileVoucherPreview[] }) {
                     </p>
                   )}
                 </div>
-                {value && (
-                  <p className="shrink-0 text-right text-base font-bold text-[color:var(--brand-navy)]">
-                    {value}
-                  </p>
-                )}
-              </div>
+                <div className="flex shrink-0 items-start gap-2">
+                  {value && (
+                    <p className="text-right text-base font-bold text-[color:var(--brand-navy)]">
+                      {value}
+                    </p>
+                  )}
+                  <ChevronRight
+                    className="mt-1 h-4 w-4 text-[color:var(--text-tertiary)]"
+                    aria-hidden
+                  />
+                </div>
+              </Link>
             </li>
           );
         })}

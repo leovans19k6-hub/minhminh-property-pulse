@@ -69,6 +69,20 @@ export interface MobileProjectDetail {
     registration_deadline: string | null;
     priority: number;
   }>;
+  vouchers_preview: Array<{
+    id: string;
+    title: string;
+    code: string | null;
+    summary: string | null;
+    is_featured: boolean;
+    derived_state: string;
+    registration_deadline: string | null;
+    quantity: number | null;
+    capacity_remaining: number | null;
+    is_unlimited: boolean;
+    primary_benefit_summary: string | null;
+    priority: number;
+  }>;
   primary_contact: {
     user_id: string;
     full_name: string | null;
