@@ -3810,6 +3810,14 @@ export type Database = {
         Returns: Json
       }
       get_mobile_projects: { Args: never; Returns: Json }
+      get_mobile_voucher_detail: {
+        Args: {
+          p_policy_id?: string
+          p_product_id?: string
+          p_voucher_id: string
+        }
+        Returns: Json
+      }
       get_my_event_registrations: {
         Args: {
           p_event_type?: string
@@ -4096,6 +4104,17 @@ export type Database = {
           p_offset?: number
           p_project_id?: string
           p_query?: string
+        }
+        Returns: Json
+      }
+      search_mobile_vouchers: {
+        Args: {
+          p_featured?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_project_id?: string
+          p_query?: string
+          p_registration_state?: string
         }
         Returns: Json
       }
