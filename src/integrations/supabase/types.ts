@@ -3789,6 +3789,16 @@ export type Database = {
         Args: { p_lead_id: string; p_limit?: number; p_offset?: number }
         Returns: Json
       }
+      get_mobile_event_detail: {
+        Args: {
+          p_event_id: string
+          p_policy_id?: string
+          p_product_id?: string
+          p_product_type_id?: string
+          p_voucher_id?: string
+        }
+        Returns: Json
+      }
       get_mobile_favorites: {
         Args: { p_limit?: number; p_offset?: number }
         Returns: Json
@@ -4073,6 +4083,21 @@ export type Database = {
           p_source_id?: string
           p_status?: string
           p_unassigned?: boolean
+        }
+        Returns: Json
+      }
+      search_mobile_events: {
+        Args: {
+          p_derived_state?: string
+          p_event_type?: string
+          p_featured?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_product_id?: string
+          p_project_id?: string
+          p_query?: string
+          p_starts_from?: string
+          p_starts_to?: string
         }
         Returns: Json
       }
