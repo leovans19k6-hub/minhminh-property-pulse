@@ -20,6 +20,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
@@ -28,6 +29,7 @@ import { Route as VouchersVoucherIdRouteImport } from './routes/vouchers.$vouche
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as PoliciesPolicyIdRouteImport } from './routes/policies.$policyId'
+import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
 import { Route as AdminRegistrationsRouteImport } from './routes/admin.registrations'
@@ -103,6 +105,11 @@ const FavoritesRoute = FavoritesRouteImport.update({
   path: '/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -142,6 +149,11 @@ const PoliciesPolicyIdRoute = PoliciesPolicyIdRouteImport.update({
   id: '/$policyId',
   path: '/$policyId',
   getParentRoute: () => PoliciesRoute,
+} as any)
+const EventsEventIdRoute = EventsEventIdRouteImport.update({
+  id: '/$eventId',
+  path: '/$eventId',
+  getParentRoute: () => EventsRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
@@ -250,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
+  '/events': typeof EventsRouteWithChildren
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventory': typeof InventoryRoute
@@ -269,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/events/$eventId': typeof EventsEventIdRoute
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -289,6 +303,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/events': typeof EventsRouteWithChildren
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventory': typeof InventoryRoute
@@ -308,6 +323,7 @@ export interface FileRoutesByTo {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/events/$eventId': typeof EventsEventIdRoute
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -330,6 +346,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
+  '/events': typeof EventsRouteWithChildren
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventory': typeof InventoryRoute
@@ -349,6 +366,7 @@ export interface FileRoutesById {
   '/admin/registrations': typeof AdminRegistrationsRouteWithChildren
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
+  '/events/$eventId': typeof EventsEventIdRoute
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -372,6 +390,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/events'
     | '/favorites'
     | '/forgot-password'
     | '/inventory'
@@ -391,6 +410,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/events/$eventId'
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -411,6 +431,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
+    | '/events'
     | '/favorites'
     | '/forgot-password'
     | '/inventory'
@@ -430,6 +451,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/events/$eventId'
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -451,6 +473,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/events'
     | '/favorites'
     | '/forgot-password'
     | '/inventory'
@@ -470,6 +493,7 @@ export interface FileRouteTypes {
     | '/admin/registrations'
     | '/admin/tasks'
     | '/admin/users'
+    | '/events/$eventId'
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
@@ -492,6 +516,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRouteWithChildren
+  EventsRoute: typeof EventsRouteWithChildren
   FavoritesRoute: typeof FavoritesRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InventoryRoute: typeof InventoryRoute
@@ -585,6 +610,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -640,6 +672,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/policies/$policyId'
       preLoaderRoute: typeof PoliciesPolicyIdRouteImport
       parentRoute: typeof PoliciesRoute
+    }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
+      parentRoute: typeof EventsRoute
     }
     '/admin/users': {
       id: '/admin/users'
@@ -893,6 +932,17 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface EventsRouteChildren {
+  EventsEventIdRoute: typeof EventsEventIdRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsEventIdRoute: EventsEventIdRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
 interface PoliciesRouteChildren {
   PoliciesPolicyIdRoute: typeof PoliciesPolicyIdRoute
 }
@@ -933,6 +983,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   AdminRoute: AdminRouteWithChildren,
+  EventsRoute: EventsRouteWithChildren,
   FavoritesRoute: FavoritesRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InventoryRoute: InventoryRoute,

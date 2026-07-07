@@ -144,27 +144,36 @@ export function EventsPreview({ items }: { items: MobileEventPreview[] }) {
     <SectionCard title="Sự kiện sắp diễn ra" padded={false}>
       <ul className="divide-y divide-border">
         {items.map((e) => (
-          <li key={e.id} className="space-y-1 px-4 py-3">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--info-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase text-[color:var(--info)]">
-                <Calendar className="h-3 w-3" />
-                {e.event_type === "site_tour" ? "Tham quan" : "Sự kiện"}
-              </span>
-              <p className="min-w-0 truncate text-sm font-semibold text-[color:var(--text-primary)]">
-                {e.title}
-              </p>
-            </div>
-            {e.start_at && (
-              <p className="text-xs text-[color:var(--text-secondary)]">
-                {formatDateTime(e.start_at)}
-              </p>
-            )}
-            {e.location_name && (
-              <p className="flex items-center gap-1 text-[11px] text-[color:var(--text-tertiary)]">
-                <MapPin className="h-3 w-3" />
-                {e.location_name}
-              </p>
-            )}
+          <li key={e.id}>
+            <Link
+              to="/events/$eventId"
+              params={{ eventId: e.id }}
+              className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 px-4 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-navy)]"
+            >
+              <div className="min-w-0 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--info-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase text-[color:var(--info)]">
+                    <Calendar className="h-3 w-3" />
+                    {e.event_type === "site_tour" ? "Tham quan" : "Sự kiện"}
+                  </span>
+                  <p className="min-w-0 truncate text-sm font-semibold text-[color:var(--text-primary)]">
+                    {e.title}
+                  </p>
+                </div>
+                {e.start_at && (
+                  <p className="text-xs text-[color:var(--text-secondary)]">
+                    {formatDateTime(e.start_at)}
+                  </p>
+                )}
+                {e.location_name && (
+                  <p className="flex items-center gap-1 text-[11px] text-[color:var(--text-tertiary)]">
+                    <MapPin className="h-3 w-3" />
+                    {e.location_name}
+                  </p>
+                )}
+              </div>
+              <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-[color:var(--text-tertiary)]" aria-hidden />
+            </Link>
           </li>
         ))}
       </ul>
