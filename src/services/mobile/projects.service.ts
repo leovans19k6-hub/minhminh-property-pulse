@@ -83,6 +83,26 @@ export interface MobileProjectDetail {
     primary_benefit_summary: string | null;
     priority: number;
   }>;
+  events_preview: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    event_type: string;
+    summary: string | null;
+    start_at: string | null;
+    end_at: string | null;
+    timezone: string | null;
+    location_type: string | null;
+    location_name: string | null;
+    thumbnail_url: string | null;
+    is_featured: boolean;
+    priority: number;
+    derived_state: string;
+    registration_deadline: string | null;
+    capacity: number | null;
+    capacity_remaining: number | null;
+    is_unlimited: boolean;
+  }>;
   primary_contact: {
     user_id: string;
     full_name: string | null;

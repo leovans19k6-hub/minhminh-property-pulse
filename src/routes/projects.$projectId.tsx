@@ -13,6 +13,7 @@ import { ProjectIdentityCard } from "@/components/mobile/project-detail/ProjectI
 import { ProjectDetailSkeleton } from "@/components/mobile/project-detail/ProjectDetailSkeleton";
 import { MobilePolicyCard } from "@/components/mobile/policies/MobilePolicyCard";
 import { MobileVoucherCard } from "@/components/mobile/vouchers/MobileVoucherCard";
+import { MobileEventCard } from "@/components/mobile/events/MobileEventCard";
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectDetailPage,
@@ -96,6 +97,7 @@ function ProjectDetailPage() {
   const hasFeatured = data.featured_products.length > 0;
   const policies = data.policies_preview ?? [];
   const vouchers = data.vouchers_preview ?? [];
+  const events = data.events_preview ?? [];
 
   return (
     <MobileShell showHeader={false}>
@@ -290,6 +292,61 @@ function ProjectDetailPage() {
                       is_unlimited: v.is_unlimited,
                       per_user_limit: 1,
                       primary_benefit_summary: v.primary_benefit_summary,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Events preview */}
+        {events.length > 0 && (
+          <section>
+            <div className="mb-2 flex items-end justify-between px-1">
+              <h2 className="text-[14px] font-semibold tracking-tight text-[color:var(--text-primary)]">
+                Sự kiện & Site tour
+              </h2>
+              <Link
+                to="/events"
+                search={{ projectId: p.id }}
+                className="text-[12px] font-semibold text-[color:var(--brand-navy)]"
+              >
+                Xem tất cả
+              </Link>
+            </div>
+            <ul className="space-y-2.5">
+              {events.map((ev) => (
+                <li key={ev.id}>
+                  <MobileEventCard
+                    item={{
+                      id: ev.id,
+                      project_id: p.id,
+                      project_name: p.name,
+                      project_code: (p.code as string | null) ?? null,
+                      title: ev.title,
+                      slug: ev.slug,
+                      event_type: ev.event_type,
+                      summary: ev.summary,
+                      start_at: ev.start_at,
+                      end_at: ev.end_at,
+                      timezone: ev.timezone,
+                      location_type: ev.location_type,
+                      location_name: ev.location_name,
+                      address_text: null,
+                      meeting_url: null,
+                      thumbnail_url: ev.thumbnail_url,
+                      is_featured: ev.is_featured,
+                      priority: ev.priority,
+                      derived_state: ev.derived_state,
+                      registration_start: null,
+                      registration_deadline: ev.registration_deadline,
+                      capacity: ev.capacity,
+                      registration_count: 0,
+                      remaining: ev.capacity_remaining,
+                      is_unlimited: ev.is_unlimited,
+                      per_user_limit: 1,
+                      user_registration_count: 0,
                     }}
                   />
                 </li>

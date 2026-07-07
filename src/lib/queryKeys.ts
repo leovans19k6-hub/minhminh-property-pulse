@@ -65,6 +65,25 @@ export const queryKeys = {
   mobileMyVoucherRegistrations: (filters: Record<string, unknown> = {}) =>
     ["mobile", "vouchers", "mine", normalize(filters)] as const,
 
+  // Phase 7C.3 — Mobile Events
+  mobileEvents: (filters: Record<string, unknown> = {}) =>
+    ["mobile", "events", "search", normalize(filters)] as const,
+  mobileEventDetail: (
+    id: string,
+    productId?: string | null,
+    policyId?: string | null,
+    voucherId?: string | null,
+  ) =>
+    [
+      "mobile",
+      "events",
+      "detail",
+      id,
+      productId ?? null,
+      policyId ?? null,
+      voucherId ?? null,
+    ] as const,
+
   projectDetail: (id: string) => ["projects", "detail", id] as const,
   projectStats: (id: string) => ["projects", "stats", id] as const,
 
