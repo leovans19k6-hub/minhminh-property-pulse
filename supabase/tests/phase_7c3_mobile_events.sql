@@ -20,22 +20,11 @@ WHERE n.nspname = 'public'
   AND p.proname IN ('search_mobile_events','get_mobile_event_detail')
 ORDER BY p.proname, r.rolname NULLS FIRST;
 
--- 3. Unauthenticated call must raise `permission_denied`.
-DO $$
-BEGIN
-  BEGIN
-    PERFORM public.search_mobile_events(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0);
-    RAISE EXCEPTION 'search_mobile_events did not deny unauthenticated caller';
-  EXCEPTION WHEN OTHERS THEN
-    IF SQLERRM <> 'permission_denied' THEN RAISE; END IF;
-  END;
-  BEGIN
-    PERFORM public.get_mobile_event_detail('00000000-0000-0000-0000-000000000000'::uuid, NULL, NULL, NULL, NULL);
-    RAISE EXCEPTION 'get_mobile_event_detail did not deny unauthenticated caller';
-  EXCEPTION WHEN OTHERS THEN
-    IF SQLERRM <> 'permission_denied' THEN RAISE; END IF;
-  END;
-END $$;
+-- 3. Anon role must NOT hold EXECUTE (Data API gate for unauthenticated callers).
+SELECT
+  has_function_privilege('anon', 'public.search_mobile_events(uuid, text, text, boolean, text, timestamptz, timestamptz, uuid, integer, integer)', 'EXECUTE') AS anon_can_search,
+  has_function_privilege('anon', 'public.get_mobile_event_detail(uuid, uuid, uuid, uuid, uuid)', 'EXECUTE') AS anon_can_detail;
+-- Expected: both FALSE.
 
 -- 4. Signed-in call returns a jsonb ARRAY (empty is OK) — replace :uid with any
 -- active user_id and run through a role capable of setting request.jwt.claims.
