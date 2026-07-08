@@ -126,3 +126,12 @@ All Phase 6D user-facing RPCs are `SECURITY DEFINER SET search_path = public`; d
 - `validate_operations_registration_transition(uuid, text, text)` — canonical domain gate reused by `transition_registration_status` and `review_registration`.
 
 `bulk_assign_leads(uuid[], uuid)` and `bulk_assign_registrations(uuid[], uuid)` keep the same grant set (`authenticated + service_role`, `PUBLIC/anon` revoked) but now return a stable JSONB contract `{requested_count, changed_count, unchanged_count, affected_ids}` and never partially apply on failure.
+
+## Phase 7C.3 — Mobile Events & Site Tours
+
+### Authenticated + service_role (REVOKE anon)
+- `search_mobile_events(uuid, text, text, boolean, text, timestamptz, timestamptz, uuid, int, int)`
+- `get_mobile_event_detail(uuid, uuid, uuid, uuid, uuid)`
+- `get_mobile_project_detail(uuid)` — extended additively to include `events_preview`; grants unchanged
+
+All Phase 7C.3 mobile RPCs are `SECURITY DEFINER SET search_path = public` and self-authorize (`auth.uid()` + `is_active_user()`). No canonical Phase 6C RPC (`register_for_event`, `cancel_my_event_registration`, `check_event_eligibility`, `event_derived_state`, `_event_registration_count`) was redefined by Phase 7C.3. Warnings 0028/0029 remain acknowledged as documented above.

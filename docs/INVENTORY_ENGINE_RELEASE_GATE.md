@@ -164,3 +164,21 @@ Phase 7B.1 is an additive hardening pass: narrows Product Detail realtime to pro
 | Full mobile end-to-end regression (auth + Home + Projects + Detail + Inventory + Product Detail + Favorites) | NOT EXECUTED |
 
 Phase 7B.1 does **not** promote Mobile Sales App to production-verified. Static contract checks (privileges, publication, RPC source, generated types) pass; end-to-end runtime regression remains outstanding and is required before any promotion.
+
+## Phase 7C.3 addition (Mobile Events & Site Tours cutover)
+
+Phase 7C.3 is an additive mobile cutover on top of the canonical Event Engine (Phase 6C / 6C.1). No canonical event RPC was modified; the mobile layer only adds `search_mobile_events`, `get_mobile_event_detail`, and extends `get_mobile_project_detail` with an `events_preview` array.
+
+| Gate | Status |
+| --- | --- |
+| `search_mobile_events` / `get_mobile_event_detail` grants (authenticated + service_role only, PUBLIC/anon revoked) | PASS — verified via `pg_proc.proacl` on 2026-07-08 |
+| `search_mobile_events` set-returning helper bug (`ANY(public.accessible_mobile_project_ids())`) | FIXED — replaced with `IN (SELECT …)` in follow-up migration; re-executed against DB returns `[]` (no error) |
+| Canonical event RPCs unchanged (`register_for_event`, `cancel_my_event_registration`, `check_event_eligibility`, `event_derived_state`, `_event_registration_count`) | PASS (static) — Phase 7C.3 migrations do not redefine them |
+| `registrations` type constraint compatibility (`event` / `site_tour` require `event_id`) | PASS — verified against `registrations_type_targets` CHECK |
+| Route tree includes `/events` and `/events/$eventId` | PASS — `src/routeTree.gen.ts` regenerated |
+| TypeScript `tsgo --noEmit` | PASS |
+| Runtime shape guard on `get_mobile_event_detail` payload | PASS (implementation) |
+| End-to-end mobile Events regression (list + detail + register + cancel + site tour variant) | NOT EXECUTED |
+| Runtime detail smoke test against a seeded published event | NOT EXECUTED — no published events in the current environment |
+
+Phase 7C.3 does **not** promote Mobile Sales App to production-verified. Static contract checks pass and the one runtime bug found (`ANY` on set-returning helper) is fixed; end-to-end mobile Events regression remains outstanding.
