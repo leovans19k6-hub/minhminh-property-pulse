@@ -3838,6 +3838,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_my_mobile_registration_detail: {
+        Args: { p_registration_id: string }
+        Returns: Json
+      }
       get_my_operations_work: {
         Args: { p_limit?: number; p_project_id?: string }
         Returns: Json
@@ -4140,6 +4144,18 @@ export type Database = {
           p_project_id?: string
           p_query?: string
           p_registration_state?: string
+        }
+        Returns: Json
+      }
+      search_my_mobile_registrations: {
+        Args: {
+          p_domain?: string
+          p_limit?: number
+          p_offset?: number
+          p_project_id?: string
+          p_query?: string
+          p_registration_type?: string
+          p_status?: string
         }
         Returns: Json
       }

@@ -135,3 +135,11 @@ All Phase 6D user-facing RPCs are `SECURITY DEFINER SET search_path = public`; d
 - `get_mobile_project_detail(uuid)` — extended additively to include `events_preview`; grants unchanged
 
 All Phase 7C.3 mobile RPCs are `SECURITY DEFINER SET search_path = public` and self-authorize (`auth.uid()` + `is_active_user()`). No canonical Phase 6C RPC (`register_for_event`, `cancel_my_event_registration`, `check_event_eligibility`, `event_derived_state`, `_event_registration_count`) was redefined by Phase 7C.3. Warnings 0028/0029 remain acknowledged as documented above.
+
+## Phase 7C.4 — Mobile My Registrations
+
+### Authenticated + service_role (REVOKE anon)
+- `search_my_mobile_registrations(uuid, text, text, text, text, int, int)`
+- `get_my_mobile_registration_detail(uuid)`
+
+Both are `SECURITY DEFINER SET search_path = public`, self-authorize on `auth.uid()` + `is_active_user()`, and are strictly scoped to registrations where `created_by = auth.uid()`. No canonical registration RPC was modified. Cancellation reuses `cancel_my_voucher_registration` / `cancel_my_event_registration`; no generic operations RPC is invoked from mobile. Warnings 0028/0029 remain acknowledged.

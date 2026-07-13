@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VouchersRouteImport } from './routes/vouchers'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RegistrationsRouteImport } from './routes/registrations'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PoliciesRouteImport } from './routes/policies'
@@ -26,6 +27,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as VouchersVoucherIdRouteImport } from './routes/vouchers.$voucherId'
+import { Route as RegistrationsRegistrationIdRouteImport } from './routes/registrations.$registrationId'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as PoliciesPolicyIdRouteImport } from './routes/policies.$policyId'
@@ -63,6 +65,11 @@ const UnauthorizedRoute = UnauthorizedRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistrationsRoute = RegistrationsRouteImport.update({
+  id: '/registrations',
+  path: '/registrations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -135,6 +142,12 @@ const VouchersVoucherIdRoute = VouchersVoucherIdRouteImport.update({
   path: '/$voucherId',
   getParentRoute: () => VouchersRoute,
 } as any)
+const RegistrationsRegistrationIdRoute =
+  RegistrationsRegistrationIdRouteImport.update({
+    id: '/$registrationId',
+    path: '/$registrationId',
+    getParentRoute: () => RegistrationsRoute,
+  } as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/$projectId',
   path: '/$projectId',
@@ -271,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
+  '/registrations': typeof RegistrationsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/vouchers': typeof VouchersRouteWithChildren
@@ -286,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/registrations/$registrationId': typeof RegistrationsRegistrationIdRoute
   '/vouchers/$voucherId': typeof VouchersVoucherIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
@@ -312,6 +327,7 @@ export interface FileRoutesByTo {
   '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
+  '/registrations': typeof RegistrationsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/vouchers': typeof VouchersRouteWithChildren
@@ -327,6 +343,7 @@ export interface FileRoutesByTo {
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/registrations/$registrationId': typeof RegistrationsRegistrationIdRoute
   '/vouchers/$voucherId': typeof VouchersVoucherIdRoute
   '/admin': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
@@ -355,6 +372,7 @@ export interface FileRoutesById {
   '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
+  '/registrations': typeof RegistrationsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/vouchers': typeof VouchersRouteWithChildren
@@ -370,6 +388,7 @@ export interface FileRoutesById {
   '/policies/$policyId': typeof PoliciesPolicyIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/registrations/$registrationId': typeof RegistrationsRegistrationIdRoute
   '/vouchers/$voucherId': typeof VouchersVoucherIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/inventory-templates/$templateId': typeof AdminInventoryTemplatesTemplateIdRoute
@@ -399,6 +418,7 @@ export interface FileRouteTypes {
     | '/policies'
     | '/projects'
     | '/register'
+    | '/registrations'
     | '/reset-password'
     | '/unauthorized'
     | '/vouchers'
@@ -414,6 +434,7 @@ export interface FileRouteTypes {
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
+    | '/registrations/$registrationId'
     | '/vouchers/$voucherId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
@@ -440,6 +461,7 @@ export interface FileRouteTypes {
     | '/policies'
     | '/projects'
     | '/register'
+    | '/registrations'
     | '/reset-password'
     | '/unauthorized'
     | '/vouchers'
@@ -455,6 +477,7 @@ export interface FileRouteTypes {
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
+    | '/registrations/$registrationId'
     | '/vouchers/$voucherId'
     | '/admin'
     | '/admin/inventory-templates/$templateId'
@@ -482,6 +505,7 @@ export interface FileRouteTypes {
     | '/policies'
     | '/projects'
     | '/register'
+    | '/registrations'
     | '/reset-password'
     | '/unauthorized'
     | '/vouchers'
@@ -497,6 +521,7 @@ export interface FileRouteTypes {
     | '/policies/$policyId'
     | '/products/$productId'
     | '/projects/$projectId'
+    | '/registrations/$registrationId'
     | '/vouchers/$voucherId'
     | '/admin/'
     | '/admin/inventory-templates/$templateId'
@@ -525,6 +550,7 @@ export interface RootRouteChildren {
   PoliciesRoute: typeof PoliciesRouteWithChildren
   ProjectsRoute: typeof ProjectsRouteWithChildren
   RegisterRoute: typeof RegisterRoute
+  RegistrationsRoute: typeof RegistrationsRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   VouchersRoute: typeof VouchersRouteWithChildren
@@ -552,6 +578,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registrations': {
+      id: '/registrations'
+      path: '/registrations'
+      fullPath: '/registrations'
+      preLoaderRoute: typeof RegistrationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -651,6 +684,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/vouchers/$voucherId'
       preLoaderRoute: typeof VouchersVoucherIdRouteImport
       parentRoute: typeof VouchersRoute
+    }
+    '/registrations/$registrationId': {
+      id: '/registrations/$registrationId'
+      path: '/$registrationId'
+      fullPath: '/registrations/$registrationId'
+      preLoaderRoute: typeof RegistrationsRegistrationIdRouteImport
+      parentRoute: typeof RegistrationsRoute
     }
     '/projects/$projectId': {
       id: '/projects/$projectId'
@@ -967,6 +1007,18 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
   ProjectsRouteChildren,
 )
 
+interface RegistrationsRouteChildren {
+  RegistrationsRegistrationIdRoute: typeof RegistrationsRegistrationIdRoute
+}
+
+const RegistrationsRouteChildren: RegistrationsRouteChildren = {
+  RegistrationsRegistrationIdRoute: RegistrationsRegistrationIdRoute,
+}
+
+const RegistrationsRouteWithChildren = RegistrationsRoute._addFileChildren(
+  RegistrationsRouteChildren,
+)
+
 interface VouchersRouteChildren {
   VouchersVoucherIdRoute: typeof VouchersVoucherIdRoute
 }
@@ -992,6 +1044,7 @@ const rootRouteChildren: RootRouteChildren = {
   PoliciesRoute: PoliciesRouteWithChildren,
   ProjectsRoute: ProjectsRouteWithChildren,
   RegisterRoute: RegisterRoute,
+  RegistrationsRoute: RegistrationsRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   VouchersRoute: VouchersRouteWithChildren,
