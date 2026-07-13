@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VouchersRouteImport } from './routes/vouchers'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RegistrationsRouteImport } from './routes/registrations'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PoliciesRouteImport } from './routes/policies'
@@ -63,6 +64,11 @@ const UnauthorizedRoute = UnauthorizedRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistrationsRoute = RegistrationsRouteImport.update({
+  id: '/registrations',
+  path: '/registrations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
+  '/registrations': typeof RegistrationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/vouchers': typeof VouchersRouteWithChildren
@@ -312,6 +319,7 @@ export interface FileRoutesByTo {
   '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
+  '/registrations': typeof RegistrationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/vouchers': typeof VouchersRouteWithChildren
@@ -355,6 +363,7 @@ export interface FileRoutesById {
   '/policies': typeof PoliciesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/register': typeof RegisterRoute
+  '/registrations': typeof RegistrationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/vouchers': typeof VouchersRouteWithChildren
@@ -399,6 +408,7 @@ export interface FileRouteTypes {
     | '/policies'
     | '/projects'
     | '/register'
+    | '/registrations'
     | '/reset-password'
     | '/unauthorized'
     | '/vouchers'
@@ -440,6 +450,7 @@ export interface FileRouteTypes {
     | '/policies'
     | '/projects'
     | '/register'
+    | '/registrations'
     | '/reset-password'
     | '/unauthorized'
     | '/vouchers'
@@ -482,6 +493,7 @@ export interface FileRouteTypes {
     | '/policies'
     | '/projects'
     | '/register'
+    | '/registrations'
     | '/reset-password'
     | '/unauthorized'
     | '/vouchers'
@@ -525,6 +537,7 @@ export interface RootRouteChildren {
   PoliciesRoute: typeof PoliciesRouteWithChildren
   ProjectsRoute: typeof ProjectsRouteWithChildren
   RegisterRoute: typeof RegisterRoute
+  RegistrationsRoute: typeof RegistrationsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   VouchersRoute: typeof VouchersRouteWithChildren
@@ -552,6 +565,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registrations': {
+      id: '/registrations'
+      path: '/registrations'
+      fullPath: '/registrations'
+      preLoaderRoute: typeof RegistrationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -992,6 +1012,7 @@ const rootRouteChildren: RootRouteChildren = {
   PoliciesRoute: PoliciesRouteWithChildren,
   ProjectsRoute: ProjectsRouteWithChildren,
   RegisterRoute: RegisterRoute,
+  RegistrationsRoute: RegistrationsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   VouchersRoute: VouchersRouteWithChildren,
