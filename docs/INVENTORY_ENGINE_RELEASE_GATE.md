@@ -182,3 +182,21 @@ Phase 7C.3 is an additive mobile cutover on top of the canonical Event Engine (P
 | Runtime detail smoke test against a seeded published event | NOT EXECUTED — no published events in the current environment |
 
 Phase 7C.3 does **not** promote Mobile Sales App to production-verified. Static contract checks pass and the one runtime bug found (`ANY` on set-returning helper) is fixed; end-to-end mobile Events regression remains outstanding.
+
+## Phase 7C.4 addition (Mobile My Registrations)
+
+Additive read-only mobile cutover: two new RPCs (`search_my_mobile_registrations`, `get_my_mobile_registration_detail`) plus `/registrations` list + `/registrations/$registrationId` detail. No canonical registration RPC was modified; cancellation dispatches to `cancel_my_voucher_registration` / `cancel_my_event_registration`.
+
+| Check | Status |
+| --- | --- |
+| Both RPCs are `SECURITY DEFINER SET search_path = public` | PASS (static) |
+| Privilege matrix (anon=NO, authenticated=YES, service_role=YES) | PASS (verified via `pg_proc` + `has_function_privilege`) |
+| Scope strictly `created_by = auth.uid()` | PASS (static SQL) |
+| Activity summary limited to `status_change / system / registration_review` and safe fields only | PASS (static SQL) |
+| Cancellation goes through canonical voucher/event RPCs; consultation/other cannot be cancelled from mobile | PASS (implementation) |
+| Canonical voucher/event/operations RPCs unchanged | PASS (static — no redefinitions in the 7C.4 migration) |
+| Typecheck (`tsgo --noEmit`) | PASS |
+| Runtime shape guard on detail payload | PASS (implementation) |
+| End-to-end mobile regression (list + detail + cancel per domain) | NOT EXECUTED — no seeded user-owned registrations in the current environment |
+
+Phase 7C.4 does not promote the Mobile Sales App to production-verified. Static contract, privilege and typecheck are green; end-to-end regression remains outstanding.
