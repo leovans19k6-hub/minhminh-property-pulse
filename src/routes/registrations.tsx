@@ -119,29 +119,33 @@ function RegistrationsPage() {
 
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
           <FilterChip
-            label="Tất cả"
             active={!activeDomain}
             onClick={() => setSearch({ domain: undefined })}
-          />
+          >
+            Tất cả
+          </FilterChip>
           <FilterChip
-            label="Tư vấn"
             active={activeDomain === "CONSULTATION"}
             onClick={() =>
               setSearch({ domain: activeDomain === "CONSULTATION" ? undefined : "CONSULTATION" })
             }
-          />
+          >
+            Tư vấn
+          </FilterChip>
           <FilterChip
-            label="Voucher"
             active={activeDomain === "VOUCHER"}
             onClick={() =>
               setSearch({ domain: activeDomain === "VOUCHER" ? undefined : "VOUCHER" })
             }
-          />
+          >
+            Voucher
+          </FilterChip>
           <FilterChip
-            label="Sự kiện"
             active={activeDomain === "EVENT"}
             onClick={() => setSearch({ domain: activeDomain === "EVENT" ? undefined : "EVENT" })}
-          />
+          >
+            Sự kiện
+          </FilterChip>
         </div>
 
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
@@ -156,10 +160,11 @@ function RegistrationsPage() {
           ).map(([code, label]) => (
             <FilterChip
               key={code}
-              label={label}
               active={activeStatus === code}
               onClick={() => setSearch({ status: activeStatus === code ? undefined : code })}
-            />
+            >
+              {label}
+            </FilterChip>
           ))}
         </div>
 
@@ -173,7 +178,7 @@ function RegistrationsPage() {
         ) : items.length === 0 ? (
           <MobileEmptyState
             title="Chưa có đăng ký nào"
-            description="Các đăng ký voucher, sự kiện, tư vấn của bạn sẽ hiển thị tại đây."
+            hint="Các đăng ký voucher, sự kiện, tư vấn của bạn sẽ hiển thị tại đây."
           />
         ) : (
           <div className="space-y-2">
