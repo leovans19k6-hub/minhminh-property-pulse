@@ -9,6 +9,7 @@ import {
   LogOut,
   Building2,
   Star,
+  ClipboardList,
 } from "lucide-react";
 import { MobileShell } from "@/components/mobile/MobileShell";
 import { SectionCard } from "@/components/mobile/SectionCard";
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/account")({
 });
 
 const shortcuts = [
+  { to: "/registrations" as const, icon: ClipboardList, label: "Đăng ký của tôi" },
   { to: "/favorites" as const, icon: Heart, label: "Sản phẩm yêu thích" },
   { to: "/notifications" as const, icon: Bell, label: "Thông báo" },
 ];
