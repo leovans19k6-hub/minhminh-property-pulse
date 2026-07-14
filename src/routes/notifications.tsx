@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { BellOff, CheckCheck } from "lucide-react";
 import { MobileShell } from "@/components/mobile/MobileShell";
 import { MobileQueryErrorState, MobileInlineLoader } from "@/components/mobile/MobileStates";
@@ -31,8 +32,13 @@ function NotificationsPage() {
   const { currentUser } = useAuth();
   const userId = currentUser?.userId ?? null;
   const [offset, setOffset] = useState(0);
+  const [tab, setTab] = useState<"all" | "unread">("all");
 
-  const list = useMobileNotifications(userId, { limit: PAGE_SIZE, offset });
+  const list = useMobileNotifications(userId, {
+    limit: PAGE_SIZE,
+    offset,
+    unreadOnly: tab === "unread",
+  });
   const unread = useUnreadNotificationCount(userId);
   const markRead = useMarkNotificationRead(userId);
   const markAll = useMarkAllNotificationsRead(userId);
@@ -82,6 +88,27 @@ function NotificationsPage() {
               Đánh dấu đã đọc
             </Button>
           )}
+        </div>
+        <div className="mt-3 inline-flex h-9 rounded-xl border border-border bg-background p-0.5 text-[12.5px]">
+          {(["all", "unread"] as const).map((k) => (
+            <button
+              key={k}
+              type="button"
+              onClick={() => {
+                if (k === tab) return;
+                setTab(k);
+                setOffset(0);
+              }}
+              className={cn(
+                "min-w-[92px] rounded-lg px-3 font-medium transition-colors",
+                tab === k
+                  ? "bg-[color:var(--brand-navy)] text-[color:var(--primary-foreground)]"
+                  : "text-[color:var(--text-secondary)]",
+              )}
+            >
+              {k === "all" ? "Tất cả" : `Chưa đọc${unreadCount > 0 ? ` (${unreadCount})` : ""}`}
+            </button>
+          ))}
         </div>
       </div>
 

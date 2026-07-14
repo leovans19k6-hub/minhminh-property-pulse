@@ -15,12 +15,16 @@ export async function listNotifications(
   userId: string,
   limit = 30,
   offset = 0,
+  unreadOnly = false,
 ): Promise<NotificationsPage> {
-  const res = await supabase
+  let base = supabase
     .from("notifications")
     .select("*")
-    .eq("user_id", userId)
+    .eq("user_id", userId);
+  if (unreadOnly) base = base.is("read_at", null);
+  const res = await base
     .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
     .range(offset, offset + limit);
   const rows = unwrap(res, "notifications.list");
   const hasMore = rows.length > limit;

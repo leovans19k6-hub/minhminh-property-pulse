@@ -9,7 +9,7 @@ import { queryKeys } from "@/lib/queryKeys";
 
 export function useMobileNotifications(
   userId: string | null | undefined,
-  page: { limit: number; offset: number },
+  page: { limit: number; offset: number; unreadOnly?: boolean },
 ) {
   return useQuery({
     queryKey: [
@@ -17,8 +17,10 @@ export function useMobileNotifications(
       "list",
       page.limit,
       page.offset,
+      page.unreadOnly ? "unread" : "all",
     ],
-    queryFn: () => listNotifications(userId!, page.limit, page.offset),
+    queryFn: () =>
+      listNotifications(userId!, page.limit, page.offset, page.unreadOnly ?? false),
     enabled: !!userId,
     staleTime: 30_000,
     retry: 1,

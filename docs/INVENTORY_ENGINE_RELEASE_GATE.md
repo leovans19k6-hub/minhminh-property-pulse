@@ -200,3 +200,22 @@ Additive read-only mobile cutover: two new RPCs (`search_my_mobile_registrations
 | End-to-end mobile regression (list + detail + cancel per domain) | NOT EXECUTED — no seeded user-owned registrations in the current environment |
 
 Phase 7C.4 does not promote the Mobile Sales App to production-verified. Static contract, privilege and typecheck are green; end-to-end regression remains outstanding.
+
+## Phase 7C.5 addition (Mobile Notifications Cutover)
+
+No new RPCs and no migrations. The `public.notifications` table already ships owner-scoped RLS (`notifications_read_own`, `notifications_update_own`, `notifications_insert_admin`) and standard `authenticated` CRUD grants. This phase hardens the mobile surface only.
+
+| Check | Status |
+| --- | --- |
+| RLS enabled + read/update/insert policies present on `public.notifications` | PASS (verified via `pg_class` + `pg_policies`) |
+| `authenticated` role has `SELECT` + `UPDATE` on `public.notifications` | PASS (verified via `information_schema.role_table_grants`) |
+| Mobile client never invokes an `INSERT` path on `notifications` | PASS (grep of `src/services/notifications.service.ts`) |
+| Deterministic ordering (`created_at DESC, id DESC`) + one-extra-row `hasMore` | PASS (implementation) |
+| Server-side `unreadOnly` filter (`is('read_at', null)`) | PASS (implementation) |
+| `action_url` restricted to allow-listed same-origin prefixes; external URLs rejected | PASS (`safeInternalHref`) |
+| Raw `metadata` never surfaced to UI | PASS (grep) |
+| Narrow cache invalidation after `markRead` / `markAllRead` | PASS (implementation) |
+| Typecheck (`tsgo --noEmit`) | PASS |
+| End-to-end mobile Notifications regression (list + unread filter + mark one + mark all + safe-nav) | NOT EXECUTED — no seeded notifications for a mobile user in the current environment |
+
+Phase 7C.5 does not promote the Mobile Sales App to production-verified. Static contract, privilege and typecheck are green; end-to-end regression remains outstanding.
