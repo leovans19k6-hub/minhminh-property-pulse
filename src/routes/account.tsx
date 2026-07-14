@@ -17,6 +17,7 @@ import { InfoRow } from "@/components/mobile/InfoRow";
 import { AccountIdentityCard } from "@/components/mobile/account/AccountIdentityCard";
 import { AccountRolesCard } from "@/components/mobile/account/AccountRolesCard";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { useUnreadNotificationCount } from "@/features/notifications/queries";
 
 export const Route = createFileRoute("/account")({
   component: AccountPage,
@@ -38,6 +39,8 @@ function AccountPage() {
   const navigate = useNavigate();
   const { currentUser, signOut, isInitializing, isLoadingUserContext } = useAuth();
   const [signingOut, setSigningOut] = useState(false);
+  const unread = useUnreadNotificationCount(currentUser?.userId ?? null);
+  const unreadCount = unread.data ?? 0;
 
   if (isInitializing || isLoadingUserContext) {
     return (
@@ -193,6 +196,11 @@ function AccountPage() {
               >
                 <it.icon className="h-4 w-4 text-[color:var(--brand-navy)]" />
                 <span className="flex-1 truncate text-sm">{it.label}</span>
+                {it.to === "/notifications" && unreadCount > 0 && (
+                  <span className="rounded-full bg-[color:var(--brand-gold)] px-2 py-0.5 text-[10.5px] font-bold text-[color:var(--brand-navy)]">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
                 <ChevronRight className="h-4 w-4 text-[color:var(--text-tertiary)]" />
               </Link>
             ))}
