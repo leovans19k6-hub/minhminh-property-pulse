@@ -15,13 +15,17 @@ export async function listNotifications(
   userId: string,
   limit = 30,
   offset = 0,
+  unreadOnly = false,
 ): Promise<NotificationsPage> {
-  const res = await supabase
+  let q = supabase
     .from("notifications")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
     .range(offset, offset + limit);
+  if (unreadOnly) q = q.is("read_at", null);
+  const res = await q;
   const rows = unwrap(res, "notifications.list");
   const hasMore = rows.length > limit;
   return { items: hasMore ? rows.slice(0, limit) : rows, hasMore, limit, offset };
