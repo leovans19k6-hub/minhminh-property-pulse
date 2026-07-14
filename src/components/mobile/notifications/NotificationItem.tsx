@@ -24,7 +24,19 @@ function relTime(iso: string): string {
 function safeInternalHref(url: string | null): string | null {
   if (!url) return null;
   if (!url.startsWith("/")) return null;
-  const allowed = ["/inventory", "/products/", "/projects", "/favorites", "/notifications"];
+  if (url.includes("://") || url.startsWith("//")) return null;
+  const allowed = [
+    "/inventory",
+    "/products/",
+    "/projects",
+    "/favorites",
+    "/notifications",
+    "/policies",
+    "/vouchers",
+    "/events",
+    "/registrations",
+    "/account",
+  ];
   if (allowed.some((p) => url === p || url.startsWith(p))) return url;
   return null;
 }
