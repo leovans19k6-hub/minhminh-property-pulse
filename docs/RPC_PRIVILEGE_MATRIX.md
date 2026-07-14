@@ -143,3 +143,17 @@ All Phase 7C.3 mobile RPCs are `SECURITY DEFINER SET search_path = public` and s
 - `get_my_mobile_registration_detail(uuid)`
 
 Both are `SECURITY DEFINER SET search_path = public`, self-authorize on `auth.uid()` + `is_active_user()`, and are strictly scoped to registrations where `created_by = auth.uid()`. No canonical registration RPC was modified. Cancellation reuses `cancel_my_voucher_registration` / `cancel_my_event_registration`; no generic operations RPC is invoked from mobile. Warnings 0028/0029 remain acknowledged.
+
+## Phase 7C.5 — Mobile Notifications
+
+No new RPCs. The mobile Notifications surface reads and mutates
+`public.notifications` directly via the Data API, protected by the
+pre-existing owner-scoped RLS policies:
+
+- `notifications_read_own` (SELECT)
+- `notifications_update_own` (UPDATE)
+- `notifications_insert_admin` (INSERT — restricted to super_admin / admin / director)
+
+Grants unchanged: `authenticated` retains default CRUD (RLS narrows it to
+own rows); `service_role` retains ALL. Mobile clients cannot forge
+notifications because INSERT is admin-only.
