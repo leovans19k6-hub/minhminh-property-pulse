@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { useUnreadNotificationCount } from "@/features/notifications/queries";
 
 interface MobileHeaderProps {
   title?: string;
@@ -11,6 +13,11 @@ interface MobileHeaderProps {
 }
 
 export function MobileHeader({ title, greeting, left, right }: MobileHeaderProps) {
+  const { currentUser } = useAuth();
+  const userId = currentUser?.userId ?? null;
+  const unread = useUnreadNotificationCount(userId);
+  const count = unread.data ?? 0;
+  const badge = count > 99 ? "99+" : String(count);
   return (
     <header
       className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur"
@@ -43,6 +50,14 @@ export function MobileHeader({ title, greeting, left, right }: MobileHeaderProps
                 className="relative grid h-10 w-10 place-items-center rounded-full text-foreground hover:bg-muted"
               >
                 <Bell className="h-5 w-5" />
+                {userId && count > 0 && (
+                  <span
+                    className="absolute right-1.5 top-1.5 grid min-w-[16px] items-center justify-items-center rounded-full bg-[color:var(--brand-gold)] px-1 text-[10px] font-bold leading-4 text-[color:var(--brand-navy)] ring-2 ring-background"
+                    aria-label={`${count} thông báo chưa đọc`}
+                  >
+                    {badge}
+                  </span>
+                )}
               </Link>
               <Link to="/account" aria-label="Tài khoản">
                 <Avatar className="h-9 w-9 border border-border">
