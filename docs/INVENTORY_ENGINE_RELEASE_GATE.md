@@ -219,3 +219,30 @@ No new RPCs and no migrations. The `public.notifications` table already ships ow
 | End-to-end mobile Notifications regression (list + unread filter + mark one + mark all + safe-nav) | NOT EXECUTED — no seeded notifications for a mobile user in the current environment |
 
 Phase 7C.5 does not promote the Mobile Sales App to production-verified. Static contract, privilege and typecheck are green; end-to-end regression remains outstanding.
+
+## Phase 7D addition (Runtime Regression & Hardening)
+
+No new domains, migrations, or RPCs. This phase is a full sweep of the mobile
+app to fix regressions and correctness issues found via static review, typecheck,
+build, and console/dev-server log inspection.
+
+| Check | Status |
+| --- | --- |
+| Typecheck (`tsgo --noEmit`) | PASS (0 errors) |
+| Production build (`bun run build`) | PASS |
+| Dev-server error/warn scan | CLEAN (only benign HMR `data-tsd-source` tagger deltas — dev-only Lovable inspector attribute) |
+| Mock-import scan (`rg 'features/mock\|mock/data'`) | CLEAN (0 hits; `src/features/mock/` removed in 7C.6) |
+| localStorage domain-state scan | CLEAN (only benign `ViewToggle` UI-preference key) |
+| Auth subscribers cleanup (`onAuthStateChange`) | PASS (both `AuthProvider` and `reset-password` return `unsubscribe` in effect cleanup) |
+| Duplicate `<meta>` tags in `__root.tsx` head | FIXED — removed duplicated `description` / `og:description` rows |
+| BottomNav ↔ real route parity | PASS (5/5 routes present) |
+| Route guards (public allow-list + `AuthGuard`) | PASS (public: `/login`, `/forgot-password`, `/reset-password`, `/unauthorized`) |
+| Query-key duplication / stale legacy keys | PASS (no duplicates; non-mobile keys still consumed by admin/shared code) |
+| Sensitive `metadata` surfaced to notifications UI | PASS (already stripped in 7C.5) |
+| End-to-end mobile regression across all surfaces | NOT EXECUTED — no seeded mobile user data in the current environment |
+| Responsive audit across 360 / 375 / 390 / 412 / 430 / 640 / 768 breakpoints | NOT EXECUTED — static review only; `MobileShell` uses fluid layout capped at `sm:max-w-[640px]` / `md:max-w-[720px]` |
+| Realtime channel leak review | PASS (no additional subscribers beyond the two audited above) |
+
+Phase 7D does not promote the Mobile Sales App to production-verified. Static
+contract, typecheck, build, and dead-code sweeps are green; end-to-end runtime
+regression on a seeded environment remains the outstanding gate.
