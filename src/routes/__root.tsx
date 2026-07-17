@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 import { AuthGuard } from "@/features/auth/guards";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 
 const PUBLIC_ROUTES = new Set<string>([
   "/login",
@@ -146,6 +147,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <OfflineIndicator />
         <RouteGate />
       </AuthProvider>
     </QueryClientProvider>

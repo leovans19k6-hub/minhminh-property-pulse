@@ -246,3 +246,33 @@ build, and console/dev-server log inspection.
 Phase 7D does not promote the Mobile Sales App to production-verified. Static
 contract, typecheck, build, and dead-code sweeps are green; end-to-end runtime
 regression on a seeded environment remains the outstanding gate.
+
+## Phase 8A addition (Production Infrastructure)
+
+No new business features. Infra sweep only.
+
+| Check | Status |
+| --- | --- |
+| Typecheck (`tsgo --noEmit`) | PASS |
+| Production build (`bun run build`) | PASS |
+| Centralized runtime config (`src/lib/runtime-config.ts`) | ADDED — env validation + shared retry/backoff constants |
+| Global error boundaries (root `errorComponent` + `notFoundComponent`, SSR `renderErrorPage`, `error-capture`) | PASS |
+| ServiceError normalization (`src/services/_helpers.ts`) | PASS — consistent `[ctx]` wrap; consumed by query retry guard |
+| Query retry policy | ADDED — bounded retries (2) w/ exp-backoff cap 8s; skips auth/not-found/permission |
+| Refetch on reconnect / focus | ENABLED reconnect, DISABLED focus (mobile-oriented; avoids duplicate load on tab switch) |
+| Offline detection UI | ADDED — `OfflineIndicator` banner + auto `invalidateQueries` on `online` event |
+| Image lazy-loading audit | PASS — all `<img>` tags now carry `loading="lazy"` except above-the-fold `ProductMediaGallery` primary (intentional `eager`) |
+| Code-splitting audit | PASS — TanStack Start `autoCodeSplitting` on; route components are not `export`ed; no manual violations |
+| Bundle optimization | PASS — Vite production build minifies + strips `console.log/debug/info` via default esbuild minifier; `sideEffects: false` in package.json |
+| Debug/dev code scan (`console.log|debug|info`) | CLEAN (0 hits outside `console.error/warn` diagnostic paths) |
+| PWA manifest (`public/manifest.webmanifest`) | PRESENT — name / short_name / theme / icons / display standalone; wired via `__root.tsx` `<link rel="manifest">` |
+| Security headers | DEFERRED — Cloudflare hosting layer sets baseline CSP/HSTS/X-Frame-Options; project-level override not required for Phase 8A |
+| 404 / 500 pages | PASS — `NotFoundComponent` (root) + `renderErrorPage` SSR fallback + client `ErrorComponent` |
+| Loading fallback consistency | PASS — `MobileListSkeleton` / `MobileInlineLoader` / `AuthLoadingScreen` shared |
+| Dead-code scan | CLEAN (no new mock or unused module imports since 7C.6) |
+
+**Remaining blockers to production-ready:** end-to-end mobile regression on a
+seeded environment (open since 7D), SQL smoke suites from 5E/6A/6B/6C/6D never
+executed against the live database, and a documented CSP/HSTS override if the
+hosting default proves insufficient. Phase 8A does not, on its own, promote
+the app to production-verified.
