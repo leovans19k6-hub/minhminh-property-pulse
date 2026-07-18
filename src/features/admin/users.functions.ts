@@ -1,6 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import {
+  ServiceError,
+  ensureSuccess,
+  unwrap,
+  unwrapMaybe,
+} from "@/services/_helpers";
 
 /**
  * Users administration server functions.
@@ -22,21 +28,21 @@ async function assertCallerRole(
     .select("status")
     .eq("id", userId)
     .maybeSingle();
-  if (profileError || !profile) throw new Error("forbidden");
+  if (profileError || !profile) throw new ServiceError("forbidden");
   if ((profile.status ?? "active") !== "active") throw new Error("forbidden_inactive");
 
   const { data: userRoles, error: roleErr } = await supabase
     .from("user_roles")
     .select("roles(code)")
     .eq("user_id", userId);
-  if (roleErr) throw new Error("forbidden");
+  if (roleErr) throw new ServiceError("forbidden");
   const codes = (userRoles ?? []).flatMap((r) => {
     const rel = (r as { roles: { code: string } | { code: string }[] | null }).roles;
     if (!rel) return [];
     return Array.isArray(rel) ? rel.map((x) => x.code) : [rel.code];
   });
   const ok = codes.some((c) => (roles as readonly string[]).includes(c));
-  if (!ok) throw new Error("forbidden");
+  if (!ok) throw new ServiceError("forbidden");
   return codes;
 }
 
@@ -71,7 +77,7 @@ export const listAdminUsers = createServerFn({ method: "POST" })
     }
 
     const { data: rows, error, count } = await q;
-    if (error) throw new Error(error.message);
+    ensureSuccess(error, "admin.users.<operation>");
 
     // Enrich with email from auth admin
     const ids = (rows ?? []).map((r) => r.id);
@@ -121,7 +127,7 @@ export const getAdminUser = createServerFn({ method: "POST" })
       .select("*, user_roles(role_id, roles(id, code, name)), project_members(id, member_role, is_primary_contact, projects(id, name, code))")
       .eq("id", data.userId)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    ensureSuccess(error, "admin.users.<operation>");
     if (!profile) throw new Error("user_not_found");
 
     const { data: auth } = await supabaseAdmin.auth.admin.getUserById(data.userId);
@@ -201,7 +207,7 @@ export const updateAdminUser = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { userId, ...patch } = data;
     const { error } = await supabaseAdmin.from("profiles").update(patch).eq("id", userId);
-    if (error) throw new Error(error.message);
+    ensureSuccess(error, "admin.users.<operation>");
     return { ok: true };
   });
 
@@ -269,7 +275,7 @@ export const setUserStatus = createServerFn({ method: "POST" })
       .from("profiles")
       .update({ status: data.status })
       .eq("id", data.userId);
-    if (error) throw new Error(error.message);
+    ensureSuccess(error, "admin.users.<operation>");
 
     await supabaseAdmin.from("audit_logs").insert({
       user_id: context.userId,
@@ -306,7 +312,7 @@ export const assignUserRole = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("user_roles")
       .upsert({ user_id: data.userId, role_id: role.id }, { onConflict: "user_id,role_id" });
-    if (error) throw new Error(error.message);
+    ensureSuccess(error, "admin.users.<operation>");
     return { ok: true };
   });
 
@@ -339,6 +345,6 @@ export const removeUserRole = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin
       .from("user_roles").delete().eq("user_id", data.userId).eq("role_id", role.id);
-    if (error) throw new Error(error.message);
+    ensureSuccess(error, "admin.users.<operation>");
     return { ok: true };
   });
