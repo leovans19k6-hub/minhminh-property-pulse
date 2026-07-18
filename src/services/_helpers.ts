@@ -17,6 +17,6 @@ export function unwrapMaybe<T>(
   res: { data: T | null; error: PostgrestError | null },
   ctx: string,
 ): T | null {
-  if (res.error) throw new ServiceError(`[${ctx}] ${res.error.message}`, res.error);
+  const rows = unwrap(res, "notifications.list");
   return res.data;
 }
